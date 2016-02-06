@@ -8,39 +8,28 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
+
 import java.awt.GridLayout;
-import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import java.awt.Color;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JList;
-import java.awt.Dimension;
-import java.awt.BorderLayout;
 import java.awt.SystemColor;
-import javax.swing.AbstractListModel;
 import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
+import javax.swing.JOptionPane;
 
 public class OVmain {
 
   private JFrame frmOvSimulator;
   private final ButtonGroup protoButtonGroup = new ButtonGroup();
-
   /**
    * Launch the application.
    */
@@ -68,10 +57,15 @@ public class OVmain {
   /**
    * Initialize the contents of the frame.
    */
-  private void initialize() {
+  /**
+ * 
+ */
+/**
+ * 
+ */
+private void initialize() {
     frmOvSimulator = new JFrame();
     frmOvSimulator.setResizable(false);
-//    frmOvSimulator.setSize(new Dimension(1024, 768));
     frmOvSimulator.setTitle("OV simulator");
     frmOvSimulator.setIconImage(Toolkit.getDefaultToolkit().getImage(OVmain.class.getResource("/images/SWARCOLOGO.jpeg")));
     frmOvSimulator.setBounds(100, 100, 800, 600);
@@ -122,11 +116,11 @@ public class OVmain {
     gbc_bottomInfoPanel.gridy = 1;
     frmOvSimulator.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
     
-    JTextPane txtpnSomeUberImportant = new JTextPane();
-    txtpnSomeUberImportant.setEditable(false);
-    txtpnSomeUberImportant.setSize(600, 10);
-    bottomInfoPanel.add(txtpnSomeUberImportant);
-    txtpnSomeUberImportant.setText("Some uber important info here");
+    JTextPane BottomInfoTxtpn = new JTextPane();
+    BottomInfoTxtpn.setEditable(false);
+    BottomInfoTxtpn.setSize(600, 10);
+    bottomInfoPanel.add(BottomInfoTxtpn);
+    BottomInfoTxtpn.setText("Some uber important info here");
     
     JMenuBar menuBar = new JMenuBar();
     frmOvSimulator.setJMenuBar(menuBar);
@@ -152,26 +146,21 @@ public class OVmain {
     JRadioButton rdbtnSics = new JRadioButton("SICS");
     protoButtonGroup.add(rdbtnSics);
     mnProtocol.add(rdbtnSics);
-    
-    JMenu mnAbout = new JMenu("About");
-    menuBar.add(mnAbout);
-  }
 
-  private static void addPopup(Component component, final JPopupMenu popup) {
-    component.addMouseListener(new MouseAdapter() {
-    	public void mousePressed(MouseEvent e) {
-    		if (e.isPopupTrigger()) {
-    			showMenu(e);
-    		}
-    	}
-    	public void mouseReleased(MouseEvent e) {
-    		if (e.isPopupTrigger()) {
-    			showMenu(e);
-    		}
-    	}
-    	private void showMenu(MouseEvent e) {
-    		popup.show(e.getComponent(), e.getX(), e.getY());
-    	}
-    });
+    JMenu mnAbout = new JMenu("About");
+    mnAbout.setName("About");
+    mnAbout.addMenuListener(new MenuListener() {	
+		@Override
+		public void menuSelected(MenuEvent arg0) {
+            JOptionPane.showMessageDialog((JMenu)arg0.getSource(), "Created by Sander",((JMenu)arg0.getSource()).getName(), JOptionPane.INFORMATION_MESSAGE);
+		}
+		@Override
+		public void menuCanceled(MenuEvent e) {
+		}
+		@Override
+		public void menuDeselected(MenuEvent e) {
+		}
+	});
+    menuBar.add(mnAbout);
   }
 }
