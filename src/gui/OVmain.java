@@ -3,13 +3,14 @@ package gui;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import java.awt.Toolkit;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+
+import images.ImageFactory;
 
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
@@ -22,14 +23,26 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+
 import java.awt.SystemColor;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JButton;
 
 public class OVmain {
 
+  // frame
   private JFrame frmOvSimulator;
+  // factory
+  private ImageFactory the_imageFactory;
+  // buttons and groups
   private final ButtonGroup protoButtonGroup = new ButtonGroup();
+
   /**
    * Launch the application.
    */
@@ -37,7 +50,8 @@ public class OVmain {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
-          OVmain window = new OVmain();
+          ImageFactory imageFactory = new ImageFactory();
+          OVmain window = new OVmain(imageFactory);
           window.frmOvSimulator.setVisible(true);
         }
         catch (Exception e) {
@@ -50,24 +64,20 @@ public class OVmain {
   /**
    * Create the application.
    */
-  public OVmain() {
+  public OVmain(ImageFactory a_imagefactory) {
+    the_imageFactory = a_imagefactory;
+//    loadImages();
     initialize();
   }
 
   /**
    * Initialize the contents of the frame.
    */
-  /**
- * 
- */
-/**
- * 
- */
-private void initialize() {
+  private void initialize() {
     frmOvSimulator = new JFrame();
     frmOvSimulator.setResizable(false);
     frmOvSimulator.setTitle("OV simulator");
-    frmOvSimulator.setIconImage(Toolkit.getDefaultToolkit().getImage(OVmain.class.getResource("/images/SWARCOLOGO.jpeg")));
+    frmOvSimulator.setIconImage(the_imageFactory.createImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo").getImage());
     frmOvSimulator.setBounds(100, 100, 800, 600);
     frmOvSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     GridBagLayout gridBagLayout = new GridBagLayout();
@@ -76,7 +86,7 @@ private void initialize() {
     gridBagLayout.columnWeights = new double[]{0.0, 0.0};
     gridBagLayout.rowWeights = new double[]{0.0, 0.0};
     frmOvSimulator.getContentPane().setLayout(gridBagLayout);
-    
+
     JPanel VehiclePanel = new JPanel();
     VehiclePanel.setToolTipText("Press the left mouse button to sent public transport message to the ITC.\r\nPress the right mouse button to configure this button.");
     VehiclePanel.setBorder(new TitledBorder(null, "Vehicle", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -87,7 +97,13 @@ private void initialize() {
     gbc_VehiclePanel.gridy = 0;
     frmOvSimulator.getContentPane().add(VehiclePanel, gbc_VehiclePanel);
     VehiclePanel.setLayout(new GridLayout(10, 2, 5, 5));
-    
+    // vehicle buttons
+    for (int i = 0; i < 20; i++){
+    JButton btnVeh = new JButton("veh_"+i);
+    btnVeh.setIcon(the_imageFactory.createImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle"));
+    VehiclePanel.add(btnVeh);
+    }
+
     JPanel FeedbackPanel = new JPanel();
     FeedbackPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Feedback", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
     GridBagConstraints gbc_FeedbackPanel = new GridBagConstraints();
@@ -97,15 +113,15 @@ private void initialize() {
     gbc_FeedbackPanel.gridy = 0;
     frmOvSimulator.getContentPane().add(FeedbackPanel, gbc_FeedbackPanel);
     FeedbackPanel.setLayout(new GridLayout(0, 1, 0, 0));
-    
+
     JScrollPane scrollPane = new JScrollPane();
     FeedbackPanel.add(scrollPane);
-    
+
     JTextPane feedbackTxtpn = new JTextPane();
     feedbackTxtpn.setText("Test text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!");
     feedbackTxtpn.setBackground(SystemColor.inactiveCaptionBorder);
     scrollPane.setViewportView(feedbackTxtpn);
-    
+
     JPanel bottomInfoPanel = new JPanel();
     bottomInfoPanel.setBorder(null);
     FlowLayout flowLayout = (FlowLayout) bottomInfoPanel.getLayout();
@@ -115,34 +131,34 @@ private void initialize() {
     gbc_bottomInfoPanel.gridx = 1;
     gbc_bottomInfoPanel.gridy = 1;
     frmOvSimulator.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
-    
+
     JTextPane BottomInfoTxtpn = new JTextPane();
     BottomInfoTxtpn.setEditable(false);
     BottomInfoTxtpn.setSize(600, 10);
     bottomInfoPanel.add(BottomInfoTxtpn);
     BottomInfoTxtpn.setText("Some uber important info here");
-    
+
     JMenuBar menuBar = new JMenuBar();
     frmOvSimulator.setJMenuBar(menuBar);
-    
+
     JMenu mnSetting = new JMenu("Setting");
     menuBar.add(mnSetting);
-    
+
     JMenuItem mntmPortSettings = new JMenuItem("Port settings");
     mnSetting.add(mntmPortSettings);
-    
+
     JMenu mnProtocol = new JMenu("Protocol");
     menuBar.add(mnProtocol);
-    
+
     JRadioButton rdbtnKar = new JRadioButton("KAR");
     rdbtnKar.setSelected(true);
     protoButtonGroup.add(rdbtnKar);
     mnProtocol.add(rdbtnKar);
-    
+
     JRadioButton rdbtnVecom = new JRadioButton("VECOM");
     protoButtonGroup.add(rdbtnVecom);
     mnProtocol.add(rdbtnVecom);
-    
+
     JRadioButton rdbtnSics = new JRadioButton("SICS");
     protoButtonGroup.add(rdbtnSics);
     mnProtocol.add(rdbtnSics);
@@ -150,17 +166,29 @@ private void initialize() {
     JMenu mnAbout = new JMenu("About");
     mnAbout.setName("About");
     mnAbout.addMenuListener(new MenuListener() {	
-		@Override
-		public void menuSelected(MenuEvent arg0) {
-            JOptionPane.showMessageDialog((JMenu)arg0.getSource(), "Created by Sander",((JMenu)arg0.getSource()).getName(), JOptionPane.INFORMATION_MESSAGE);
-		}
-		@Override
-		public void menuCanceled(MenuEvent e) {
-		}
-		@Override
-		public void menuDeselected(MenuEvent e) {
-		}
-	});
+      @Override
+      public void menuSelected(MenuEvent arg0) {
+        JOptionPane.showMessageDialog((JMenu)arg0.getSource(), "Created by Sander",((JMenu)arg0.getSource()).getName(), JOptionPane.INFORMATION_MESSAGE);
+      }
+      @Override
+      public void menuCanceled(MenuEvent e) {
+      }
+      @Override
+      public void menuDeselected(MenuEvent e) {
+      }
+    });
     menuBar.add(mnAbout);
   }
-}
+//  /**
+//   * Load all images
+//   */
+//  private void loadImages() {
+//    emptyVehicleImage = loadImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle");
+//    swarcoLogoImage = loadImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
+//  }
+//
+//  private ImageIcon loadImageIcon(String filename, String description) {
+//    URL link = OVmain.class.getResource(filename); 
+//    return new ImageIcon(link, description);
+//  }
+} // end of Ovmain 
