@@ -1,6 +1,4 @@
-package gui;
-
-import java.awt.EventQueue;
+package view;
 
 import javax.swing.JFrame;
 import java.awt.GridBagLayout;
@@ -9,8 +7,6 @@ import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
-
-import images.ImageFactory;
 
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
@@ -26,47 +22,30 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 
 import java.awt.SystemColor;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 
-public class OVmain {
 
-  // frame
-  private JFrame frmOvSimulator;
-  // factory
-  private ImageFactory the_imageFactory;
+/**
+ * @author Sander
+ * @brief This is the main user interface
+ */
+public class OVmainView extends JFrame{
+
   // buttons and groups
   private final ButtonGroup protoButtonGroup = new ButtonGroup();
+  // images
+  ImageIcon emptyVehicleImage;
+  ImageIcon swarcoLogoImage;
 
   /**
-   * Launch the application.
+   *  Constructor
    */
-  public static void main(String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          ImageFactory imageFactory = new ImageFactory();
-          OVmain window = new OVmain(imageFactory);
-          window.frmOvSimulator.setVisible(true);
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    });
-  }
-
-  /**
-   * Create the application.
-   */
-  public OVmain(ImageFactory a_imagefactory) {
-    the_imageFactory = a_imagefactory;
-//    loadImages();
+  public OVmainView() {
+    loadImages();
     initialize();
   }
 
@@ -74,44 +53,37 @@ public class OVmain {
    * Initialize the contents of the frame.
    */
   private void initialize() {
-    frmOvSimulator = new JFrame();
-    frmOvSimulator.setResizable(false);
-    frmOvSimulator.setTitle("OV simulator");
-    frmOvSimulator.setIconImage(the_imageFactory.createImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo").getImage());
-    frmOvSimulator.setBounds(100, 100, 800, 600);
-    frmOvSimulator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    this = new JFrame();
+    this.setResizable(false);
+    this.setTitle("OV simulator");
+    this.setIconImage(swarcoLogoImage.getImage());
+    this.setBounds(100, 100, 800, 600);
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] {200, 600};
     gridBagLayout.rowHeights = new int[] {500, 10};
-    gridBagLayout.columnWeights = new double[]{0.0, 0.0};
-    gridBagLayout.rowWeights = new double[]{0.0, 0.0};
-    frmOvSimulator.getContentPane().setLayout(gridBagLayout);
-
-    JPanel VehiclePanel = new JPanel();
-    VehiclePanel.setToolTipText("Press the left mouse button to sent public transport message to the ITC.\r\nPress the right mouse button to configure this button.");
-    VehiclePanel.setBorder(new TitledBorder(null, "Vehicle", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-    GridBagConstraints gbc_VehiclePanel = new GridBagConstraints();
-    gbc_VehiclePanel.insets = new Insets(5, 5, 5, 5);
-    gbc_VehiclePanel.fill = GridBagConstraints.BOTH;
-    gbc_VehiclePanel.gridx = 0;
-    gbc_VehiclePanel.gridy = 0;
-    frmOvSimulator.getContentPane().add(VehiclePanel, gbc_VehiclePanel);
-    VehiclePanel.setLayout(new GridLayout(10, 2, 5, 5));
-    // vehicle buttons
-    for (int i = 0; i < 20; i++){
-    JButton btnVeh = new JButton("veh_"+i);
-    btnVeh.setIcon(the_imageFactory.createImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle"));
-    VehiclePanel.add(btnVeh);
-    }
+    gridBagLayout.columnWeights = new double[]{1.0, 0.0};
+    gridBagLayout.rowWeights = new double[]{1.0, 0.0};
+    this.getContentPane().setLayout(gridBagLayout);
+    this.setVisible(true);
+    
+    VehicleSimulation vehicleSimulation = new VehicleSimulation();
+    vehicleSimulation.setBorder(new TitledBorder(null, "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+    GridBagConstraints gbc_vehicleSimulation = new GridBagConstraints();
+    gbc_vehicleSimulation.insets = new Insets(0, 0, 5, 5);
+    gbc_vehicleSimulation.fill = GridBagConstraints.BOTH;
+    gbc_vehicleSimulation.gridx = 0;
+    gbc_vehicleSimulation.gridy = 0;
+    getContentPane().add(vehicleSimulation, gbc_vehicleSimulation);
 
     JPanel FeedbackPanel = new JPanel();
     FeedbackPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Feedback", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
     GridBagConstraints gbc_FeedbackPanel = new GridBagConstraints();
-    gbc_FeedbackPanel.insets = new Insets(5, 0, 5, 5);
+    gbc_FeedbackPanel.insets = new Insets(5, 0, 5, 0);
     gbc_FeedbackPanel.fill = GridBagConstraints.BOTH;
     gbc_FeedbackPanel.gridx = 1;
     gbc_FeedbackPanel.gridy = 0;
-    frmOvSimulator.getContentPane().add(FeedbackPanel, gbc_FeedbackPanel);
+    this.getContentPane().add(FeedbackPanel, gbc_FeedbackPanel);
     FeedbackPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
     JScrollPane scrollPane = new JScrollPane();
@@ -130,7 +102,7 @@ public class OVmain {
     gbc_bottomInfoPanel.fill = GridBagConstraints.HORIZONTAL;
     gbc_bottomInfoPanel.gridx = 1;
     gbc_bottomInfoPanel.gridy = 1;
-    frmOvSimulator.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
+    this.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
 
     JTextPane BottomInfoTxtpn = new JTextPane();
     BottomInfoTxtpn.setEditable(false);
@@ -139,7 +111,7 @@ public class OVmain {
     BottomInfoTxtpn.setText("Some uber important info here");
 
     JMenuBar menuBar = new JMenuBar();
-    frmOvSimulator.setJMenuBar(menuBar);
+    this.setJMenuBar(menuBar);
 
     JMenu mnSetting = new JMenu("Setting");
     menuBar.add(mnSetting);
@@ -179,16 +151,16 @@ public class OVmain {
     });
     menuBar.add(mnAbout);
   }
-//  /**
-//   * Load all images
-//   */
-//  private void loadImages() {
-//    emptyVehicleImage = loadImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle");
-//    swarcoLogoImage = loadImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
-//  }
-//
-//  private ImageIcon loadImageIcon(String filename, String description) {
-//    URL link = OVmain.class.getResource(filename); 
-//    return new ImageIcon(link, description);
-//  }
+  /**
+   * Load all images
+   */
+  private void loadImages() {
+    emptyVehicleImage = loadImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle");
+    swarcoLogoImage = loadImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
+  }
+
+  private ImageIcon loadImageIcon(String filename, String description) {
+    URL link = OVmainView.class.getResource(filename); 
+    return new ImageIcon(link, description);
+  }
 } // end of Ovmain 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gui;
+package view;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,8 +15,9 @@ public class VehicleButton extends JButton{
   /**
    * Default constructor
    */
-  public VehicleButton() {
-    super();
+  public VehicleButton(String name) {
+    super(name);
+    setIcon(new ImageIcon(VehicleButton.class.getResource("/images/emptyVehicle.jpg")));
   }
   
   private String name;
