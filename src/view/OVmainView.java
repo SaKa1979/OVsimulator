@@ -8,6 +8,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import com.sun.accessibility.internal.resources.accessibility;
+
+import images.ImageFactory;
+
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -22,12 +26,14 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionListener;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
-
+import javax.swing.border.LineBorder;
 
 /**
  * @author Sander
@@ -35,49 +41,44 @@ import javax.swing.JButton;
  */
 public class OVmainView extends JFrame{
 
-  // buttons and groups
-  private final ButtonGroup protoButtonGroup = new ButtonGroup();
-  // images
-  ImageIcon emptyVehicleImage;
-  ImageIcon swarcoLogoImage;
-
   /**
    *  Constructor
    */
-  public OVmainView() {
-    loadImages();
+  public OVmainView(int sizeX, int sizeY) {
+    this.sizeX = sizeX;
+    this.sizeY = sizeY;
     initialize();
   }
 
-  /**
-   * Initialize the contents of the frame.
-   */
+  // private methods
   private void initialize() {
-//    this = new JFrame();
     this.setResizable(false);
     this.setTitle("OV simulator");
-    this.setIconImage(swarcoLogoImage.getImage());
+    this.setIconImage(imagefactory.getImageIcon("swarcoLogo").getImage());
     this.setBounds(100, 100, 800, 600);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] {200, 600};
-    gridBagLayout.rowHeights = new int[] {500, 10};
+    gridBagLayout.rowHeights = new int[] {600, 10};
     gridBagLayout.columnWeights = new double[]{1.0, 0.0};
     gridBagLayout.rowWeights = new double[]{1.0, 0.0};
     this.getContentPane().setLayout(gridBagLayout);
     this.setVisible(true);
     
-    VehicleSimulation vehicleSimulation = new VehicleSimulation();
-    vehicleSimulation.setBorder(new TitledBorder(null, "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+    // vehicle simulation
+    vehicleSimulation = new VehicleSimulation();
+    vehicleSimulation.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_vehicleSimulation = new GridBagConstraints();
     gbc_vehicleSimulation.insets = new Insets(0, 0, 5, 5);
     gbc_vehicleSimulation.fill = GridBagConstraints.BOTH;
     gbc_vehicleSimulation.gridx = 0;
     gbc_vehicleSimulation.gridy = 0;
     getContentPane().add(vehicleSimulation, gbc_vehicleSimulation);
+    addVehicleSimulateListener(); // LMB action
 
-    JPanel FeedbackPanel = new JPanel();
-    FeedbackPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Feedback", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+    // feedback panel
+    FeedbackPanel = new JPanel();
+    FeedbackPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Feedback", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_FeedbackPanel = new GridBagConstraints();
     gbc_FeedbackPanel.insets = new Insets(5, 0, 5, 0);
     gbc_FeedbackPanel.fill = GridBagConstraints.BOTH;
@@ -94,22 +95,31 @@ public class OVmainView extends JFrame{
     feedbackTxtpn.setBackground(SystemColor.inactiveCaptionBorder);
     scrollPane.setViewportView(feedbackTxtpn);
 
-    JPanel bottomInfoPanel = new JPanel();
-    bottomInfoPanel.setBorder(null);
-    FlowLayout flowLayout = (FlowLayout) bottomInfoPanel.getLayout();
-    flowLayout.setAlignment(FlowLayout.LEFT);
+    // bottom info panel 
+    bottomInfoPanel = new JPanel();
     GridBagConstraints gbc_bottomInfoPanel = new GridBagConstraints();
+    gbc_bottomInfoPanel.gridwidth = 3;
     gbc_bottomInfoPanel.fill = GridBagConstraints.HORIZONTAL;
-    gbc_bottomInfoPanel.gridx = 1;
+    gbc_bottomInfoPanel.gridx = 0;
     gbc_bottomInfoPanel.gridy = 1;
     this.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
+    bottomInfoPanel.setLayout(new GridLayout(0, 2, 0, 0));
 
-    JTextPane BottomInfoTxtpn = new JTextPane();
-    BottomInfoTxtpn.setEditable(false);
-    BottomInfoTxtpn.setSize(600, 10);
-    bottomInfoPanel.add(BottomInfoTxtpn);
-    BottomInfoTxtpn.setText("Some uber important info here");
-
+    // bottom version detail info tekst pane
+    bottomInfoVersionTxtpn = new JTextPane();
+    bottomInfoVersionTxtpn.setBackground(SystemColor.control);
+    bottomInfoVersionTxtpn.setEditable(false);
+    bottomInfoPanel.add(bottomInfoVersionTxtpn);
+    bottomInfoVersionTxtpn.setText("version 0.0, build 12a34b 20160214-17:44");
+    
+    // bottom communication detail info tekst pane
+    bottomInfoComTxtpn = new JTextPane();
+    bottomInfoComTxtpn.setBackground(SystemColor.control);
+    bottomInfoComTxtpn.setEditable(false);
+    bottomInfoPanel.add(bottomInfoComTxtpn);
+    bottomInfoComTxtpn.setText("Com1, 9600,8,N,1");
+    
+    // menu bar
     JMenuBar menuBar = new JMenuBar();
     this.setJMenuBar(menuBar);
 
@@ -152,15 +162,30 @@ public class OVmainView extends JFrame{
     menuBar.add(mnAbout);
   }
   /**
-   * Load all images
+   * @brief Add actionlisteners to the buttons assosiated with the vehicle simulation view.
+   * Only the the simulation is handled here and therefor only the LMB action. The RMB action is handled in the 
+   * VehicleButton self
    */
-  private void loadImages() {
-    emptyVehicleImage = loadImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle");
-    swarcoLogoImage = loadImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
+  private void addVehicleSimulateListener(){
+    vehicleButtonList = vehicleSimulation.getVehicleButtonList();
+    for (VehicleButton vb : vehicleButtonList){
+//      vb.addActionListener(al); todo make inner actionlistener for LMB handling of the vehicleButtonst
+    }
   }
-
-  private ImageIcon loadImageIcon(String filename, String description) {
-    URL link = OVmainView.class.getResource(filename); 
-    return new ImageIcon(link, description);
-  }
+  
+  // private attributes
+  int sizeX, sizeY;
+  // buttons and groups
+  private final ButtonGroup protoButtonGroup = new ButtonGroup();
+  private ArrayList<VehicleButton> vehicleButtonList;
+  // images
+  private ImageFactory imagefactory = new ImageFactory();
+  // views
+  VehicleSimulation vehicleSimulation;
+  JPanel FeedbackPanel;
+  JPanel bottomInfoPanel;
+  JTextPane bottomInfoVersionTxtpn;
+  JTextPane bottomInfoComTxtpn;
+  
+  
 } // end of Ovmain 
