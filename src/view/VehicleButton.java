@@ -5,6 +5,8 @@ package view;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -28,11 +30,11 @@ public class VehicleButton extends JButton{
     setVerticalTextPosition(JButton.BOTTOM);
     setHorizontalTextPosition(JButton.CENTER);
     initialize();
-    // handle the RMB action. This shall spawn a JPanel with all the vehicle simulation settings
+    // handle the RMB action. This shall spawn a JOption with all the vehicle simulation settings
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
-          System.out.println("RMB");
+          JOptionPane.showMessageDialog(null, new VehicleSettingPanel((VehicleButton)e.getComponent()), "Vehicle Setting", JOptionPane.PLAIN_MESSAGE, null); 
         }
       }
     });

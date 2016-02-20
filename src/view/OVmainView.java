@@ -26,6 +26,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ArrayList;
@@ -169,9 +170,18 @@ public class OVmainView extends JFrame{
   private void addVehicleSimulateListener(){
     vehicleButtonList = vehicleSimulation.getVehicleButtonList();
     for (VehicleButton vb : vehicleButtonList){
-//      vb.addActionListener(al); todo make inner actionlistener for LMB handling of the vehicleButtonst
+      vb.addActionListener(new VehicleSimulationListener() );
     }
   }
+  
+  // action listener for handling the simulation of all vehicleButtons
+  class VehicleSimulationListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      System.out.println("LMB");
+      
+    }
+}//end inner class VehicleSimulationListener
+  
   
   // private attributes
   int sizeX, sizeY;

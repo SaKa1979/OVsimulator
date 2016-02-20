@@ -47,7 +47,7 @@ public class VehicleSimulation extends JPanel {
   public VehicleButton getVehicleButtonByName(String name){
     return vehicleButtonList.get(Integer.parseInt(name));
   }
-  
+    
   // private attribute
   ArrayList<VehicleButton> vehicleButtonList = new ArrayList<VehicleButton>();
 }
