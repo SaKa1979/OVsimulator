@@ -8,33 +8,24 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-import com.sun.accessibility.internal.resources.accessibility;
-
 import images.ImageFactory;
 
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
-import java.awt.Color;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JButton;
-import javax.swing.border.LineBorder;
 
 /**
  * @author Sander

@@ -3,11 +3,8 @@
  */
 package view;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import images.ImageFactory;
@@ -34,7 +31,20 @@ public class VehicleButton extends JButton{
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
-          JOptionPane.showMessageDialog(null, new VehicleSettingPanel((VehicleButton)e.getComponent()), "Vehicle Setting", JOptionPane.PLAIN_MESSAGE, null); 
+          int ok = JOptionPane.showConfirmDialog(null,
+        		  								 vehicleSettingPanel,
+        		  								 "Vehicle Setting",
+        		  								 JOptionPane.OK_CANCEL_OPTION,
+        		  								 JOptionPane.PLAIN_MESSAGE); 
+          switch (ok){
+          case 0:
+        	  System.out.println("ok");
+        	  vehicleSettingPanel.handleOK();
+        	  break;
+          case 2:
+        	  System.out.println("cancel");
+        	  break;
+          }
         }
       }
     });
@@ -58,6 +68,7 @@ public class VehicleButton extends JButton{
     setPunctualityClass(0);
     setPunctuality(0);
     setButtonText();
+    vehicleSettingPanel = new VehicleSettingPanel(this);
   }
   // public method
   public void setButtonText(){
@@ -187,6 +198,7 @@ public class VehicleButton extends JButton{
   private int priorityClass;
   private int punctualityClass;
   private int punctuality;
+  private VehicleSettingPanel vehicleSettingPanel;
   private ImageFactory imagefactory = new ImageFactory();
 
   
