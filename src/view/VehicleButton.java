@@ -11,18 +11,22 @@ import images.ImageFactory;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
- * @author Sander
- *
+ * @brief A button representing a vehicle detection. 
+ * 		  A mouse listener must be added from the class that is using this button. The RMB action should be handled in the calling class
+ * 		  The attribute settings are controlled by a VehicleSetting class which shall be triggered by the RMB
+ * @author Sander Kamps
  */
 public class VehicleButton extends JButton{
 
   /**
    * Default constructor
    */
-  public VehicleButton(String name) {
-    super(name);
+  public VehicleButton(String a_name) {
+    super(a_name);
+    name = a_name;
     setIcon(imagefactory.getImageIcon("emptyVehicle"));
     setVerticalTextPosition(JButton.BOTTOM);
     setHorizontalTextPosition(JButton.CENTER);
@@ -49,13 +53,13 @@ public class VehicleButton extends JButton{
       }
     });
   }
-  // private method
+  // PRIVATE METHODS
   private void initialize(){
     setLoopNr(1);
     setSignalGroupNr(0);
     setDirection(0);
     setCommand(0);
-    setVehicleType(0);
+    setVehicleType(VehicleTypes.UNKNOWN);
     setLineNr(0);
     setWagonNr(0);
     setVehicleId(0);
@@ -70,82 +74,124 @@ public class VehicleButton extends JButton{
     setButtonText();
     vehicleSettingPanel = new VehicleSettingPanel(this);
   }
-  // public method
+  // PUBLIC METHODS
   public void setButtonText(){
     this.setText(command + " " + direction);
   } 
+  
   public String getName() {
     return name;
   }
   public void setName(String name) {
     this.name = name;
   }
+  
   public int getLoopNr() {
     return loopNr;
   }
   public void setLoopNr(int loopNr) {
     this.loopNr = loopNr;
   }
+  
   public int getSignalGroupNr() {
     return signalGroupNr;
   }
   public void setSignalGroupNr(int signalGroupNr) {
     this.signalGroupNr = signalGroupNr;
   }
+  
   public int getDirection() {
     return direction;
   }
   public void setDirection(int direction) {
     this.direction = direction;
   }
+  
   public int getCommand() {
     return command;
   }
   public void setCommand(int command) {
     this.command = command;
   }
+  
   public int getVehicleType() {
     return vehicleType;
   }
-  public void setVehicleType(int vehicleType) {
-    this.vehicleType = vehicleType;
+  public void setVehicleType(VehicleTypes vt){
+    switch (vt){
+    case BUS:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.BUS._name));
+        this.vehicleType = VehicleTypes.BUS._nr;
+        break;
+    case TRAM:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.TRAM._name));
+        this.vehicleType = VehicleTypes.TRAM._nr;
+        break;
+    case TAXI:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.TAXI._name));
+        this.vehicleType = VehicleTypes.TAXI._nr;
+        break;
+    case AMBULANCE:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.AMBULANCE._name));
+        this.vehicleType = VehicleTypes.AMBULANCE._nr;
+        break;
+    case BRANDWEER:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.BRANDWEER._name));
+        this.vehicleType = VehicleTypes.BRANDWEER._nr;
+        break;
+    case POLITIE:
+    	setIcon(imagefactory.getImageIcon(VehicleTypes.POLITIE._name));
+    	this.vehicleType = VehicleTypes.POLITIE._nr;
+    	break;
+    default:
+    	setIcon(imagefactory.getImageIcon(VehicleTypes.UNKNOWN._name));
+    	this.vehicleType = VehicleTypes.UNKNOWN._nr;
+    	break;
+    }
   }
+  
   public int getLineNr() {
     return lineNr;
   }
   public void setLineNr(int lineNr) {
     this.lineNr = lineNr;
   }
+  
   public int getWagonNr() {
     return wagonNr;
   }
   public void setWagonNr(int wagonNr) {
     this.wagonNr = wagonNr;
   }
+  
   public int getVehicleId() {
     return vehicleId;
   }
   public void setVehicleId(int vehicleId) {
     this.vehicleId = vehicleId;
   }
+  
   public int getVehicleLength() {
     return vehicleLength;
   }
   public void setVehicleLength(int vehicleLength) {
     this.vehicleLength = vehicleLength;
   }
+  
   public int getVehicleSpeed() {
     return vehicleSpeed;
   }
   public void setVehicleSpeed(int vehicleSpeed) {
     this.vehicleSpeed = vehicleSpeed;
   }
+  
   public int getDistanceToStop() {
     return distanceToStop;
   }
   public void setDistanceToStop(int distanceToStop) {
     this.distanceToStop = distanceToStop;
   }
+  
   public int getTimeToStop() {
     return timeToStop;
   }
@@ -155,32 +201,347 @@ public class VehicleButton extends JButton{
   public int getVehicleStatus() {
     return vehicleStatus;
   }
+  
   public void setVehicleStatus(int vehicleStatus) {
     this.vehicleStatus = vehicleStatus;
   }
   public int getPriorityClass() {
     return priorityClass;
   }
+  
   public void setPriorityClass(int priorityClass) {
     this.priorityClass = priorityClass;
   }
   public int getPunctualityClass() {
     return punctualityClass;
   }
+  
   public void setPunctualityClass(int punctualityClass) {
     this.punctualityClass = punctualityClass;
   }
+  
   public int getPunctuality() {
     return punctuality;
   }
   public void setPunctuality(int punctuality) {
     this.punctuality = punctuality;
   }
-  // private method
-  private void setIcon(){
-    
+  
+  //TODO make generic methods for following methods
+
+  /**
+   * @brief Get Array all directions		
+   * @return the names of all the direction as Array
+   */
+  public String[] getAllDirections_array(){
+	  ArrayList<String> list_al = new ArrayList<String>();	  
+	  for (Directions vt : Directions.values()){
+		  list_al.add(vt._name);
+	  }
+	  String[] list_a = new String[list_al.size()];
+	  
+		  return list_al.toArray(list_a);
+  } 
+  /**
+   * @brief Get Array all commands		
+   * @return the names of all the commands as Array
+   */
+  public String[] getAllCommands_array(){
+	  ArrayList<String> list_al = new ArrayList<String>();	  
+	  for (Commands vt : Commands.values()){
+		  list_al.add(vt._name);
+	  }
+	  String[] list_a = new String[list_al.size()];
+	  
+		  return list_al.toArray(list_a);
   }
-  // private attribute
+  
+  /**
+   * @brief Get Array all vehicle types names		
+   * @return the names of all the vehicle types as Array
+   */
+  public String[] getAllVehicleTypes_array(){
+	  ArrayList<String> list_al = new ArrayList<String>();	  
+	  for (VehicleTypes vt : VehicleTypes.values()){
+		  list_al.add(vt._name);
+	  }
+	  String[] list_a = new String[list_al.size()];
+	  
+		  return list_al.toArray(list_a);
+  }
+  
+  
+  /**
+   * @brief Get Array all vehicle status		
+   * @return the names of all the vehicle status as Array
+   */
+  public String[] getAllVehicleStatus_array(){
+	  ArrayList<String> list_al = new ArrayList<String>();	  
+	  for (VehicleStatus vt : VehicleStatus.values()){
+		  list_al.add(vt._name);
+	  }
+	  String[] list_a = new String[list_al.size()];
+	  
+		  return list_al.toArray(list_a);
+  }
+
+  /**
+   * @brief Get Array all the priority classes		
+   * @return the names of all the priority classes as Array
+   */
+  public String[] getAllPriorityClass_array(){
+	  ArrayList<String> list_al = new ArrayList<String>();	  
+	  for (PriorityClass vt : PriorityClass.values()){
+		  list_al.add(vt._name);
+	  }
+	  String[] list_a = new String[list_al.size()];
+	  
+		  return list_al.toArray(list_a);
+  }
+
+  /**
+   * @brief Get Array all the punctuality classes		
+   * @return the names of all the punctuality classes as Array
+   */
+  public String[] getAllPunctualityClass_array(){
+	  ArrayList<String> list_al = new ArrayList<String>();	  
+	  for (PunctualityClass vt : PunctualityClass.values()){
+		  list_al.add(vt._name);
+	  }
+	  String[] list_a = new String[list_al.size()];
+	  
+		  return list_al.toArray(list_a);
+  }
+
+  
+  // ENUMS
+  //TODO create interface so I can use a method template (generic method) to get the data from a given ENUM
+
+//  public interface OVenum<T>{
+//	  public T getAsType(String a_Name);
+//	  public T getAsType(int a_Nr);
+//	  public String getName();
+//	  public int getNr();
+//  }
+  
+  public enum Directions {
+	  GEENINFO ("geen info",0), 
+	  RECHTS ("rechtsaf",201),
+	  LINKS ("linksaf",202),
+	  RECHT ("rechtdoor",203);
+
+	  private String _name;
+	  private int _nr;
+	  // constructor
+	  private Directions(String a_Name, int a_Nr){
+		  _name = a_Name;
+		  _nr = a_Nr;
+	  }
+	  public static Directions getAsType(String a_Name){
+		  for (Directions vt:Directions.values()){
+			  if(vt._name == a_Name)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public static Directions getAsType(int a_Nr){
+		  for (Directions vt:Directions.values()){
+			  if(vt._nr == a_Nr)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public String getName(){
+				  return _name;
+		  }
+	  public int getNr(){
+			  return _nr;
+		  }
+  }// end enum Directions
+  
+  public enum Commands {
+	  RESERVE ("reserve",0), 
+	  IN ("imelding",1),
+	  UIT ("uitmelding",2),
+	  VOOR ("vooraankondiging",3);
+
+	  private String _name;
+	  private int _nr;
+	  // constructor
+	  private Commands(String a_Name, int a_Nr){
+		  _name = a_Name;
+		  _nr = a_Nr;
+	  }
+	  public static Commands getAsType(String a_Name){
+		  for (Commands vt:Commands.values()){
+			  if(vt._name == a_Name)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public static Commands getAsType(int a_){
+		  for (Commands vt:Commands.values()){
+			  if(vt._nr == a_)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public  String getName(){
+				  return _name;
+		  }
+	  public int getNr(){
+			  return _nr;
+		  }
+  }// end enum Commands
+  
+  public enum VehicleTypes {
+	  BUS ("Bus",0), 
+	  TRAM ("Tram",1),
+	  TAXI ("Taxi",2),
+	  AMBULANCE ("Ambulance",3),
+	  BRANDWEER ("Brandweer",4),
+	  POLITIE ("Politie",5),
+	  UNKNOWN("Unknown",6);
+
+	  private String _name;
+	  private int _nr;
+	  // constructor
+	  private VehicleTypes(String a_Name, int a_Nr){
+		  _name = a_Name;
+		  _nr = a_Nr;
+	  }
+	  public static VehicleTypes getAsType(String a_Name){
+		  for (VehicleTypes vt:VehicleTypes.values()){
+			  if(vt._name == a_Name)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public static VehicleTypes getAsType(int a_){
+		  for (VehicleTypes vt:VehicleTypes.values()){
+			  if(vt._nr == a_)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public  String getName(){
+				  return _name;
+		  }
+
+	  public int getNr(){
+			  return _nr;
+		  }
+  }// end enum VehicleTypes
+  
+  public enum VehicleStatus {
+	  GEENINFO ("geen info",0), 
+	  ONDERWEG ("onderweg",1),
+	  STOP1 ("stop bij halte",2),
+	  EINDE ("einde",3),
+	  STOP2 ("stop niet bij halte",4);
+
+	  private String _name;
+	  private int _nr;
+	  // constructor
+	  private VehicleStatus(String a_Name, int a_Nr){
+		  _name = a_Name;
+		  _nr = a_Nr;
+	  }
+	  public static VehicleStatus getAsType(String a_Name){
+		  for (VehicleStatus vt:VehicleStatus.values()){
+			  if(vt._name == a_Name)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public static VehicleStatus getAsType(int a_){
+		  for (VehicleStatus vt:VehicleStatus.values()){
+			  if(vt._nr == a_)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public  String getName(){
+				  return _name;
+		  }
+	  public int getNr(){
+			  return _nr;
+		  }
+  }// end enum VehicleStatus
+  
+  public enum PriorityClass {
+	  GEENINFO ("geen info",0), 
+	  GEEN ("geen",1),
+	  CONDITIONEEL ("conditioneel",2),
+	  ABSOLUUT ("absoluut",3),
+	  ALARM ("alarm",4);
+
+	  private String _name;
+	  private int _nr;
+	  // constructor
+	  private PriorityClass(String a_Name, int a_Nr){
+		  _name = a_Name;
+		  _nr = a_Nr;
+	  }
+	  public static PriorityClass getAsType(String a_Name){
+		  for (PriorityClass vt:PriorityClass.values()){
+			  if(vt._name == a_Name)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public static PriorityClass getAsType(int a_){
+		  for (PriorityClass vt:PriorityClass.values()){
+			  if(vt._nr == a_)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public  String getName(){
+				  return _name;
+		  }
+	  public int getNr(){
+			  return _nr;
+		  }
+  }// end enum PriorityClass
+  
+  public enum PunctualityClass {
+	  GEENINFO ("geen info",0), 
+	  TELAAT ("te laat",1),
+	  OPTIJD ("op tijd",2),
+	  TEVROEG ("te vroeg",3),
+	  BUITENDIENST ("geen dienst",4);
+
+	  private String _name;
+	  private int _nr;
+	  // constructor
+	  private PunctualityClass(String a_Name, int a_Nr){
+		  _name = a_Name;
+		  _nr = a_Nr;
+	  }
+	  public static PunctualityClass getAsType(String a_Name){
+		  for (PunctualityClass vt:PunctualityClass.values()){
+			  if(vt._name == a_Name)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public static PunctualityClass getAsType(int a_){
+		  for (PunctualityClass vt:PunctualityClass.values()){
+			  if(vt._nr == a_)
+				  return vt;
+		  }
+		  return null;
+	  }
+	  public  String getName(){
+				  return _name;
+		  }
+	  public int getNr(){
+			  return _nr;
+		  }
+  }// end enum PunctualityClass
+  
+  // PRIVATE ATTRIBUTE
   private String name;
   private int loopNr;
   private int signalGroupNr;
@@ -200,6 +561,5 @@ public class VehicleButton extends JButton{
   private int punctuality;
   private VehicleSettingPanel vehicleSettingPanel;
   private ImageFactory imagefactory = new ImageFactory();
-
   
 }// end class

@@ -3,6 +3,8 @@ package images;
 import java.net.URL;
 import javax.swing.ImageIcon;
 
+import view.VehicleButton.VehicleTypes;
+
 /**
  * @author Sander
  * produces ImageIcons
@@ -18,7 +20,7 @@ public class ImageFactory {
   
   // Initialize standard ImageIcons
   private void initialize(){
-    emptyVehicleImage = createImageIcon("/images/emptyVehicle.jpg", "An icon that represents a non configured vehicle");
+    unknownImage = createImageIcon("/images/unknown.jpg", "An icon that represents a non configured vehicle");
     swarcoLogoImage = createImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
     ambulanceImage = createImageIcon("/images/ambulance.jpg","ambulance");
     brandweerImage =  createImageIcon("/images/brandweer.jpg","branweer");
@@ -36,28 +38,28 @@ public class ImageFactory {
   
   public ImageIcon getImageIcon(String name)
   {
-    if (name.equals("emptyVehicle"))
-      return emptyVehicleImage;
-    else if (name.equals("swarcoLogo"))
-      return swarcoLogoImage;
-    else if (name.equals("ambulance"))
-      return ambulanceImage;
-    else if (name.equals("brandweer"))
-      return brandweerImage;
-    else if (name.equals("bus"))
+    if (name.equals(VehicleTypes.BUS.getName()))
       return busImage;
-    else if (name.equals("politie"))
-      return politieImage;
-    else if (name.equals("taxi"))
-      return taxiImage;
-    else if (name.equals("tram"))
+    else if (name.equals(VehicleTypes.TRAM.getName()))
       return tramImage;
+    else if (name.equals(VehicleTypes.TAXI.getName()))
+      return taxiImage;
+    else if (name.equals(VehicleTypes.AMBULANCE.getName()))
+      return ambulanceImage;
+    else if (name.equals(VehicleTypes.BRANDWEER.getName()))
+      return brandweerImage;
+    else if (name.equals(VehicleTypes.POLITIE.getName()))
+      return politieImage;
+    else if (name.equals(VehicleTypes.UNKNOWN.getName()))
+      return unknownImage;
+    else if (name.equals("swarcoLogo"))
+        return swarcoLogoImage;
     else 
       return brokenImage;
   }
     
   // Attributes
-  private ImageIcon emptyVehicleImage;
+  private ImageIcon unknownImage;
   private ImageIcon swarcoLogoImage;
   private ImageIcon ambulanceImage;
   private ImageIcon brandweerImage;

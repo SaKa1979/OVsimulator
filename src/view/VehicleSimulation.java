@@ -28,8 +28,8 @@ public class VehicleSimulation extends JPanel {
   }
   // public method
   /**
-   * @ brief List holding all VehicleBUttons assosiated with this class.
-   * @return The list of assosiated VehicleButtons
+   * @ brief List holding all VehicleBUttons associated with this class.
+   * @return The list of associated VehicleButtons
    */
   public ArrayList<VehicleButton> getVehicleButtonList() {
     return vehicleButtonList;
@@ -48,6 +48,7 @@ public class VehicleSimulation extends JPanel {
     return vehicleButtonList.get(Integer.parseInt(name));
   }
     
+
   // private attribute
   ArrayList<VehicleButton> vehicleButtonList = new ArrayList<VehicleButton>();
 }

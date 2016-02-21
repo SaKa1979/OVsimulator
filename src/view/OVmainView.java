@@ -97,14 +97,14 @@ public class OVmainView extends JFrame{
     this.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
     bottomInfoPanel.setLayout(new GridLayout(0, 2, 0, 0));
 
-    // bottom version detail info tekst pane
+    // bottom version detail info text pane
     bottomInfoVersionTxtpn = new JTextPane();
     bottomInfoVersionTxtpn.setBackground(SystemColor.control);
     bottomInfoVersionTxtpn.setEditable(false);
     bottomInfoPanel.add(bottomInfoVersionTxtpn);
     bottomInfoVersionTxtpn.setText("version 0.0, build 12a34b 20160214-17:44");
     
-    // bottom communication detail info tekst pane
+    // bottom communication detail info text pane
     bottomInfoComTxtpn = new JTextPane();
     bottomInfoComTxtpn.setBackground(SystemColor.control);
     bottomInfoComTxtpn.setEditable(false);
@@ -154,8 +154,8 @@ public class OVmainView extends JFrame{
     menuBar.add(mnAbout);
   }
   /**
-   * @brief Add actionlisteners to the buttons assosiated with the vehicle simulation view.
-   * Only the the simulation is handled here and therefor only the LMB action. The RMB action is handled in the 
+   * @brief Add action listeners to the buttons associated with the vehicle simulation view.
+   * Only the the simulation is handled here and therefore only the LMB action. The RMB action is handled in the 
    * VehicleButton self
    */
   private void addVehicleSimulateListener(){
@@ -165,13 +165,34 @@ public class OVmainView extends JFrame{
     }
   }
   
-  // action listener for handling the simulation of all vehicleButtons
+  /**
+   * @brief Action listener for handling the simulation of all vehicleButtons
+   * 		Action is triggered by a VehicleButton
+   */
   class VehicleSimulationListener implements ActionListener {
-    public void actionPerformed(ActionEvent e) {
-      System.out.println("LMB");
-      
-    }
-}//end inner class VehicleSimulationListener
+	  public void actionPerformed(ActionEvent e) {
+		  VehicleButton vb = (VehicleButton)e.getSource();
+		  System.out.println("button index " 
+		  + vb.getName()               + " LoopNr "              
+		  + vb.getLoopNr()             + " SignalGroupNr "       
+		  + vb.getSignalGroupNr()      + " Direction "           
+		  + vb.getDirection()          + " Command "             
+		  + vb.getCommand()            + " VehicleType "         
+		  + vb.getVehicleType()        + " LineNr "              
+		  + vb.getLineNr()             + " WagonNr "             
+		  + vb.getWagonNr()            + " VehicleId "           
+		  + vb.getVehicleId()          + " VehicleLength "       
+		  + vb.getVehicleLength()      + " VehicleSpeed "        
+		  + vb.getVehicleSpeed()       + " DistanceToStop "      
+		  + vb.getDistanceToStop()     + " TimeToStop "          
+		  + vb.getTimeToStop()         + " VehicleStatus "       
+		  + vb.getVehicleStatus()      + " PriorityClass "       
+		  + vb.getPriorityClass()      + " PunctualityClass "    
+		  + vb.getPunctualityClass()   + " Punctuality "         
+		  + vb.getPunctuality()
+		  );      
+	  }
+  }//end inner class VehicleSimulationListener
   
   
   // private attributes
