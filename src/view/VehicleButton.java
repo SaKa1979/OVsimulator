@@ -8,7 +8,12 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import images.ImageFactory;
+import view.VehicleButton.Commands;
+import view.VehicleButton.PriorityClass;
+import view.VehicleButton.PunctualityClass;
+import view.VehicleButton.VehicleStatus;
 
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -55,10 +60,10 @@ public class VehicleButton extends JButton{
   }
   // PRIVATE METHODS
   private void initialize(){
-    setLoopNr(1);
+    setLoopNr(0);
     setSignalGroupNr(0);
-    setDirection(0);
-    setCommand(0);
+    setDirection(Directions.GEENINFO);
+    setCommand(Commands.IN);
     setVehicleType(VehicleTypes.UNKNOWN);
     setLineNr(0);
     setWagonNr(0);
@@ -67,16 +72,18 @@ public class VehicleButton extends JButton{
     setVehicleSpeed(0);
     setDistanceToStop(0);
     setTimeToStop(0);
-    setVehicleStatus(0);
-    setPriorityClass(0);
-    setPunctualityClass(0);
+    setVehicleStatus(VehicleStatus.GEENINFO);
+    setPriorityClass(PriorityClass.GEENINFO);
+    setPunctualityClass(PunctualityClass.GEENINFO);
     setPunctuality(0);
     setButtonText();
     vehicleSettingPanel = new VehicleSettingPanel(this);
   }
   // PUBLIC METHODS
   public void setButtonText(){
-    this.setText(command + " " + direction);
+
+    setText("L" + loopNr + " FC" + signalGroupNr);
+    setFont(new Font("Verdana", Font.PLAIN, 8));
   } 
   
   public String getName() {
@@ -91,6 +98,7 @@ public class VehicleButton extends JButton{
   }
   public void setLoopNr(int loopNr) {
     this.loopNr = loopNr;
+    setButtonText();
   }
   
   public int getSignalGroupNr() {
@@ -98,20 +106,49 @@ public class VehicleButton extends JButton{
   }
   public void setSignalGroupNr(int signalGroupNr) {
     this.signalGroupNr = signalGroupNr;
+    setButtonText();
   }
   
   public int getDirection() {
     return direction;
   }
-  public void setDirection(int direction) {
-    this.direction = direction;
+  public void setDirection(Directions direction) {
+    switch(direction){
+      case GEENINFO:
+        this.direction = Directions.GEENINFO._nr;
+        break;
+      case RECHTS:
+        this.direction =Directions.RECHTS._nr;
+        break;
+      case LINKS:
+        this.direction =Directions.LINKS._nr;
+        break;
+      case RECHT:
+        this.direction =Directions.RECHT._nr;
+        break;
+      default:
+    }
   }
   
   public int getCommand() {
     return command;
   }
-  public void setCommand(int command) {
-    this.command = command;
+  public void setCommand(Commands c) {
+    switch(c){
+      case RESERVE:
+        this.command = Commands.RESERVE._nr;
+        break;
+      case IN:
+        this.command = Commands.IN._nr;
+        break;
+      case UIT:
+        this.command = Commands.UIT._nr;
+        break;
+      case VOOR:
+        this.command = Commands.VOOR._nr;
+        break;
+        default:
+    }
   }
   
   public int getVehicleType() {
@@ -202,22 +239,74 @@ public class VehicleButton extends JButton{
     return vehicleStatus;
   }
   
-  public void setVehicleStatus(int vehicleStatus) {
-    this.vehicleStatus = vehicleStatus;
+  public void setVehicleStatus(VehicleStatus vs) {
+    switch(vs){
+      case GEENINFO:
+        this.vehicleStatus = VehicleStatus.GEENINFO._nr;
+        break;
+      case ONDERWEG:
+        this.vehicleStatus = VehicleStatus.ONDERWEG._nr;
+        break;
+      case STOP1:
+        this.vehicleStatus = VehicleStatus.STOP1._nr;
+        break;
+      case EINDE:
+        this.vehicleStatus = VehicleStatus.EINDE._nr;
+        break;
+      case STOP2:
+        this.vehicleStatus = VehicleStatus.STOP2._nr;
+        break;
+      default:
+    }
   }
   public int getPriorityClass() {
     return priorityClass;
   }
   
-  public void setPriorityClass(int priorityClass) {
-    this.priorityClass = priorityClass;
+  public void setPriorityClass(PriorityClass pc) {
+    switch(pc){
+      case GEENINFO:
+        this.priorityClass = PriorityClass.GEENINFO._nr;
+        break;
+      case GEEN:
+        this.priorityClass = PriorityClass.GEEN._nr;
+        break;
+      case CONDITIONEEL:
+        this.priorityClass = PriorityClass.CONDITIONEEL._nr;
+        break;
+      case ABSOLUUT:
+        this.priorityClass = PriorityClass.ABSOLUUT._nr;
+        break;
+      case ALARM:
+        this.priorityClass = PriorityClass.ALARM._nr;
+        break;
+        default:
+    }
+     
   }
   public int getPunctualityClass() {
     return punctualityClass;
   }
   
-  public void setPunctualityClass(int punctualityClass) {
-    this.punctualityClass = punctualityClass;
+  public void setPunctualityClass(PunctualityClass puc) {
+    switch(puc){
+      case GEENINFO:
+        this.punctualityClass = PunctualityClass.GEENINFO._nr;
+        break;
+      case TELAAT:
+        this.punctualityClass = PunctualityClass.TELAAT._nr;
+        break;
+      case OPTIJD:
+        this.punctualityClass = PunctualityClass.OPTIJD._nr;
+        break;
+      case TEVROEG:
+        this.punctualityClass = PunctualityClass.TEVROEG._nr;
+        break;
+      case BUITENDIENST:
+        this.punctualityClass = PunctualityClass.BUITENDIENST._nr;
+        break;
+        default:
+    }
   }
   
   public int getPunctuality() {

@@ -3,6 +3,11 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import view.VehicleButton.Commands;
+import view.VehicleButton.Directions;
+import view.VehicleButton.PriorityClass;
+import view.VehicleButton.PunctualityClass;
+import view.VehicleButton.VehicleStatus;
 import view.VehicleButton.VehicleTypes;
 
 import javax.swing.JTextField;
@@ -120,7 +125,7 @@ public class VehicleSettingPanel extends JPanel {
 
 	  signalGroupNrTF = new JTextField();
 	  signalGroupNrTF.setEnabled(false);
-	  signalGroupNrTF.setName(loopNrTF_name);
+	  signalGroupNrTF.setName(signalGroupNrTF_name);
 	  signalGroupNrTF.setText("0");
 	  signalGroupNrTF.addActionListener(new TextFieldListener());
 	  GridBagConstraints gbc_signalGroupNrTF = new GridBagConstraints();
@@ -614,7 +619,6 @@ public class VehicleSettingPanel extends JPanel {
 	  int number = 0;
 	  if (!tf.isEnabled()) 
 		  return;
-	  
 	  try{
 		  number = Integer.parseInt(tf.getText());
 	  }catch(NumberFormatException nfe){
@@ -623,9 +627,24 @@ public class VehicleSettingPanel extends JPanel {
 		  tf.setText("0");
 	  }
 	  finally{
-		  if (tf.getName().equals(loopNrTF_name))
-			  vehicle_button.setLoopNr(number);
-		  //TODO add the rest
+	    if (tf.getName().equals(loopNrTF_name))
+	      vehicle_button.setLoopNr(number);
+	    else if (tf.getName().equals(signalGroupNrTF_name))
+	      vehicle_button.setSignalGroupNr(number);
+	    else if (tf.getName().equals(lineNrTF_name))
+	      vehicle_button.setLineNr(number);
+	    else if (tf.getName().equals(wagonNrTF_name))
+              vehicle_button.setWagonNr(number);
+	    else if (tf.getName().equals(vehicleIdTF_name))
+              vehicle_button.setVehicleId(number);
+	    else if (tf.getName().equals(vehicleSpeedTF_name))
+              vehicle_button.setVehicleSpeed(number);
+	    else if (tf.getName().equals(distanceToStopTF_name))
+              vehicle_button.setDistanceToStop(number);
+	    else if (tf.getName().equals(timeToStopTF_name))
+              vehicle_button.setTimeToStop(number);
+	    else if (tf.getName().equals(punctualityTF_name))
+              vehicle_button.setPunctuality(number);
 	  }
   }
   /**
@@ -636,11 +655,31 @@ public class VehicleSettingPanel extends JPanel {
   private void readComBoBox(JComboBox<String> combobox){
 	  if (!combobox.isEnabled())
 		  return;
-	  if (combobox.getName() == vehicleTypeComBox_name){
-		  int index = combobox.getSelectedIndex();
-		  VehicleTypes vt = VehicleTypes.getAsType(index);
-		  vehicle_button.setVehicleType(vt); // index is the same as enum defined in VehicleButton class
-		//TODO add the rest
+	 
+	  if (combobox.getName() == directionComBox_name){
+	    int index = combobox.getSelectedIndex();
+	    Directions d = Directions.getAsType(index);
+	    vehicle_button.setDirection(d);
+	  }else if (combobox.getName() == commandComBox_name){
+	    int index = combobox.getSelectedIndex();
+	    Commands c = Commands.getAsType(index);
+	    vehicle_button.setCommand(c);
+	  }else if (combobox.getName() == vehicleTypeComBox_name){
+	    int index = combobox.getSelectedIndex();
+	    VehicleTypes vt = VehicleTypes.getAsType(index);
+	    vehicle_button.setVehicleType(vt); 
+	  }else if (combobox.getName() == vehicleStatusComBox_name){
+	    int index = combobox.getSelectedIndex();
+	    VehicleStatus vs = VehicleStatus.getAsType(index);
+	    vehicle_button.setVehicleStatus(vs);
+	  }else if (combobox.getName() == priorityClassComBox_name){
+	    int index = combobox.getSelectedIndex();
+	    PriorityClass pc = PriorityClass.getAsType(index);
+	    vehicle_button.setPriorityClass(pc);
+	  }else if (combobox.getName() == punctualityClassComBox_name){
+	    int index = combobox.getSelectedIndex();
+	    PunctualityClass puc = PunctualityClass.getAsType(index);
+	    vehicle_button.setPunctualityClass(puc);
 	  }
   }
   
@@ -651,7 +690,6 @@ public class VehicleSettingPanel extends JPanel {
 		  JTextField tf = (JTextField)e.getSource();
 		  readTextField(tf);
 	  }
-
   } //end of inner class TextFieldListener
   
   public class ComBoListener implements ActionListener{
@@ -659,8 +697,7 @@ public class VehicleSettingPanel extends JPanel {
 	public void actionPerformed(ActionEvent e) {
 		JComboBox<String> combobox = (JComboBox<String>)e.getSource();
 		readComBoBox(combobox);
-	}
-	  
+	}  
   }// end of inner class ComBoListener
 
   // PRIVATE ATTRIBUTES
