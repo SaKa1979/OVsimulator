@@ -29,37 +29,44 @@ public class VehicleButton extends JButton{
   /**
    * Default constructor
    */
+  public VehicleButton(){
+    super();
+    initialize();
+  }
   public VehicleButton(String a_name) {
     super(a_name);
     name = a_name;
+    initialize();
+  }
+  
+  
+  // PRIVATE METHODS
+  private void initialize(){
     setIcon(imagefactory.getImageIcon("emptyVehicle"));
     setVerticalTextPosition(JButton.BOTTOM);
     setHorizontalTextPosition(JButton.CENTER);
-    initialize();
     // handle the RMB action. This shall spawn a JOption with all the vehicle simulation settings
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
           int ok = JOptionPane.showConfirmDialog(null,
-        		  								 vehicleSettingPanel,
-        		  								 "Vehicle Setting",
-        		  								 JOptionPane.OK_CANCEL_OPTION,
-        		  								 JOptionPane.PLAIN_MESSAGE); 
+              vehicleSettingPanel,
+              "Vehicle Setting",
+              JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.PLAIN_MESSAGE); 
           switch (ok){
-          case 0:
-        	  System.out.println("ok");
-        	  vehicleSettingPanel.handleOK();
-        	  break;
-          case 2:
-        	  System.out.println("cancel");
-        	  break;
+            case 0:
+              System.out.println("ok");
+              vehicleSettingPanel.handleOK();
+              break;
+            case 2:
+              System.out.println("cancel");
+              break;
           }
         }
       }
     });
-  }
-  // PRIVATE METHODS
-  private void initialize(){
+    
     setLoopNr(0);
     setSignalGroupNr(0);
     setDirection(Directions.GEENINFO);

@@ -2,8 +2,6 @@ package controller;
 
 import java.awt.EventQueue;
 
-import view.OVmainView;
-
 public class Main {
 
   /**
@@ -13,7 +11,7 @@ public class Main {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
-          OVmainView window = new OVmainView(800, 600);
+          SimControler simulator = new SimControler();
         }
         catch (Exception e) {
           e.printStackTrace();

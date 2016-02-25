@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 import images.ImageFactory;
@@ -20,18 +19,18 @@ import javax.swing.JMenu;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
 /**
  * @author Sander
- * @brief This is the main user interface
+ * @brief This is the main user interface frame and acts as controler for the panels shown 
+ *        on the main view
  */
-public class OVmainView extends JFrame{
+public class OVmainView extends JFrame implements Observer{
 
   /**
    *  Constructor
@@ -41,8 +40,11 @@ public class OVmainView extends JFrame{
     this.sizeY = sizeY;
     initialize();
   }
-
-  // private methods
+  // PUBLIC METHODS
+  public void createVehicleButton(int a_amount){
+    
+  }
+  // PRIVATE METHODS
   private void initialize() {
     this.setResizable(false);
     this.setTitle("OV simulator");
@@ -66,7 +68,6 @@ public class OVmainView extends JFrame{
     gbc_vehicleSimulation.gridx = 0;
     gbc_vehicleSimulation.gridy = 0;
     getContentPane().add(vehicleSimulation, gbc_vehicleSimulation);
-    addVehicleSimulateListener(); // LMB action
 
     // feedback panel
     FeedbackPanel = new JPanel();
@@ -82,8 +83,8 @@ public class OVmainView extends JFrame{
     JScrollPane scrollPane = new JScrollPane();
     FeedbackPanel.add(scrollPane);
 
-    JTextPane feedbackTxtpn = new JTextPane();
-    feedbackTxtpn.setText("Test text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!\r\nTest text is here to stay!!!");
+    feedbackTxtpn = new JTextPane();
+    feedbackTxtpn.setText("feedback");
     feedbackTxtpn.setBackground(SystemColor.inactiveCaptionBorder);
     scrollPane.setViewportView(feedbackTxtpn);
 
@@ -112,102 +113,101 @@ public class OVmainView extends JFrame{
     bottomInfoComTxtpn.setText("Com1, 9600,8,N,1");
     
     // menu bar
-    JMenuBar menuBar = new JMenuBar();
+    menuBar = new JMenuBar();
     this.setJMenuBar(menuBar);
 
-    JMenu mnSetting = new JMenu("Setting");
+    mnSetting = new JMenu("Setting");
     menuBar.add(mnSetting);
 
-    JMenuItem mntmPortSettings = new JMenuItem("Port settings");
+    mntmPortSettings = new JMenuItem("Port settings");
     mnSetting.add(mntmPortSettings);
 
-    JMenu mnProtocol = new JMenu("Protocol");
+    mnProtocol = new JMenu("Protocol");
     menuBar.add(mnProtocol);
 
-    JRadioButton rdbtnKar = new JRadioButton("KAR");
+    rdbtnKar = new JRadioButton("KAR");
     rdbtnKar.setSelected(true);
     protoButtonGroup.add(rdbtnKar);
     mnProtocol.add(rdbtnKar);
 
-    JRadioButton rdbtnVecom = new JRadioButton("VECOM");
+    rdbtnVecom = new JRadioButton("VECOM");
     protoButtonGroup.add(rdbtnVecom);
     mnProtocol.add(rdbtnVecom);
 
-    JRadioButton rdbtnSics = new JRadioButton("SICS");
+    rdbtnSics = new JRadioButton("SICS");
     protoButtonGroup.add(rdbtnSics);
     mnProtocol.add(rdbtnSics);
 
-    JMenu mnAbout = new JMenu("About");
+    mnAbout = new JMenu("About");
     mnAbout.setName("About");
-    mnAbout.addMenuListener(new MenuListener() {	
-      @Override
-      public void menuSelected(MenuEvent arg0) {
-        JOptionPane.showMessageDialog((JMenu)arg0.getSource(), "Created by Sander",((JMenu)arg0.getSource()).getName(), JOptionPane.INFORMATION_MESSAGE);
-      }
-      @Override
-      public void menuCanceled(MenuEvent e) {
-      }
-      @Override
-      public void menuDeselected(MenuEvent e) {
-      }
-    });
     menuBar.add(mnAbout);
   }
+ 
   /**
-   * @brief Add action listeners to the buttons associated with the vehicle simulation view.
-   * Only the the simulation is handled here and therefore only the LMB action. The RMB action is handled in the 
-   * VehicleButton self
+   * @brief Add a VehicleButton to the VehicleSimulation pane and tie it to a
+   *        given ActionListener
+   * @param a_listener
    */
-  private void addVehicleSimulateListener(){
-    vehicleButtonList = vehicleSimulation.getVehicleButtonList();
-    for (VehicleButton vb : vehicleButtonList){
-      vb.addActionListener(new VehicleSimulationListener() );
-    }
+  public void addVehicleButtonAndListener(ActionListener a_listener){
+    vehicleSimulation.createAndAddVehicleButton(a_listener);
+  }
+  /**
+   * @brief Add a MenuListener to the About menu item
+   * @param a_listener
+   */
+  public void addAboutListener(MenuListener a_listener){
+    mnAbout.addMenuListener(a_listener);
   }
   
-  /**
-   * @brief Action listener for handling the simulation of all vehicleButtons
-   * 		Action is triggered by a VehicleButton
-   */
-  class VehicleSimulationListener implements ActionListener {
-	  public void actionPerformed(ActionEvent e) {
-		  VehicleButton vb = (VehicleButton)e.getSource();
-		  System.out.println("button index " 
-		  + vb.getName()               + " LoopNr "              
-		  + vb.getLoopNr()             + " SignalGroupNr "       
-		  + vb.getSignalGroupNr()      + " Direction "           
-		  + vb.getDirection()          + " Command "             
-		  + vb.getCommand()            + " VehicleType "         
-		  + vb.getVehicleType()        + " LineNr "              
-		  + vb.getLineNr()             + " WagonNr "             
-		  + vb.getWagonNr()            + " VehicleId "           
-		  + vb.getVehicleId()          + " VehicleLength "       
-		  + vb.getVehicleLength()      + " VehicleSpeed "        
-		  + vb.getVehicleSpeed()       + " DistanceToStop "      
-		  + vb.getDistanceToStop()     + " TimeToStop "          
-		  + vb.getTimeToStop()         + " VehicleStatus "       
-		  + vb.getVehicleStatus()      + " PriorityClass "       
-		  + vb.getPriorityClass()      + " PunctualityClass "    
-		  + vb.getPunctualityClass()   + " Punctuality "         
-		  + vb.getPunctuality()
-		  );      
-	  }
-  }//end inner class VehicleSimulationListener
+  //TODO next add actionlistener for radio button (group)
+  public void addPortSettingListener(ActionListener a_listener){
+    rdbtnKar.addActionListener(a_listener);
+    rdbtnVecom.addActionListener(a_listener);
+    rdbtnSics.addActionListener(a_listener);
+  }
   
   
-  // private attributes
+  public void writeToFeedback(String a_text){
+    feedbackTxtpn.setText("");
+  }
+  
+  public void writeToBottomInfoVersion(String a_text){
+    feedbackTxtpn.setText("");
+
+  }
+  
+  public void bottomInfoCom(String a_text){
+    feedbackTxtpn.setText("");
+
+  }
+  
+  public void update(Observable o, Object arg) {
+    // TODO Auto-generated method stub
+    feedbackTxtpn.setText("obervable called me");
+  }
+  
+  
+  // PRIVATE ATTRIBUTES
   int sizeX, sizeY;
   // buttons and groups
   private final ButtonGroup protoButtonGroup = new ButtonGroup();
-  private ArrayList<VehicleButton> vehicleButtonList;
   // images
   private ImageFactory imagefactory = new ImageFactory();
-  // views
+  // views and menu
   VehicleSimulation vehicleSimulation;
   JPanel FeedbackPanel;
   JPanel bottomInfoPanel;
   JTextPane bottomInfoVersionTxtpn;
   JTextPane bottomInfoComTxtpn;
+  JTextPane feedbackTxtpn;
+  JMenuBar menuBar;
+  JMenu mnSetting;
+  JMenu mnAbout;
+  JMenu mnProtocol;
+  JMenuItem mntmPortSettings;
   
+  JRadioButton rdbtnKar;
+  JRadioButton rdbtnVecom;
+  JRadioButton rdbtnSics;
   
 } // end of Ovmain 
