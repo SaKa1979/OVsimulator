@@ -3,9 +3,14 @@ package view;
 import javax.swing.JFrame;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuListener;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import images.ImageFactory;
 
@@ -24,6 +29,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+import java.awt.event.ActionEvent;
 
 /**
  * @author Sander
@@ -40,10 +48,72 @@ public class OVmainView extends JFrame implements Observer{
     this.sizeY = sizeY;
     initialize();
   }
+ 
   // PUBLIC METHODS
-  public void createVehicleButton(int a_amount){
-    
+ 
+  /**
+   * @brief Add a VehicleButton to the VehicleSimulation pane and tie it to a
+   *        given ActionListener
+   * @param a_listener
+   */
+  public void addVehicleButtonAndListener(ActionListener a_listener){
+    vehicleSimulation.createAndAddVehicleButton(a_listener);
   }
+  /**
+   * @brief Add a MenuListener to the About menu item
+   * @param a_listener
+   */
+  public void addAboutListener(MenuListener a_listener){
+    mnAbout.addMenuListener(a_listener);
+  }
+  
+  public void addProtoListener(ActionListener a_listener){
+    rdbtnKar.addActionListener(a_listener);
+    rdbtnVecom.addActionListener(a_listener);
+    rdbtnSics.addActionListener(a_listener);
+  }
+  
+  public void addPortSettingListener(ActionListener a_listener){
+    mntmPortSettings.addActionListener(a_listener);
+  }
+  
+  /**
+   * Print text to feedback pane in various stylex
+   * @param a_text
+   */
+  public void writeToFeedback(String a_text/*,Style style*/){
+    StyledDocument sDoc = feedbackTxtpn.getStyledDocument();
+    Style protoStyle = sDoc.addStyle("protoStyle", null);;
+    StyleConstants.setForeground(protoStyle, Color.black);
+
+    try{
+      sDoc.insertString(sDoc.getLength(), "\n"+ a_text, protoStyle);
+    }
+    catch (Exception e){
+      System.out.println(e);
+    }
+  }
+
+  public void writeToBottomInfoVersion(String a_text){
+    bottomInfoVersionTxtpn.setText(a_text);
+
+  }
+  
+  public void bottomInfoCom(String a_text){
+    bottomInfoComTxtpn.setText(a_text);
+
+  }
+  
+  public PortSettingPanel getPortSettingPanel() {
+    return portSettingPanel;
+  }
+  
+  public void update(Observable o, Object arg) {
+    // TODO Auto-generated method stub
+    feedbackTxtpn.setText("obervable called me");
+  }
+
+  
   // PRIVATE METHODS
   private void initialize() {
     this.setResizable(false);
@@ -119,7 +189,26 @@ public class OVmainView extends JFrame implements Observer{
     mnSetting = new JMenu("Setting");
     menuBar.add(mnSetting);
 
+    portSettingPanel = new PortSettingPanel();
     mntmPortSettings = new JMenuItem("Port settings");
+    mntmPortSettings.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        int ok = JOptionPane.showConfirmDialog(null,
+            portSettingPanel,
+            "Port Setting",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE); 
+        switch (ok){
+          case 0:
+            System.out.println(portSettingPanel.toString());
+            portSettingPanel.handleOK();
+            break;
+          case 2:
+            System.out.println("cancel");
+            break;
+        }
+      }
+    });
     mnSetting.add(mntmPortSettings);
 
     mnProtocol = new JMenu("Protocol");
@@ -142,50 +231,6 @@ public class OVmainView extends JFrame implements Observer{
     mnAbout.setName("About");
     menuBar.add(mnAbout);
   }
- 
-  /**
-   * @brief Add a VehicleButton to the VehicleSimulation pane and tie it to a
-   *        given ActionListener
-   * @param a_listener
-   */
-  public void addVehicleButtonAndListener(ActionListener a_listener){
-    vehicleSimulation.createAndAddVehicleButton(a_listener);
-  }
-  /**
-   * @brief Add a MenuListener to the About menu item
-   * @param a_listener
-   */
-  public void addAboutListener(MenuListener a_listener){
-    mnAbout.addMenuListener(a_listener);
-  }
-  
-  //TODO next add actionlistener for radio button (group)
-  public void addPortSettingListener(ActionListener a_listener){
-    rdbtnKar.addActionListener(a_listener);
-    rdbtnVecom.addActionListener(a_listener);
-    rdbtnSics.addActionListener(a_listener);
-  }
-  
-  
-  public void writeToFeedback(String a_text){
-    feedbackTxtpn.setText("");
-  }
-  
-  public void writeToBottomInfoVersion(String a_text){
-    feedbackTxtpn.setText("");
-
-  }
-  
-  public void bottomInfoCom(String a_text){
-    feedbackTxtpn.setText("");
-
-  }
-  
-  public void update(Observable o, Object arg) {
-    // TODO Auto-generated method stub
-    feedbackTxtpn.setText("obervable called me");
-  }
-  
   
   // PRIVATE ATTRIBUTES
   int sizeX, sizeY;
@@ -194,20 +239,21 @@ public class OVmainView extends JFrame implements Observer{
   // images
   private ImageFactory imagefactory = new ImageFactory();
   // views and menu
-  VehicleSimulation vehicleSimulation;
-  JPanel FeedbackPanel;
-  JPanel bottomInfoPanel;
-  JTextPane bottomInfoVersionTxtpn;
-  JTextPane bottomInfoComTxtpn;
-  JTextPane feedbackTxtpn;
-  JMenuBar menuBar;
-  JMenu mnSetting;
-  JMenu mnAbout;
-  JMenu mnProtocol;
-  JMenuItem mntmPortSettings;
+  private VehicleSimulation vehicleSimulation;
+  private JPanel FeedbackPanel;
+  private JPanel bottomInfoPanel;
+  private JTextPane bottomInfoVersionTxtpn;
+  private JTextPane bottomInfoComTxtpn;
+  private JTextPane feedbackTxtpn;
+  private JMenuBar menuBar;
+  private JMenu mnSetting;
+  private JMenu mnAbout;
+  private JMenu mnProtocol;
+  private JMenuItem mntmPortSettings;
   
-  JRadioButton rdbtnKar;
-  JRadioButton rdbtnVecom;
-  JRadioButton rdbtnSics;
-  
+  private JRadioButton rdbtnKar;
+  private JRadioButton rdbtnVecom;
+  private JRadioButton rdbtnSics;
+  // port settings class
+  private PortSettingPanel portSettingPanel;
 } // end of Ovmain 

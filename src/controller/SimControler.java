@@ -26,7 +26,8 @@ public class SimControler {
     }
 
     view.addAboutListener(aboutMenuListener);
-    view.addPortSettingListener(portSettingsListener);
+    view.addProtoListener(protoListener);
+    view.addPortSettingListener(PortSettingListener);
   }
   //LISTENERS
   /**
@@ -77,21 +78,34 @@ public class SimControler {
     }
   };
   
-  ActionListener portSettingsListener = new ActionListener() {
+  /**
+   * @brief Listens to Protocol menu item
+   */
+  ActionListener protoListener = new ActionListener() {
     
     @Override
     public void actionPerformed(ActionEvent e) {
       JRadioButton rb = (JRadioButton)e.getSource();
       
-      if (rb.getName().equals("KAR")){
-        view.writeToFeedback(rb.getName());
-      }else if (rb.getName().equals("VECOM")){
-        view.writeToFeedback(rb.getName());
-      }else if (rb.getName().equals("SICS")){
-        view.writeToFeedback(rb.getName());
+      if (rb.getText().equals("KAR")){
+        view.writeToFeedback(rb.getText());
+      }else if (rb.getText().equals("VECOM")){
+        view.writeToFeedback(rb.getText());
+      }else if (rb.getText().equals("SICS")){
+        view.writeToFeedback(rb.getText());
       }
     }
   };
+  
+  /**
+   * @brief Listens to PortSetting menu item
+   */
+  ActionListener PortSettingListener = new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+            // TODO what to do with portsetting
+    }
+  };  
   
   // PRIVATE ATTRIBUTES
   OVmainView view = new OVmainView(800, 800);

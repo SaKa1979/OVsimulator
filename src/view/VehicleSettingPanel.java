@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 public class VehicleSettingPanel extends JPanel {
 
   /**
-   * Constructor
+   * Constructor for VehicleSettingPanel.
    * @param vehicle_button
    */
   public VehicleSettingPanel(VehicleButton a_vehicle_button) {
@@ -39,7 +39,7 @@ public class VehicleSettingPanel extends JPanel {
     gridBagLayout.rowWeights = new double[]{0.0, 0.0};
     setLayout(gridBagLayout);
     initialize();
-    loadTextFieldValues();
+    loadAllFieldValues();
   }
 
 // PUBLIC METHODS
@@ -48,23 +48,24 @@ public class VehicleSettingPanel extends JPanel {
    * This allows the user to fill in all the fields without confirming each field individually
    */
   public void handleOK(){
-	  readTextField(loopNrTF);
-	  readTextField(signalGroupNrTF);
-	  readTextField(lineNrTF);
-	  readTextField(wagonNrTF);
-	  readTextField(vehicleIdTF);
-	  readTextField(vehicleLengthTF);
-	  readTextField(vehicleSpeedTF);
-	  readTextField(distanceToStopTF);
-	  readTextField(timeToStopTF);
-	  readTextField(punctualityTF);
-	  
-	  readComBoBox(directionComBox);
-	  readComBoBox(commandComBox);
-	  readComBoBox(vehicleTypeComBox);
-	  readComBoBox(vehicleStatusComBox);
-	  readComBoBox(priorityClassComBox);
-	  readComBoBox(punctualityClassComBox);
+    loadAllFieldValues();
+//	  readTextField(loopNrTF);
+//	  readTextField(signalGroupNrTF);
+//	  readTextField(lineNrTF);
+//	  readTextField(wagonNrTF);
+//	  readTextField(vehicleIdTF);
+//	  readTextField(vehicleLengthTF);
+//	  readTextField(vehicleSpeedTF);
+//	  readTextField(distanceToStopTF);
+//	  readTextField(timeToStopTF);
+//	  readTextField(punctualityTF);
+//	  
+//	  readComBoBox(directionComBox);
+//	  readComBoBox(commandComBox);
+//	  readComBoBox(vehicleTypeComBox);
+//	  readComBoBox(vehicleStatusComBox);
+//	  readComBoBox(priorityClassComBox);
+//	  readComBoBox(punctualityClassComBox);
 
   }
   // PRIVATE METHODS
@@ -161,7 +162,6 @@ public class VehicleSettingPanel extends JPanel {
 	  directionComBox.setEnabled(false);
 	  directionComBox.setName(directionComBox_name);
 	  directionComBox.setSelectedIndex(0);
-	  directionComBox.addActionListener(new ComBoListener());
 	  GridBagConstraints gbc_directionComBox = new GridBagConstraints();
 	  gbc_directionComBox.anchor = GridBagConstraints.NORTH;
 	  gbc_directionComBox.fill = GridBagConstraints.BOTH;
@@ -195,7 +195,6 @@ public class VehicleSettingPanel extends JPanel {
 	  commandComBox.setEnabled(false);
 	  commandComBox.setName(commandComBox_name);
 	  commandComBox.setSelectedIndex(0);
-	  commandComBox.addActionListener(new ComBoListener());
 	  GridBagConstraints gbc_commandComBox = new GridBagConstraints();
 	  gbc_commandComBox.anchor = GridBagConstraints.NORTH;
 	  gbc_commandComBox.fill = GridBagConstraints.BOTH;
@@ -229,7 +228,6 @@ public class VehicleSettingPanel extends JPanel {
 	  vehicleTypeComBox.setEnabled(false);
 	  vehicleTypeComBox.setName(vehicleTypeComBox_name);
 	  vehicleTypeComBox.setSelectedIndex(0);
-	  vehicleTypeComBox.addActionListener(new ComBoListener());
 	  GridBagConstraints gbc_vehicleTypeComBox = new GridBagConstraints();
 	  gbc_vehicleTypeComBox.anchor = GridBagConstraints.NORTH;
 	  gbc_vehicleTypeComBox.fill = GridBagConstraints.BOTH;
@@ -487,7 +485,6 @@ public class VehicleSettingPanel extends JPanel {
 	  vehicleStatusComBox.setEnabled(false);
 	  vehicleStatusComBox.setName(vehicleStatusComBox_name);
 	  vehicleStatusComBox.setSelectedIndex(0);
-	  vehicleStatusComBox.addActionListener(new ComBoListener());
 	  GridBagConstraints gbc_vehicleStatusComBox = new GridBagConstraints();
 	  gbc_vehicleStatusComBox.anchor = GridBagConstraints.NORTH;
 	  gbc_vehicleStatusComBox.fill = GridBagConstraints.BOTH;
@@ -521,7 +518,6 @@ public class VehicleSettingPanel extends JPanel {
 	  priorityClassComBox.setEnabled(false);
 	  priorityClassComBox.setName(priorityClassComBox_name);
 	  priorityClassComBox.setSelectedIndex(0);
-	  priorityClassComBox.addActionListener(new ComBoListener());
 	  GridBagConstraints gbc_priorityClassComBox = new GridBagConstraints();
 	  gbc_priorityClassComBox.anchor = GridBagConstraints.NORTH;
 	  gbc_priorityClassComBox.fill = GridBagConstraints.BOTH;
@@ -550,12 +546,11 @@ public class VehicleSettingPanel extends JPanel {
 	  add(punctualityClassCB, gbc_punctualityClassCB);
 	  
 	  punctualityClassArray = vehicle_button.getAllPunctualityClass_array();
-	  punctualityClassComBox = new JComboBox<String>(priorityClassArray);
+	  punctualityClassComBox = new JComboBox<String>(punctualityClassArray);
 	  punctualityClassComBox.addActionListener(new ComBoListener());
 	  punctualityClassComBox.setEnabled(false);
 	  punctualityClassComBox.setName(punctualityClassComBox_name);
 	  punctualityClassComBox.setSelectedIndex(0);
-	  punctualityClassComBox.addActionListener(new ComBoListener());
 	  GridBagConstraints gbc_punctualityClassComBox = new GridBagConstraints();
 	  gbc_punctualityClassComBox.anchor = GridBagConstraints.NORTH;
 	  gbc_punctualityClassComBox.fill = GridBagConstraints.BOTH;
@@ -598,9 +593,9 @@ public class VehicleSettingPanel extends JPanel {
   } 
   
   /**
-   * Loads the values entered in all fields
+   * Loads the values entered in all the fields. 
    */
-  private void loadTextFieldValues() {
+  private void loadAllFieldValues() {
 	  for(JTextField tf : fieldsList){
 		  readTextField(tf);
 	  }

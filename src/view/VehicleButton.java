@@ -86,6 +86,7 @@ public class VehicleButton extends JButton{
     setButtonText();
     vehicleSettingPanel = new VehicleSettingPanel(this);
   }
+
   // PUBLIC METHODS
   public void setButtonText(){
 
