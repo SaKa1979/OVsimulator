@@ -7,11 +7,12 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.MenuListener;
+import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import controller.Event;
 import images.ImageFactory;
 
 import java.awt.GridLayout;
@@ -35,22 +36,21 @@ import java.awt.event.ActionEvent;
 
 /**
  * @author Sander
- * @brief This is the main user interface frame and acts as controler for the panels shown 
+ * @brief This is the main user interface frame and acts as manager for the panels shown 
  *        on the main view
  */
-public class OVmainView extends JFrame implements Observer{
+public class ViewManager extends JFrame implements Observer{
 
   /**
    *  Constructor
    */
-  public OVmainView(int sizeX, int sizeY) {
+  public ViewManager(int sizeX, int sizeY) {
     this.sizeX = sizeX;
     this.sizeY = sizeY;
     initialize();
   }
  
   // PUBLIC METHODS
- 
   /**
    * @brief Add a VehicleButton to the VehicleSimulation pane and tie it to a
    *        given ActionListener
@@ -59,13 +59,6 @@ public class OVmainView extends JFrame implements Observer{
   public void addVehicleButtonAndListener(ActionListener a_listener){
     vehicleSimulation.createAndAddVehicleButton(a_listener);
   }
-  /**
-   * @brief Add a MenuListener to the About menu item
-   * @param a_listener
-   */
-  public void addAboutListener(MenuListener a_listener){
-    mnAbout.addMenuListener(a_listener);
-  }
   
   public void addProtoListener(ActionListener a_listener){
     rdbtnKar.addActionListener(a_listener);
@@ -73,21 +66,24 @@ public class OVmainView extends JFrame implements Observer{
     rdbtnSics.addActionListener(a_listener);
   }
   
-  public void addPortSettingListener(ActionListener a_listener){
-    mntmPortSettings.addActionListener(a_listener);
+  public void addPortSettingEventSubscriber(Event a_subscriber){
+    subscriber  = a_subscriber;
   }
   
   /**
-   * Print text to feedback pane in various stylex
+   * Writes given text to feedback pane on new line
    * @param a_text
    */
-  public void writeToFeedback(String a_text/*,Style style*/){
+  public void writeToFeedback(String a_text){
+    MutableAttributeSet attrs = feedbackTxtpn.getInputAttributes();
+    StyleConstants.setFontFamily(attrs, "TimesRoman");
+    StyleConstants.setFontSize(attrs, 8);
     StyledDocument sDoc = feedbackTxtpn.getStyledDocument();
-    Style protoStyle = sDoc.addStyle("protoStyle", null);;
-    StyleConstants.setForeground(protoStyle, Color.black);
+    Style feedbackTxtpnStyle = sDoc.addStyle("feedbackTxtpnStyle", null);;
+    StyleConstants.setForeground(feedbackTxtpnStyle, Color.BLACK);
 
     try{
-      sDoc.insertString(sDoc.getLength(), "\n"+ a_text, protoStyle);
+      sDoc.insertString(sDoc.getLength(), "\n"+ a_text, feedbackTxtpnStyle);
     }
     catch (Exception e){
       System.out.println(e);
@@ -95,17 +91,35 @@ public class OVmainView extends JFrame implements Observer{
   }
 
   public void writeToBottomInfoVersion(String a_text){
-    bottomInfoVersionTxtpn.setText(a_text);
+    MutableAttributeSet attrs = bottomInfoVersionTxtpn.getInputAttributes();
+    StyleConstants.setFontFamily(attrs, "monospaced");
+    StyleConstants.setFontSize(attrs, 6);
+    StyledDocument sDoc = bottomInfoVersionTxtpn.getStyledDocument();
+    Style bottomInfoVersionTxtpnStyle = sDoc.addStyle("bottomInfoVersionTxtpnStyle", null);;
+    StyleConstants.setForeground(bottomInfoVersionTxtpnStyle, Color.BLACK);
 
+    try{
+      sDoc.insertString(0, a_text, bottomInfoVersionTxtpnStyle);
+    }
+    catch (Exception e){
+      System.out.println(e);
+    }
   }
   
-  public void bottomInfoCom(String a_text){
-    bottomInfoComTxtpn.setText(a_text);
+  public void writeTobottomInfoCom(String a_text){
+    MutableAttributeSet attrs = bottomInfoComTxtpn.getInputAttributes();
+    StyleConstants.setFontFamily(attrs, "monospaced");
+    StyleConstants.setFontSize(attrs, 6);
+    StyledDocument sDoc = bottomInfoComTxtpn.getStyledDocument();
+    Style bottomInfoComTxtpnStyle = sDoc.addStyle("bottomInfoComTxtpnStyle", null);;
+    StyleConstants.setForeground(bottomInfoComTxtpnStyle, Color.BLACK);
 
-  }
-  
-  public PortSettingPanel getPortSettingPanel() {
-    return portSettingPanel;
+    try{
+      sDoc.insertString(0, a_text, bottomInfoComTxtpnStyle);
+    }
+    catch (Exception e){
+      System.out.println(e);
+    }
   }
   
   public void update(Observable o, Object arg) {
@@ -200,11 +214,11 @@ public class OVmainView extends JFrame implements Observer{
             JOptionPane.PLAIN_MESSAGE); 
         switch (ok){
           case 0:
-            System.out.println(portSettingPanel.toString());
             portSettingPanel.handleOK();
+            subscriber.signal(portSettingPanel);
             break;
           case 2:
-            System.out.println("cancel");
+            // do nothing
             break;
         }
       }
@@ -227,9 +241,6 @@ public class OVmainView extends JFrame implements Observer{
     protoButtonGroup.add(rdbtnSics);
     mnProtocol.add(rdbtnSics);
 
-    mnAbout = new JMenu("About");
-    mnAbout.setName("About");
-    menuBar.add(mnAbout);
   }
   
   // PRIVATE ATTRIBUTES
@@ -247,7 +258,6 @@ public class OVmainView extends JFrame implements Observer{
   private JTextPane feedbackTxtpn;
   private JMenuBar menuBar;
   private JMenu mnSetting;
-  private JMenu mnAbout;
   private JMenu mnProtocol;
   private JMenuItem mntmPortSettings;
   
@@ -256,4 +266,7 @@ public class OVmainView extends JFrame implements Observer{
   private JRadioButton rdbtnSics;
   // port settings class
   private PortSettingPanel portSettingPanel;
+  private Event subscriber ;
+  
+  
 } // end of Ovmain 

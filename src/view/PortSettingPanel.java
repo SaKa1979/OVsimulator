@@ -132,19 +132,19 @@ public class PortSettingPanel extends JPanel {
     comComBox = new JComboBox<String>(comComBoxArray);
     comComBox.addActionListener(new ComBoListener());
     comComBox.setName(comComBox_name);
-    comComBox.setSelectedIndex(0);
+    comComBox.setSelectedIndex(1);
     add(comComBox);
     
     baudComBox = new JComboBox<String>(baudComBoxArray);
     baudComBox.addActionListener(new ComBoListener());
     baudComBox.setName(baudComBox_name);
-    baudComBox.setSelectedIndex(0);
+    baudComBox.setSelectedIndex(6);
     add(baudComBox);
     
     dataBitsComBox = new JComboBox<String>(dataBitsComBoxArray);
     dataBitsComBox.addActionListener(new ComBoListener());
     dataBitsComBox.setName(dataBitsComBox_name);
-    dataBitsComBox.setSelectedIndex(0);
+    dataBitsComBox.setSelectedIndex(1);
     add(dataBitsComBox);
     
     parityComBoxArray = Parity.getAsArray();
@@ -281,9 +281,9 @@ public class PortSettingPanel extends JPanel {
   }
 
   public enum Parity/* implements portEnums*/{
-    NON ("NON",0),
-    ODD ("ODD",1),
-    EVEN ("EVEN",2);
+    NON ("N",0),
+    ODD ("O",1),
+    EVEN ("E",2);
 
     private String _name;
     private int _nr;
@@ -392,8 +392,8 @@ public class PortSettingPanel extends JPanel {
   private String  flowCombox_name = "flow";  
   
   private String[] comComBoxArray;      
-  private String[] baudComBoxArray = {"110","300","600","1200","2400"};;     
-  private String[] dataBitsComBoxArray = {"7","8"};; 
+  private String[] baudComBoxArray = {"110","300","600","1200","2400","4800","9600","14400","19200","38400"};     
+  private String[] dataBitsComBoxArray = {"7","8"};
   private String[] parityComBoxArray;   
   private String[] stopBitsComBoxArray = {"1","1.5","2"}; 
   private String[] flowComboxArray; 

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 /**
  * @brief A button representing a vehicle detection. 
- * 		  A mouse listener must be added from the class that is using this button. The RMB action should be handled in the calling class
- * 		  The attribute settings are controlled by a VehicleSetting class which shall be triggered by the RMB
+ *        A mouse listener must be added from the class that is using this button. The RMB action should be handled in the calling class
+ *        The attribute settings are controlled by a VehicleSetting class which shall be triggered by the RMB
  * @author Sander Kamps
  */
 public class VehicleButton extends JButton{
@@ -56,11 +56,10 @@ public class VehicleButton extends JButton{
               JOptionPane.PLAIN_MESSAGE); 
           switch (ok){
             case 0:
-              System.out.println("ok");
               vehicleSettingPanel.handleOK();
               break;
             case 2:
-              System.out.println("cancel");
+              // do nothing
               break;
           }
         }
@@ -410,7 +409,26 @@ public class VehicleButton extends JButton{
 		  return list_al.toArray(list_a);
   }
 
-  
+  public String toString(){
+    String s =               " LoopNr "              
+    + loopNr               + " SignalGroupNr "       
+    + signalGroupNr        + " Direction "           
+    + direction            + " Command "             
+    + command              + " VehicleType "         
+    + vehicleType          + " LineNr "              
+    + lineNr               + " WagonNr "             
+    + wagonNr              + " VehicleId "           
+    + vehicleId            + " VehicleLength "       
+    + vehicleLength        + " VehicleSpeed "        
+    + vehicleSpeed         + " DistanceToStop "      
+    + distanceToStop       + " TimeToStop "          
+    + timeToStop           + " VehicleStatus "       
+    + vehicleStatus        + " PriorityClass "       
+    + priorityClass        + " PunctualityClass "    
+    + punctualityClass     + " Punctuality "         
+    + punctuality;
+    return s;
+  }
   // ENUMS
   //TODO create interface so I can use a method template (generic method) to get the data from a given ENUM
 
@@ -423,9 +441,9 @@ public class VehicleButton extends JButton{
   
   public enum Directions {
 	  GEENINFO ("geen info",0), 
-	  RECHTS ("rechtsaf",201),
-	  LINKS ("linksaf",202),
-	  RECHT ("rechtdoor",203);
+	  RECHTS ("rechtsaf",1),
+	  LINKS ("linksaf",2),
+	  RECHT ("rechtdoor",3);
 
 	  private String _name;
 	  private int _nr;
