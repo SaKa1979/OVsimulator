@@ -49,25 +49,8 @@ public class VehicleSettingPanel extends JPanel {
    */
   public void handleOK(){
     loadAllFieldValues();
-//	  readTextField(loopNrTF);
-//	  readTextField(signalGroupNrTF);
-//	  readTextField(lineNrTF);
-//	  readTextField(wagonNrTF);
-//	  readTextField(vehicleIdTF);
-//	  readTextField(vehicleLengthTF);
-//	  readTextField(vehicleSpeedTF);
-//	  readTextField(distanceToStopTF);
-//	  readTextField(timeToStopTF);
-//	  readTextField(punctualityTF);
-//	  
-//	  readComBoBox(directionComBox);
-//	  readComBoBox(commandComBox);
-//	  readComBoBox(vehicleTypeComBox);
-//	  readComBoBox(vehicleStatusComBox);
-//	  readComBoBox(priorityClassComBox);
-//	  readComBoBox(punctualityClassComBox);
-
   }
+  
   // PRIVATE METHODS
   private void initialize(){
 	  fieldsList = new ArrayList<JTextField>();

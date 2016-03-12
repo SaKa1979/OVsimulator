@@ -1,6 +1,3 @@
-/**
- * 
- */
 package view;
 
 import javax.swing.JButton;
@@ -8,11 +5,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import images.ImageFactory;
-import view.VehicleButton.Commands;
-import view.VehicleButton.PriorityClass;
-import view.VehicleButton.PunctualityClass;
-import view.VehicleButton.VehicleStatus;
-
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

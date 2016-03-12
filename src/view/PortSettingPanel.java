@@ -1,12 +1,7 @@
 package view;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-
-import view.VehicleButton.Directions;
-import view.VehicleButton.VehicleStatus;
-import view.VehicleSettingPanel.ComBoListener;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;

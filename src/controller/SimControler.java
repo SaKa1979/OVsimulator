@@ -3,14 +3,9 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JMenu;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
-import javax.swing.event.MenuEvent;
-import javax.swing.event.MenuListener;
-
 import view.ViewManager;
 import view.PortSettingPanel;
+import view.ProtocolPanel;
 import view.VehicleButton;
 
 public class SimControler implements Event {
@@ -30,19 +25,24 @@ public class SimControler implements Event {
       view.addVehicleButtonAndListener(vehicleSimulationListener);
     }
 
-    view.addProtoListener(protoListener);
-    view.addPortSettingEventSubscriber(this);
+//    view.addProtoListener(protoListener);
+    view.addEventSubscriber(this);
   }
   
   //LISTENERS and SIGNALS
   /**
    * @brief Is called whenever some action is taken by the callee
-   * @param o When the method is called, the callee may pass a object.
+   * @param o When the method is called, the callee may pass an object.
    */
-    public void signal(Object o){
+  public void signal(Object o){
+    if (o instanceof PortSettingPanel){
       PortSettingPanel psp = (PortSettingPanel)o;
       view.writeToFeedback(psp.toString());
+    }else if (o instanceof ProtocolPanel){
+      ProtocolPanel pp = (ProtocolPanel)o;
+      view.writeToFeedback(pp.toString());
     }
+  }
   
   /**
    * @brief Action listener for handling the simulation of all vehicleButtons
@@ -55,26 +55,6 @@ public class SimControler implements Event {
       view.writeToFeedback(vb.toString());
     }
   };
-   
-  /**
-   * @brief Listens to Protocol menu item
-   */
-  ActionListener protoListener = new ActionListener() {
-    
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      JRadioButton rb = (JRadioButton)e.getSource();
-      
-      if (rb.getText().equals("KAR")){
-        view.writeToFeedback(rb.getText());
-      }else if (rb.getText().equals("VECOM")){
-        view.writeToFeedback(rb.getText());
-      }else if (rb.getText().equals("SICS")){
-        view.writeToFeedback(rb.getText());
-      }
-    }
-  };
-  
   
   // PRIVATE ATTRIBUTES
   ViewManager view = new ViewManager(800, 800);

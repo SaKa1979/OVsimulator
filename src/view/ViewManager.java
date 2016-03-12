@@ -22,7 +22,6 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
-import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
@@ -60,13 +59,7 @@ public class ViewManager extends JFrame implements Observer{
     vehicleSimulation.createAndAddVehicleButton(a_listener);
   }
   
-  public void addProtoListener(ActionListener a_listener){
-    rdbtnKar.addActionListener(a_listener);
-    rdbtnVecom.addActionListener(a_listener);
-    rdbtnSics.addActionListener(a_listener);
-  }
-  
-  public void addPortSettingEventSubscriber(Event a_subscriber){
+  public void addEventSubscriber(Event a_subscriber){
     subscriber  = a_subscriber;
   }
   
@@ -125,6 +118,14 @@ public class ViewManager extends JFrame implements Observer{
   public void update(Observable o, Object arg) {
     // TODO Auto-generated method stub
     feedbackTxtpn.setText("obervable called me");
+  }
+  
+  public PortSettingPanel getPortSettingPanel() {
+    return portSettingPanel;
+  }
+
+  public ProtocolPanel getProtocolPanel() {
+    return protocolPanel;
   }
 
   
@@ -225,22 +226,27 @@ public class ViewManager extends JFrame implements Observer{
     });
     mnSetting.add(mntmPortSettings);
 
-    mnProtocol = new JMenu("Protocol");
-    menuBar.add(mnProtocol);
-
-    rdbtnKar = new JRadioButton("KAR");
-    rdbtnKar.setSelected(true);
-    protoButtonGroup.add(rdbtnKar);
-    mnProtocol.add(rdbtnKar);
-
-    rdbtnVecom = new JRadioButton("VECOM");
-    protoButtonGroup.add(rdbtnVecom);
-    mnProtocol.add(rdbtnVecom);
-
-    rdbtnSics = new JRadioButton("SICS");
-    protoButtonGroup.add(rdbtnSics);
-    mnProtocol.add(rdbtnSics);
-
+    protocolPanel = new ProtocolPanel();
+    mnProtocol = new JMenuItem("Protocol");
+    mnProtocol.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        int ok = JOptionPane.showConfirmDialog(null,
+            protocolPanel,
+            "Protocol Setting",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.PLAIN_MESSAGE); 
+        switch (ok){
+          case 0:
+            protocolPanel.handleOK();
+            subscriber.signal(protocolPanel);
+            break;
+          case 2:
+            // do nothing
+            break;
+        }
+      }
+    });
+    mnSetting.add(mnProtocol);
   }
   
   // PRIVATE ATTRIBUTES
@@ -258,14 +264,12 @@ public class ViewManager extends JFrame implements Observer{
   private JTextPane feedbackTxtpn;
   private JMenuBar menuBar;
   private JMenu mnSetting;
-  private JMenu mnProtocol;
+  private JMenuItem mnProtocol;
   private JMenuItem mntmPortSettings;
   
-  private JRadioButton rdbtnKar;
-  private JRadioButton rdbtnVecom;
-  private JRadioButton rdbtnSics;
   // port settings class
   private PortSettingPanel portSettingPanel;
+  private ProtocolPanel protocolPanel;
   private Event subscriber ;
   
   

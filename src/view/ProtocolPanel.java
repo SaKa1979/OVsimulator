@@ -4,12 +4,18 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import view.VehicleSettingPanel.TextFieldListener;
-
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 
 public class ProtocolPanel extends JPanel {
@@ -20,10 +26,8 @@ public class ProtocolPanel extends JPanel {
   public ProtocolPanel() {
     setToolTipText("Here you can select a protocol and enter the protocols specific settings");
     setBorder(new TitledBorder(null, "Protocol", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-    this.setSize(320, 320);
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] {50, 250};
-    gridBagLayout.rowHeights = new int[] {100, 100, 100};
     gridBagLayout.columnWeights = new double[]{0.0};
     gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0};
     setLayout(gridBagLayout);
@@ -33,62 +37,163 @@ public class ProtocolPanel extends JPanel {
   }
 
   // PUBLIC METHODS
+  /**
+   * When Panel OK button is pressed all user input is read (again)
+   * This allows the user to fill in all the fields without confirming each field individually
+   */
+  public void handleOK(){
+    loadAllFieldValues();
+  }
+  
+  public String toString(){
+    String s = "protocol " + selected_protocol;
+    return s;
+  }
+  
+  public int getKar_sid() {
+    return kar_sid;
+  }
+  
   // PRIVATE METHODS
   private void initialize(){
+    fieldsList = new ArrayList<JTextField>();
     buttonGroup = new ButtonGroup();
-    JCheckBox chckbxKAR = new JCheckBox("KAR");
-    buttonGroup.add(chckbxKAR);
+    
+    // KAR
+    JCheckBox karCB = new JCheckBox("KAR");
+    karCB.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED){
+          sidTF.setEnabled(true);
+          selected_protocol = PROTO.KAR;
+        }
+        else {
+          sidTF.setEnabled(false);
+        }
+      }
+    });
+    buttonGroup.add(karCB);
     GridBagConstraints gbc_chckbxKAR = new GridBagConstraints();
+    gbc_chckbxKAR.anchor = GridBagConstraints.NORTH;
     gbc_chckbxKAR.insets = new Insets(0, 10, 0, 0);
-    gbc_chckbxKAR.fill = GridBagConstraints.BOTH;
+    gbc_chckbxKAR.fill = GridBagConstraints.HORIZONTAL;
     gbc_chckbxKAR.gridx = 0;
     gbc_chckbxKAR.gridy = 0;
-    add(chckbxKAR, gbc_chckbxKAR);
-
-    chckbxVecom = new JCheckBox("VECOM");
-    buttonGroup.add(chckbxVecom);
-    GridBagConstraints gbc_chckbxVecom = new GridBagConstraints();
-    gbc_chckbxVecom.insets = new Insets(0, 10, 0, 0);
-    gbc_chckbxVecom.fill = GridBagConstraints.BOTH;
-    gbc_chckbxVecom.gridx = 0;
-    gbc_chckbxVecom.gridy = 1;
-    add(chckbxVecom, gbc_chckbxVecom);
-
-    chckbxSics = new JCheckBox("SICS");
-    buttonGroup.add(chckbxSics);
-    GridBagConstraints gbc_chckbxSics = new GridBagConstraints();
-    gbc_chckbxSics.fill = GridBagConstraints.BOTH;
-    gbc_chckbxSics.insets = new Insets(0, 10, 0, 0);
-    gbc_chckbxSics.gridx = 0;
-    gbc_chckbxSics.gridy = 2;
-    add(chckbxSics, gbc_chckbxSics);
+    add(karCB, gbc_chckbxKAR);
     
     sidTF = new JTextField();
     sidTF.setEnabled(false);
     sidTF.setName(sidTF_name);
-    sidTF.setText("SID");
-//    sidTF.addActionListener(new TextFieldListener());
+    sidTF.setText("0000");
+    sidTF.addActionListener(textFieldListener);
     GridBagConstraints gbc_sidTF = new GridBagConstraints();
     gbc_sidTF.anchor = GridBagConstraints.NORTH;
     gbc_sidTF.fill = GridBagConstraints.BOTH;
     gbc_sidTF.gridx = 1;
     gbc_sidTF.gridy = 0;
     add(sidTF, gbc_sidTF);
+    fieldsList.add(sidTF);
+    karCB.setSelected(true);
+
+    // VECOM
+    vecomCB = new JCheckBox("VECOM");
+    vecomCB.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED){
+          selected_protocol = PROTO.VECOM;
+        }
+        else {
+          // do nothing
+        }
+      }
+    });
+    buttonGroup.add(vecomCB);
+    GridBagConstraints gbc_chckbxVecom = new GridBagConstraints();
+    gbc_chckbxVecom.anchor = GridBagConstraints.NORTH;
+    gbc_chckbxVecom.insets = new Insets(0, 10, 0, 0);
+    gbc_chckbxVecom.fill = GridBagConstraints.HORIZONTAL;
+    gbc_chckbxVecom.gridx = 0;
+    gbc_chckbxVecom.gridy = 1;
+    add(vecomCB, gbc_chckbxVecom);
+
+    // SICS
+    sicsCB = new JCheckBox("SICS");
+    vecomCB.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED){
+          selected_protocol = PROTO.SICS;
+        }
+        else {
+          // do nothing
+        }
+      }
+    });
+    buttonGroup.add(sicsCB);
+    GridBagConstraints gbc_chckbxSics = new GridBagConstraints();
+    gbc_chckbxSics.anchor = GridBagConstraints.NORTH;
+    gbc_chckbxSics.fill = GridBagConstraints.HORIZONTAL;
+    gbc_chckbxSics.insets = new Insets(0, 10, 0, 0);
+    gbc_chckbxSics.gridx = 0;
+    gbc_chckbxSics.gridy = 2;
+    add(sicsCB, gbc_chckbxSics);
+   
     
   }
-  
+  /**
+   * Loads the values entered in all the fields. 
+   */
   private void loadAllFieldValues(){
-    // TODO
+    for(JTextField tf : fieldsList){
+      readTextField(tf);
+    }
   }
-
+  
+  /**
+   * @brief Reads the value entered into the field and copies it to the same named attribute
+   *        The target attribute is decided by textfield name.
+   * @throws NumberFormatException
+   * @param tf JTextField
+   */
+  private void readTextField(JTextField tf){
+    int number = 0;
+    if (!tf.isEnabled()) 
+      return;
+    try{
+      number = Integer.parseInt(tf.getText().substring(0, 3));
+    }catch(NumberFormatException nfe){
+      JOptionPane.showMessageDialog(null, nfe.toString(), "Input error", JOptionPane.ERROR_MESSAGE);
+      number = 0;
+      tf.setText("0");
+    }
+    finally{
+      if (tf.getName().equals(sidTF_name))
+        kar_sid = number;
+    }
+  }
+  
+  // LISTENERS
+  ActionListener textFieldListener = new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      JTextField tf = (JTextField)e.getSource();
+      readTextField(tf);
+    }
+  };
+  
   //INNER CLASSES
   // ENUMS
+  private enum PROTO {KAR, VECOM, SICS};
+  
   // PRIVATE ATTRIBUTES
   private JCheckBox chckbxKAR;
-  private JCheckBox chckbxVecom;
-  private JCheckBox chckbxSics;
+  private JCheckBox vecomCB;
+  private JCheckBox sicsCB;
   private ButtonGroup buttonGroup;
   private JTextField sidTF;
   
   private String sidTF_name = "sid";
+  private ArrayList<JTextField> fieldsList; // holds all textfields
+  private PROTO selected_protocol;
+  private int kar_sid;
+
 } //end of class ProtocolPanel
