@@ -14,6 +14,7 @@ import javax.swing.text.StyledDocument;
 
 import controller.Event;
 import images.ImageFactory;
+import model.Communicator;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -117,6 +118,7 @@ public class ViewManager extends JFrame implements Observer{
   
   public void update(Observable o, Object arg) {
     // TODO Auto-generated method stub
+   
     feedbackTxtpn.setText("obervable called me");
   }
   
@@ -271,6 +273,5 @@ public class ViewManager extends JFrame implements Observer{
   private PortSettingPanel portSettingPanel;
   private ProtocolPanel protocolPanel;
   private Event subscriber ;
-  
   
 } // end of Ovmain 

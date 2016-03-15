@@ -3,6 +3,7 @@ package controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import model.Communicator;
 import view.ViewManager;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
@@ -25,8 +26,11 @@ public class SimControler implements Event {
       view.addVehicleButtonAndListener(vehicleSimulationListener);
     }
 
-//    view.addProtoListener(protoListener);
     view.addEventSubscriber(this);
+    communicator.addView(view);
+    communicator.addObserver(view);
+    communicator.searchForPorts();
+
   }
   
   //LISTENERS and SIGNALS
@@ -58,5 +62,6 @@ public class SimControler implements Event {
   
   // PRIVATE ATTRIBUTES
   ViewManager view = new ViewManager(800, 800);
+  Communicator communicator = new Communicator();
   
 }// end ov class SimControler
