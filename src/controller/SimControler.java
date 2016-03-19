@@ -1,12 +1,18 @@
 package controller;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import model.Communicator;
 import view.ViewManager;
 import view.PortSettingPanel;
+import view.PortSettingPanel.DataBit;
+import view.PortSettingPanel.Flow;
+import view.PortSettingPanel.Parity;
+import view.PortSettingPanel.StopBit;
 import view.ProtocolPanel;
+import view.ProtocolPanel.Proto;
 import view.VehicleButton;
 
 public class SimControler implements Event {
@@ -19,18 +25,17 @@ public class SimControler implements Event {
   }
 
   // PUBLIC METHOD
+  public ViewManager getViewManager(){
+	  return viewManager;
+  }
   
   // PRIVATE METHOD
   private void initialize(){
-    for (int i = 0; i < 20; i++){
-      view.addVehicleButtonAndListener(vehicleSimulationListener);
-    }
 
-    view.addEventSubscriber(this);
-    communicator.addView(view);
-    communicator.addObserver(view);
+    viewManager.addEventSubscriber(this);
+    communicator.addSimController(this);
+    communicator.addObserver(viewManager);
     communicator.searchForPorts();
-
   }
   
   //LISTENERS and SIGNALS
@@ -39,29 +44,34 @@ public class SimControler implements Event {
    * @param o When the method is called, the callee may pass an object.
    */
   public void signal(Object o){
-    if (o instanceof PortSettingPanel){
-      PortSettingPanel psp = (PortSettingPanel)o;
-      view.writeToFeedback(psp.toString());
-    }else if (o instanceof ProtocolPanel){
-      ProtocolPanel pp = (ProtocolPanel)o;
-      view.writeToFeedback(pp.toString());
-    }
+	  if (o instanceof PortSettingPanel){
+		  PortSettingPanel portSettingPanel = (PortSettingPanel)o;
+		  String port = (String) portSettingPanel.getComPort();
+		  int baudRate = portSettingPanel.getBaudRate();
+		  DataBit dataBits = portSettingPanel.getDataBits();  
+		  Parity parity = portSettingPanel.getParity();    
+		  StopBit stopBits = portSettingPanel.getStopBits();  
+		  Flow flow = portSettingPanel.getFlow();
+		  String s_portSetting = port + "|" + baudRate + "|" + dataBits.getName() + "|" + parity.getName() + "|" + stopBits.getName() + "|" + flow.getName();
+		  viewManager.writeToBottomInfoComSettings(s_portSetting,Color.BLACK);
+		  communicator.connect();
+	  }else if (o instanceof ProtocolPanel){
+		  ProtocolPanel pp = (ProtocolPanel)o;
+		  Proto proto = pp.getSelectedProto();
+		  viewManager.writeToBottomProto(proto.name());
+		  if (proto == Proto.KAR){
+			  viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()));
+		  }
+
+	  }else if (o instanceof VehicleButton){
+		  VehicleButton vb = (VehicleButton)o;
+		  
+		  viewManager.writeToFeedback(vb.toString(), Color.black, 8);
+	  }
   }
   
-  /**
-   * @brief Action listener for handling the simulation of all vehicleButtons
-   *        Action is triggered by a VehicleButton
-   */
-  ActionListener vehicleSimulationListener = new ActionListener() {   
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      VehicleButton vb = (VehicleButton)e.getSource();
-      view.writeToFeedback(vb.toString());
-    }
-  };
-  
   // PRIVATE ATTRIBUTES
-  ViewManager view = new ViewManager(800, 800);
+  ViewManager viewManager = new ViewManager(800, 800);
   Communicator communicator = new Communicator();
   
 }// end ov class SimControler

@@ -29,6 +29,9 @@ public class ImageFactory {
     taxiImage = createImageIcon("/images/taxi.jpg","politie");
     tramImage = createImageIcon("/images/tram.jpg","politie");
     brokenImage = createImageIcon("/images/broken.jpg","broken");
+    ledRedImage = createImageIcon("/images/ledRed.jpg","ledRed");
+    ledGreenImage = createImageIcon("/images/ledGreen.jpg","ledGreen");
+    
   }
 
   public ImageIcon createImageIcon(String filename, String description) {
@@ -52,6 +55,10 @@ public class ImageFactory {
       return politieImage;
     else if (name.equals(VehicleTypes.UNKNOWN.getName()))
       return unknownImage;
+    else if (name.equals("ledRed"))
+        return ledRedImage;
+    else if (name.equals("ledGreen"))
+        return ledGreenImage;
     else if (name.equals("swarcoLogo"))
         return swarcoLogoImage;
     else 
@@ -68,5 +75,7 @@ public class ImageFactory {
   private ImageIcon taxiImage;
   private ImageIcon tramImage;
   private ImageIcon brokenImage;
+  private ImageIcon ledRedImage;
+  private ImageIcon ledGreenImage;
   
 }

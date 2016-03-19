@@ -31,131 +31,162 @@ public class PortSettingPanel extends JPanel {
     loadAllFieldValues();
   }
   
-  public String toString(){
-    String s = "com port " + comPort +
-        " baud rate " + baudRate +
-        " data bits " + dataBits +
-        " parity " + parity +
-        " stop bits " + stopBits +
-        " flow " + flow;
-    return s;
+  public Object getComPort() {
+    return comComBox.getSelectedItem();
   }
-  
-  public String getComPort() {
-    return comPort;
-  }
-
+  // Populated from Communicator
   public void setComPort(String comPort) {
     comComBox.addItem(comPort);
   }
 
-  public int getBaudRate() {
+  public Integer getBaudRate() {
     return baudRate;
   }
-
-  public void setBaudRate(int baudRate) {
-    this.baudRate = baudRate;
+  public void setBaudRate(Integer br) {
+    baudRate = br;
   }
 
-  public int getDataBits() {
-    return dataBits;
+  public DataBit getDataBits() {
+    return dataBit;
   }
-
-  public void setDataBits(int dataBits) {
-    this.dataBits = dataBits;
+  public void setDataBits(DataBit dataBit) {
+	  switch(dataBit){
+	  case DATABITS_5:
+		  dataBit = DataBit.DATABITS_5;
+		  break;
+	  case DATABITS_6:
+		  dataBit = DataBit.DATABITS_6;
+		  break;
+	  case DATABITS_7:
+		  dataBit = DataBit.DATABITS_7;
+		  break;
+	  case DATABITS_8:
+		  dataBit = DataBit.DATABITS_8;
+		  break;
+	  default:
+		  dataBit = DataBit.DATABITS_5;
+	  }
   }
-  
-  public int getParity() {
+   
+   public Parity getParity() {
     return parity;
   }
-
   public void setParity(Parity parity) {
     switch(parity){
-      case EVEN:
+      case PARITY_NONE:
+    	  parity = Parity.PARITY_NONE;
         break;
-      case NON:
+      case PARITY_ODD:
+    	  parity = Parity.PARITY_ODD;
         break;
-      case ODD:
+      case PARITY_EVEN:
+    	  parity = Parity.PARITY_EVEN;
         break;
+      case PARITY_MARK:
+    	  parity = Parity.PARITY_MARK;
+          break;
+      case PARITY_SPACE:
+    	  parity = Parity.PARITY_SPACE;
+          break;
       default:
+    	  parity = Parity.PARITY_NONE;
         break;
     }
   }
-  public int getStopBits() {
-    return stopBits;
+  
+  public StopBit getStopBits() {
+    return stopBit;
+  }
+  public void setStopBits(StopBit stopBit) {
+	  switch(stopBit){
+	  case STOPBITS_1:
+		  stopBit = StopBit.STOPBITS_1;
+		  break;
+	  case STOPBITS_2:
+		  stopBit = StopBit.STOPBITS_2;
+		  break;
+	  case STOPBITS_1_5:
+		  stopBit = StopBit.STOPBITS_1_5;
+		  break;
+	  default:
+		  stopBit = StopBit.STOPBITS_1;
+	  }
   }
 
-  public void setStopBits(int stopBits) {
-    this.stopBits = stopBits;
-  }
-
-  public int getFlow() {
+  public Flow getFlow() {
     return flow;
   }
-
   public void setFlow(Flow flow) {
     switch(flow){
-      case HARDWARE:
+      case FLOWCONTROL_NONE:
+    	  flow = Flow.FLOWCONTROL_NONE;
         break;
-      case NON:
+      case FLOWCONTROL_RTSCTS_IN:
+    	  flow = Flow.FLOWCONTROL_RTSCTS_IN;
         break;
-      case XONXOFF:
+      case FLOWCONTROL_RTSCTS_OUT:
+    	  flow = Flow.FLOWCONTROL_RTSCTS_OUT;
         break;
+      case FLOWCONTROL_XONXOFF_IN:
+    	  flow = Flow.FLOWCONTROL_XONXOFF_IN;
+          break;
+        case FLOWCONTROL_XONXOFF_OUT:
+        	flow = Flow.FLOWCONTROL_XONXOFF_OUT;
+          break;      
       default:
-        break;
+    	  flow = Flow.FLOWCONTROL_NONE;
+        break;	
     }
   }
   
   // PRIVATE METHODS
   private void initialize(){
-    comboBoxList = new ArrayList<JComboBox<String>>();
+    comboBoxList = new ArrayList<JComboBox<Object>>();
     
-//    comComBoxArray = TODO where should I get the port settings? A serial port manager needs to be implemented
-
-//    comComBoxArray = Comport.getAsArray();
-    comComBox = new JComboBox<String>(/*comComBoxArray*/);
+    comComBox = new JComboBox<String>();
     comComBox.addActionListener(new ComBoListener());
     comComBox.setName(comComBox_name);
     if (comComBox.getItemAt(1) != null)
       comComBox.setSelectedIndex(1);
     add(comComBox);
     
-    baudComBox = new JComboBox<String>(baudComBoxArray);
+    
+    baudComBox = new JComboBox<Integer>(baudComBoxArray);
     baudComBox.addActionListener(new ComBoListener());
     baudComBox.setName(baudComBox_name);
     if (baudComBox.getItemAt(6) != null)
       baudComBox.setSelectedIndex(6);
     add(baudComBox);
     
-    dataBitsComBox = new JComboBox<String>(dataBitsComBoxArray);
+    parityComBox = new JComboBox<Parity>(Parity.values());
+    parityComBox.addActionListener(new ComBoListener());
+    parityComBox.setName(parityComBox_name);
+    if (parityComBox.getItemAt(0) != null)
+      parityComBox.setSelectedIndex(0);
+    add(parityComBox);
+  
+    dataBitsComBox = new JComboBox<DataBit>(DataBit.values());
     dataBitsComBox.addActionListener(new ComBoListener());
     dataBitsComBox.setName(dataBitsComBox_name);
     if (dataBitsComBox.getItemAt(1) != null)
       dataBitsComBox.setSelectedIndex(1);
     add(dataBitsComBox);
     
-    parityComBoxArray = Parity.getAsArray();
-    parityComBox = new JComboBox<String>(parityComBoxArray);
-    parityComBox.addActionListener(new ComBoListener());
-    parityComBox.setName(parityComBox_name);
-    if (parityComBox.getItemAt(0) != null)
-      parityComBox.setSelectedIndex(0);
-    add(parityComBox);
-    
-    stopBitsComBox = new JComboBox<String>(stopBitsComBoxArray);
+    stopBitsComBox = new JComboBox<StopBit>(StopBit.values());
     stopBitsComBox.addActionListener(new ComBoListener());
     stopBitsComBox.setName(stopBitsComBox_name);
     if (stopBitsComBox.getItemAt(0) != null)
       stopBitsComBox.setSelectedIndex(0);
     add(stopBitsComBox);
-    
-    flowComboxArray = Flow.getAsArray();
-    flowCombox = new JComboBox<String>(flowComboxArray);
+
+    flowCombox = new JComboBox<Flow>(Flow.values());
     flowCombox.addActionListener(new ComBoListener());
     flowCombox.setName(flowCombox_name);
     if (flowCombox.getItemAt(0) != null)
       flowCombox.setSelectedIndex(0);
     add(flowCombox);
+    
+    initialized = true;
   }
   
 
@@ -163,41 +194,31 @@ public class PortSettingPanel extends JPanel {
    * Loads the values entered in all the fields. 
    */
   private void loadAllFieldValues() {
-          for (JComboBox<String> combobox : comboBoxList){
+          for (JComboBox<Object> combobox : comboBoxList){
                   readComBoBox(combobox);
           }    
   }
   
   /**
-   * @brief Reads the current selection and copies it to the named VehicleButton attribute
-   *            The target attribute is decided by combobox name.
-   * @param combobox JComboBox<String> 
+   * @brief Reads the current selection and copies it to the approriate attribute
+   *            The target attribute is decided by combobox item class.
+   * @param combobox JComboBox<Object> 
    */
-  private void readComBoBox(JComboBox<String> combobox){
-          if (!combobox.isEnabled())
-                  return;
+  private void readComBoBox(JComboBox<Object> combobox){
+
+	  if (!initialized)
+		  return;
           
-          if (combobox.getName() == comComBox_name){
-            int index = combobox.getSelectedIndex();
-//            Comport c = Comport.getAsType(index);
-//            setComPort(c);
-          }else if (combobox.getName() == baudComBox_name){
-            int baudrate = Integer.parseInt((String) combobox.getSelectedItem());
-            setBaudRate(baudrate);
-          }else if (combobox.getName() == dataBitsComBox_name){
-            int dataBits =  Integer.parseInt((String) combobox.getSelectedItem());
-            setDataBits(dataBits);
-          }else if (combobox.getName() == parityComBox_name){
-            int index = combobox.getSelectedIndex();
-            Parity p = Parity.getAsType(index);
-            setParity(p);
-          }else if (combobox.getName() == stopBitsComBox_name){
-            int dataBits =  Integer.parseInt((String) combobox.getSelectedItem());
-            setDataBits(dataBits);
-          }else if (combobox.getName() == flowCombox_name){
-            int index = combobox.getSelectedIndex();
-            Flow f = Flow.getAsType(index);
-            setFlow(f);
+          if (combobox.getClass().equals(baudRate.getClass())){
+            setBaudRate((Integer)combobox.getSelectedItem());
+          }else if (combobox.getClass().equals(dataBit.getClass())){
+            setDataBits((DataBit)combobox.getSelectedItem());
+          }else if (combobox.getClass().equals(parity.getClass())){
+            setParity((Parity)combobox.getSelectedItem());
+          }else if (combobox.getClass().equals(dataBit.getClass())){
+            setDataBits((DataBit)combobox.getSelectedItem());
+          }else if (combobox.getClass().equals(flow.getClass())){
+            setFlow((Flow)combobox.getSelectedItem());
           }
   }
   
@@ -206,74 +227,44 @@ public class PortSettingPanel extends JPanel {
   public class ComBoListener implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
-      JComboBox<String> combobox = (JComboBox<String>)e.getSource();
+      JComboBox<Object> combobox = (JComboBox<Object>)e.getSource();
       readComBoBox(combobox);
     }  
   }// end of inner class ComBoListener
+
   
   // ENUMS
-  public interface portEnums<T>{ // TODO this doenst work with ENUMS.value
-    T getAsType(String a_Name);
-    T getAsType(int a_Nr);
-    String[] getAsArray();
-    String getName();
-    int getNr();
+
+  public enum DataBit{
+	  DATABITS_5 ("5",0),
+	  DATABITS_6 ("6",1),
+	  DATABITS_7 ("7",2),
+	  DATABITS_8 ("8",4);
+
+    private String _name;
+    private int _nr;
+    
+    // constructor
+    private DataBit(String a_Name, int a_Nr){
+      _name = a_Name;
+      _nr = a_Nr;
+    }
+
+    public String getName(){
+      return _name;
+    }
+    
+    public int getNr(){
+      return _nr;
+    }
   }
   
-//  public enum Comport/* implements portEnums*/{
-//    NON  ("none", 0),
-//    COM1 ("COM 1",1),
-//    COM2 ("COM 2",2),
-//    COM3 ("COM 3",3),
-//    COM4 ("COM 4",4);
-//
-//    private String _name;
-//    private int _nr;
-//    
-//    // constructor
-//    private Comport(String a_Name, int a_Nr){
-//      _name = a_Name;
-//      _nr = a_Nr;
-//    }
-//    public static Comport getAsType(String a_Name){
-//      for (Comport vt:Comport.values()){
-//        if(vt._name == a_Name)
-//          return vt;
-//      }
-//      return null;
-//    }
-//    
-//    public static Comport getAsType(int a_Nr){
-//      for (Comport vt:Comport.values()){
-//        if(vt._nr == a_Nr)
-//          return vt;
-//      }
-//      return null;
-//    }
-//    
-//    public static String[] getAsArray() {
-//      ArrayList<String> list_al = new ArrayList<String>();    
-//      for (Comport cp : Comport.values()){
-//        list_al.add(cp._name);
-//      }
-//      String[] list_a = new String[list_al.size()];
-//
-//      return list_al.toArray(list_a);
-//    }
-//    
-//    public String getName(){
-//      return _name;
-//    }
-//    
-//    public int getNr(){
-//      return _nr;
-//    }
-//  }
-
-  public enum Parity/* implements portEnums*/{
-    NON ("N",0),
-    ODD ("O",1),
-    EVEN ("E",2);
+  public enum Parity{
+	  PARITY_NONE ("N",0),
+	  PARITY_ODD ("O",1),
+	  PARITY_EVEN ("E",2),
+	  PARITY_MARK ("M",3),
+	  PARITY_SPACE ("S",4);
 
     private String _name;
     private int _nr;
@@ -283,33 +274,7 @@ public class PortSettingPanel extends JPanel {
       _name = a_Name;
       _nr = a_Nr;
     }
-    
-    public static Parity getAsType(String a_Name){
-      for (Parity p:Parity.values()){
-        if(p._name == a_Name)
-          return p;
-      }
-      return null;
-    }
-    
-    public static Parity getAsType(int a_Nr){
-      for (Parity p:Parity.values()){
-        if(p._nr == a_Nr)
-          return p;
-      }
-      return null;
-    }
-    
-    public static String[] getAsArray() {
-      ArrayList<String> list_al = new ArrayList<String>();    
-      for (Parity p : Parity.values()){
-        list_al.add(p._name);
-      }
-      String[] list_a = new String[list_al.size()];
-
-      return list_al.toArray(list_a);
-    }
-    
+       
     public String getName(){
       return _name;
     }
@@ -319,10 +284,35 @@ public class PortSettingPanel extends JPanel {
     }
   }
   
-  public enum Flow/* implements portEnums*/{
-    NON ("Geen",0),
-    XONXOFF ("Xon/Xoff",1),
-    HARDWARE ("Hardware",2);
+  public enum StopBit{
+	  STOPBITS_1 ("S1",1),
+	  STOPBITS_2 ("S2",2),
+	  STOPBITS_1_5 ("S1,5",3);
+
+    private String _name;
+    private int _nr;
+    
+    // constructor
+    private StopBit(String a_Name, int a_Nr){
+      _name = a_Name;
+      _nr = a_Nr;
+    }
+
+    public String getName(){
+      return _name;
+    }
+    
+    public int getNr(){
+      return _nr;
+    }
+  }
+  
+  public enum Flow{
+	  FLOWCONTROL_NONE ("N",0),
+	  FLOWCONTROL_RTSCTS_IN ("RTSCTS_IN",1),
+	  FLOWCONTROL_RTSCTS_OUT ("RTSCTS_OUT",2),
+	  FLOWCONTROL_XONXOFF_IN ("XONXOFF_IN",4),
+	  FLOWCONTROL_XONXOFF_OUT ("XONXOFF_OUT",8);
 
     private String _name;
     private int _nr;
@@ -332,31 +322,6 @@ public class PortSettingPanel extends JPanel {
       _name = a_Name;
       _nr = a_Nr;
     }
-    public static Flow getAsType(String a_Name){
-      for (Flow f:Flow.values()){
-        if(f._name == a_Name)
-          return f;
-      }
-      return null;
-    }
-    
-    public static Flow getAsType(int a_Nr){
-      for (Flow vt:Flow.values()){
-        if(vt._nr == a_Nr)
-          return vt;
-      }
-      return null;
-    }
-    
-    public static String[] getAsArray() {
-      ArrayList<String> list_al = new ArrayList<String>();    
-      for (Flow f : Flow.values()){
-        list_al.add(f._name);
-      }
-      String[] list_a = new String[list_al.size()];
-
-      return list_al.toArray(list_a);
-    }
     
     public String getName(){
       return _name;
@@ -366,35 +331,32 @@ public class PortSettingPanel extends JPanel {
       return _nr;
     }
   }
+
   // PRIVATE ATTRIBUTES
   private JComboBox<String> comComBox;
-  private JComboBox<String> baudComBox;
-  private JComboBox<String> dataBitsComBox;
-  private JComboBox<String> parityComBox;
-  private JComboBox<String> stopBitsComBox;
-  private JComboBox<String> flowCombox;
+  private JComboBox<Integer> baudComBox;
+  private JComboBox<DataBit> dataBitsComBox;
+  private JComboBox<Parity> parityComBox;
+  private JComboBox<StopBit> stopBitsComBox;
+  private JComboBox<Flow> flowCombox;
   
   private String  comComBox_name  = "comport";     
-  private String  baudComBox_name = "baudrate";    
+  private String  baudComBox_name = "baudrate";
   private String  dataBitsComBox_name = "databits";
   private String  parityComBox_name = "parity";  
   private String  stopBitsComBox_name = "stopbits";
   private String  flowCombox_name = "flow";  
+    
+  private Integer[] baudComBoxArray = {110,300,600,1200,2400,4800,9600,14400,19200,38400};     
   
-//  private String[] comComBoxArray;      
-  private String[] baudComBoxArray = {"110","300","600","1200","2400","4800","9600","14400","19200","38400"};     
-  private String[] dataBitsComBoxArray = {"7","8"};
-  private String[] parityComBoxArray;   
-  private String[] stopBitsComBoxArray = {"1","1.5","2"}; 
-  private String[] flowComboxArray; 
-  
-  private ArrayList<JComboBox<String>> comboBoxList; // holds all comboboxes
+  private ArrayList<JComboBox<Object>> comboBoxList; // holds all comboboxes
 
-  private String comPort;
-  private int baudRate;
-  private int dataBits;
-  private int parity;
-  private int stopBits;
-  private int flow;
+  private Integer baudRate = 9600;
+  private DataBit dataBit = DataBit.DATABITS_8;
+  private Parity parity = Parity.PARITY_NONE;
+  private StopBit stopBit = StopBit.STOPBITS_1;
+  private Flow flow = Flow.FLOWCONTROL_NONE;
+  
+  private Boolean initialized = false;
   
 }// end class PortSettingPanel

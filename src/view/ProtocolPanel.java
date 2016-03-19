@@ -42,18 +42,17 @@ public class ProtocolPanel extends JPanel {
    * This allows the user to fill in all the fields without confirming each field individually
    */
   public void handleOK(){
-    loadAllFieldValues();
+	  loadAllFieldValues();
   }
-  
-  public String toString(){
-    String s = "protocol " + selected_protocol;
-    return s;
+
+  public Proto getSelectedProto() {
+	  return selectedProto;
   }
-  
+
   public int getKar_sid() {
-    return kar_sid;
+	  return kar_sid;
   }
-  
+
   // PRIVATE METHODS
   private void initialize(){
     fieldsList = new ArrayList<JTextField>();
@@ -65,7 +64,7 @@ public class ProtocolPanel extends JPanel {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           sidTF.setEnabled(true);
-          selected_protocol = PROTO.KAR;
+          selectedProto = Proto.KAR;
         }
         else {
           sidTF.setEnabled(false);
@@ -100,7 +99,7 @@ public class ProtocolPanel extends JPanel {
     vecomCB.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
-          selected_protocol = PROTO.VECOM;
+          selectedProto = Proto.VECOM;
         }
         else {
           // do nothing
@@ -121,7 +120,7 @@ public class ProtocolPanel extends JPanel {
     vecomCB.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
-          selected_protocol = PROTO.SICS;
+          selectedProto = Proto.SICS;
         }
         else {
           // do nothing
@@ -181,8 +180,9 @@ public class ProtocolPanel extends JPanel {
   };
   
   //INNER CLASSES
+  
   // ENUMS
-  private enum PROTO {KAR, VECOM, SICS};
+  public enum Proto {KAR, VECOM, SICS};
   
   // PRIVATE ATTRIBUTES
   private JCheckBox chckbxKAR;
@@ -193,7 +193,9 @@ public class ProtocolPanel extends JPanel {
   
   private String sidTF_name = "sid";
   private ArrayList<JTextField> fieldsList; // holds all textfields
-  private PROTO selected_protocol;
-  private int kar_sid;
+  private Proto selectedProto;
+
+
+private int kar_sid;
 
 } //end of class ProtocolPanel
