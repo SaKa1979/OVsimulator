@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.MutableAttributeSet;
@@ -45,9 +46,10 @@ public class ViewManager extends JFrame implements Observer{
   /**
    *  Constructor
    */
-  public ViewManager(int sizeX, int sizeY) {
-    this.sizeX = sizeX;
-    this.sizeY = sizeY;
+  public ViewManager(int sX, int sY) {
+    sizeX = sX;
+    sizeY = sY;
+    setMinimumSize(new Dimension(sizeX, sizeY));
     imagefactory = new ImageFactory();
     initialize();
   }
@@ -204,10 +206,10 @@ public class ViewManager extends JFrame implements Observer{
    */
   public void connectedIndication(Boolean connected){
     if(connected){
-      bottomInfoConnectedLbl.setIcon(imagefactory.getImageIcon("ledGreen"));
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGreen"));
     }
     else{
-      bottomInfoConnectedLbl.setIcon(imagefactory.getImageIcon("ledRed"));      
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledRed"));      
     }
   }
 
@@ -228,15 +230,15 @@ public class ViewManager extends JFrame implements Observer{
   // PRIVATE METHODS
   private void initialize() {
 
-    this.setResizable(false);
+    this.setResizable(true);
     this.setTitle("OV simulator");
     this.setIconImage(imagefactory.getImageIcon("swarcoLogo").getImage());
-    this.setBounds(100, 100, 800, 600);
+    this.setBounds(100, 100, 685, 490);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     GridBagLayout gridBagLayout = new GridBagLayout();
-    gridBagLayout.columnWidths = new int[] {200, 532};
-    gridBagLayout.rowHeights = new int[] {600, 10};
-    gridBagLayout.columnWeights = new double[]{1.0, 0.0};
+    gridBagLayout.columnWidths = new int[] {150, 650};
+    gridBagLayout.rowHeights = new int[] {590, 60};
+    gridBagLayout.columnWeights = new double[]{0.0, 1.0};
     gridBagLayout.rowWeights = new double[]{1.0, 0.0};
     this.getContentPane().setLayout(gridBagLayout);
     this.setVisible(true);
@@ -249,8 +251,9 @@ public class ViewManager extends JFrame implements Observer{
     }
     vehicleSimulation.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_vehicleSimulation = new GridBagConstraints();
+    gbc_vehicleSimulation.anchor = GridBagConstraints.LINE_START;
     gbc_vehicleSimulation.insets = new Insets(0, 0, 5, 5);
-    gbc_vehicleSimulation.fill = GridBagConstraints.BOTH;
+    gbc_vehicleSimulation.fill = GridBagConstraints.NONE;
     gbc_vehicleSimulation.gridx = 0;
     gbc_vehicleSimulation.gridy = 0;
     getContentPane().add(vehicleSimulation, gbc_vehicleSimulation);
@@ -259,6 +262,8 @@ public class ViewManager extends JFrame implements Observer{
     FeedbackPanel = new JPanel();
     FeedbackPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Feedback", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_FeedbackPanel = new GridBagConstraints();
+    gbc_FeedbackPanel.weighty = 0.5;
+    gbc_FeedbackPanel.weightx = 0.5;
     gbc_FeedbackPanel.insets = new Insets(5, 0, 5, 0);
     gbc_FeedbackPanel.fill = GridBagConstraints.BOTH;
     gbc_FeedbackPanel.gridx = 1;
@@ -270,29 +275,32 @@ public class ViewManager extends JFrame implements Observer{
     FeedbackPanel.add(scrollPane);
 
     feedbackTxtpn = new JTextPane();
-    feedbackTxtpn.setText("feedback");
     feedbackTxtpn.setBackground(SystemColor.inactiveCaptionBorder);
     scrollPane.setViewportView(feedbackTxtpn);
 
     // bottom info panel
     bottomInfoPanel = new JPanel();
-    bottomInfoPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+    bottomInfoPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_bottomInfoPanel = new GridBagConstraints();
+    gbc_bottomInfoPanel.anchor = GridBagConstraints.SOUTH;
+    gbc_bottomInfoPanel.weighty = 0.0;
+    gbc_bottomInfoPanel.weightx = 0.0;
     gbc_bottomInfoPanel.gridheight = 2;
     gbc_bottomInfoPanel.gridwidth = 3;
-    gbc_bottomInfoPanel.fill = GridBagConstraints.HORIZONTAL;
+    gbc_bottomInfoPanel.fill = GridBagConstraints.BOTH;
     gbc_bottomInfoPanel.gridx = 0;
     gbc_bottomInfoPanel.gridy = 1;
     this.getContentPane().add(bottomInfoPanel, gbc_bottomInfoPanel);
     GridBagLayout gbl_bottomInfoPanel = new GridBagLayout();
     gbl_bottomInfoPanel.columnWidths = new int[] {198, 198, 198, 198};
-    gbl_bottomInfoPanel.rowHeights = new int[] {30, 0, 30};
+    gbl_bottomInfoPanel.rowHeights = new int[] {30, 30};
     gbl_bottomInfoPanel.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0};
-    gbl_bottomInfoPanel.rowWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+    gbl_bottomInfoPanel.rowWeights = new double[]{0.0, 1.0};
     bottomInfoPanel.setLayout(gbl_bottomInfoPanel);
 
       // bottom version detail info text pane
       bottomInfoVersionTxtpn = new JTextPane();
+      bottomInfoVersionTxtpn.setEditable(false);
       bottomInfoVersionTxtpn.setToolTipText("Information about the build. ");
       bottomInfoVersionTxtpn.setBackground(SystemColor.control);
       GridBagConstraints gbc_bottomInfoVersionTxtpn = new GridBagConstraints();
@@ -306,6 +314,7 @@ public class ViewManager extends JFrame implements Observer{
   
       // bottom communication settings detail info text pane
       bottomInfoComSettingTxtpn = new JTextPane();
+      bottomInfoComSettingTxtpn.setEditable(false);
       bottomInfoComSettingTxtpn.setBackground(SystemColor.control);
       GridBagConstraints gbc_bottomInfoComSettingTxtpn = new GridBagConstraints();
       gbc_bottomInfoComSettingTxtpn.fill = GridBagConstraints.BOTH;
@@ -321,7 +330,7 @@ public class ViewManager extends JFrame implements Observer{
       bottomInfoComStatusTxtpn.setEditable(false);
       bottomInfoComStatusTxtpn.setBackground(SystemColor.control);
       GridBagConstraints gbc_bottomInfoComStatusTxtpn = new GridBagConstraints();
-      gbc_bottomInfoComStatusTxtpn.insets = new Insets(0, 0, 0, 5);
+      gbc_bottomInfoComStatusTxtpn.insets = new Insets(0, 0, 5, 5);
       gbc_bottomInfoComStatusTxtpn.fill = GridBagConstraints.BOTH;
       gbc_bottomInfoComStatusTxtpn.gridx = 1;
       gbc_bottomInfoComStatusTxtpn.gridy = 1;
@@ -356,14 +365,14 @@ public class ViewManager extends JFrame implements Observer{
       bottomInfoProtoXtraInfoTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocol settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
       // is there a connection
-      bottomInfoConnectedLbl = new JLabel("Connected");
-      bottomInfoConnectedLbl.setIcon(imagefactory.getImageIcon("ledRed"));
-      GridBagConstraints gbc_bottomInfoConnectedLbl = new GridBagConstraints();
-      gbc_bottomInfoConnectedLbl.insets = new Insets(0, 0, 5, 0);
-      gbc_bottomInfoConnectedLbl.fill = GridBagConstraints.BOTH;
-      gbc_bottomInfoConnectedLbl.gridx = 3;
-      gbc_bottomInfoConnectedLbl.gridy = 0;
-      bottomInfoPanel.add(bottomInfoConnectedLbl, gbc_bottomInfoConnectedLbl);
+      RxTxLbl = new JLabel("RxTx");
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGray"));
+      GridBagConstraints gbc_RxTxLbl = new GridBagConstraints();
+      gbc_RxTxLbl.insets = new Insets(0, 0, 5, 0);
+      gbc_RxTxLbl.fill = GridBagConstraints.BOTH;
+      gbc_RxTxLbl.gridx = 3;
+      gbc_RxTxLbl.gridy = 0;
+      bottomInfoPanel.add(RxTxLbl, gbc_RxTxLbl);
 
     // menu bar
     menuBar = new JMenuBar();
@@ -445,7 +454,7 @@ public class ViewManager extends JFrame implements Observer{
   private JTextPane bottomInfoComSettingTxtpn;
   private JTextPane bottomInfoComStatusTxtpn;
   private JTextPane bottomInfoProtoTxtpn;
-  private JLabel bottomInfoConnectedLbl;
+  private JLabel RxTxLbl;
 
   private JMenuBar menuBar;
   private JMenu mnSetting;

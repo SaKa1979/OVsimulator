@@ -25,6 +25,7 @@ public class VehicleButton extends JButton{
    */
   public VehicleButton(){
     super();
+    setToolTipText("LMB is action.\r\nRMB is settings");
     initialize();
   }
   public VehicleButton(String a_name) {

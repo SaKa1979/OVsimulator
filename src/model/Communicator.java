@@ -89,7 +89,6 @@ public class Communicator extends Observable implements SerialPortEventListener 
 
       //for controlling GUI elements
       setConnected(true); 
-      viewManager.connectedIndication(bConnected);
     }
     catch (PortInUseException e)
     {
@@ -119,7 +118,12 @@ public class Communicator extends Observable implements SerialPortEventListener 
     }
 
     // write the settings to gui
-    comLog = commPort + "|" + baudRate + "|" + dataBits.getName() + "|" + parity.getName() + "|" + stopBits.getName() + "|" + flow.getName();
+    comLog = selectedPort + "." 
+        + baudRate + "." 
+        + dataBits.getName() + "." 
+        + parity.getName() + "." 
+        + stopBits.getName() 
+        + "." + flow.getName();
     viewManager.writeToBottomInfoComSettings(comLog, Color.BLACK);
     viewManager.writeTobottomInfoComStatus("Connected", Color.BLACK);
   }
@@ -242,7 +246,6 @@ public class Communicator extends Observable implements SerialPortEventListener 
 
       comLog = "Disconnected.";
       viewManager.writeTobottomInfoComStatus(comLog, Color.BLACK);
-      simControler.getViewManager().connectedIndication(bConnected);
     }
     catch (Exception e)
     {

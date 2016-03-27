@@ -57,12 +57,15 @@ public class SimControler implements Event {
 		  }
 	  }else if (o instanceof VehicleButton){
 		  VehicleButton vb = (VehicleButton)o;
+	              if (communicator.isbConnected()){
+	                //TODO serial write
 		  viewManager.writeToFeedback(vb.toString(), Color.blue, 8);
+	              }
 	  }
   }
   
   // PRIVATE ATTRIBUTES
-  ViewManager viewManager = new ViewManager(800, 800);
+  ViewManager viewManager = new ViewManager(800, 650);
   Communicator communicator = new Communicator();
   
 }// end ov class SimControler

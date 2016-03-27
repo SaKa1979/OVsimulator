@@ -31,7 +31,8 @@ public class ImageFactory {
     brokenImage = createImageIcon("/images/broken.jpg","broken");
     ledRedImage = createImageIcon("/images/ledRed.jpg","ledRed");
     ledGreenImage = createImageIcon("/images/ledGreen.jpg","ledGreen");
-    
+    ledGrayImage = createImageIcon("/images/ledGray.jpg","ledGray");
+    ledYellowImage = createImageIcon("/images/ledYellow.jpg","ledYellow");
   }
 
   public ImageIcon createImageIcon(String filename, String description) {
@@ -59,6 +60,10 @@ public class ImageFactory {
         return ledRedImage;
     else if (name.equals("ledGreen"))
         return ledGreenImage;
+    else if (name.equals("ledGray"))
+      return ledGrayImage;
+    else if (name.equals("ledYellow"))
+      return ledYellowImage;
     else if (name.equals("swarcoLogo"))
         return swarcoLogoImage;
     else 
@@ -77,5 +82,7 @@ public class ImageFactory {
   private ImageIcon brokenImage;
   private ImageIcon ledRedImage;
   private ImageIcon ledGreenImage;
+  private ImageIcon ledGrayImage;
+  private ImageIcon ledYellowImage;
   
 }
