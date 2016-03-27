@@ -18,8 +18,10 @@ import java.util.ArrayList;
  */
 public class VehicleButton extends JButton{
 
+  private static final long serialVersionUID = 1L;
+  
   /**
-   * Default constructor
+   *  constructor
    */
   public VehicleButton(){
     super();

@@ -12,6 +12,8 @@ import javax.swing.JComboBox;
 
 public class PortSettingPanel extends JPanel {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Constructor
    */
@@ -19,227 +21,87 @@ public class PortSettingPanel extends JPanel {
     setBorder(new TitledBorder(null, "Port settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     setLayout(new GridLayout(6, 1, 2, 2));
     initialize();
-    loadAllFieldValues();
   }
   
   // PUBLIC METHODS
-  /**
-   * When Panel OK button is pressed all user input is read (again)
-   * This allows the user to fill in all the fields without confirming each field individually
-   */
-  public void handleOK(){
-    loadAllFieldValues();
-  }
   
-  public Object getComPort() {
-    return comComBox.getSelectedItem();
+  public String getComPort() {
+    return (String)comComBox.getSelectedItem();
   }
-  // Populated from Communicator
-  public void setComPort(String comPort) {
-    comComBox.addItem(comPort);
+  // Populated from Communicator.searchForPorts()
+  public void setComPort(String cp) {
+    comComBox.addItem(cp);
   }
 
   public Integer getBaudRate() {
-    return baudRate;
-  }
-  public void setBaudRate(Integer br) {
-    baudRate = br;
+    return (Integer)baudComBox.getSelectedItem();
   }
 
   public DataBit getDataBits() {
-    return dataBit;
-  }
-  public void setDataBits(DataBit dataBit) {
-	  switch(dataBit){
-	  case DATABITS_5:
-		  dataBit = DataBit.DATABITS_5;
-		  break;
-	  case DATABITS_6:
-		  dataBit = DataBit.DATABITS_6;
-		  break;
-	  case DATABITS_7:
-		  dataBit = DataBit.DATABITS_7;
-		  break;
-	  case DATABITS_8:
-		  dataBit = DataBit.DATABITS_8;
-		  break;
-	  default:
-		  dataBit = DataBit.DATABITS_5;
-	  }
+    return (DataBit)dataBitsComBox.getSelectedItem();
   }
    
-   public Parity getParity() {
-    return parity;
-  }
-  public void setParity(Parity parity) {
-    switch(parity){
-      case PARITY_NONE:
-    	  parity = Parity.PARITY_NONE;
-        break;
-      case PARITY_ODD:
-    	  parity = Parity.PARITY_ODD;
-        break;
-      case PARITY_EVEN:
-    	  parity = Parity.PARITY_EVEN;
-        break;
-      case PARITY_MARK:
-    	  parity = Parity.PARITY_MARK;
-          break;
-      case PARITY_SPACE:
-    	  parity = Parity.PARITY_SPACE;
-          break;
-      default:
-    	  parity = Parity.PARITY_NONE;
-        break;
-    }
+  public Parity getParity() {
+    return (Parity)parityComBox.getSelectedItem();
   }
   
   public StopBit getStopBits() {
-    return stopBit;
-  }
-  public void setStopBits(StopBit stopBit) {
-	  switch(stopBit){
-	  case STOPBITS_1:
-		  stopBit = StopBit.STOPBITS_1;
-		  break;
-	  case STOPBITS_2:
-		  stopBit = StopBit.STOPBITS_2;
-		  break;
-	  case STOPBITS_1_5:
-		  stopBit = StopBit.STOPBITS_1_5;
-		  break;
-	  default:
-		  stopBit = StopBit.STOPBITS_1;
-	  }
+    return (StopBit)stopBitsComBox.getSelectedItem();
   }
 
   public Flow getFlow() {
-    return flow;
-  }
-  public void setFlow(Flow flow) {
-    switch(flow){
-      case FLOWCONTROL_NONE:
-    	  flow = Flow.FLOWCONTROL_NONE;
-        break;
-      case FLOWCONTROL_RTSCTS_IN:
-    	  flow = Flow.FLOWCONTROL_RTSCTS_IN;
-        break;
-      case FLOWCONTROL_RTSCTS_OUT:
-    	  flow = Flow.FLOWCONTROL_RTSCTS_OUT;
-        break;
-      case FLOWCONTROL_XONXOFF_IN:
-    	  flow = Flow.FLOWCONTROL_XONXOFF_IN;
-          break;
-        case FLOWCONTROL_XONXOFF_OUT:
-        	flow = Flow.FLOWCONTROL_XONXOFF_OUT;
-          break;      
-      default:
-    	  flow = Flow.FLOWCONTROL_NONE;
-        break;	
-    }
+    return (Flow) flowCombox.getSelectedItem();
   }
   
   // PRIVATE METHODS
   private void initialize(){
-    comboBoxList = new ArrayList<JComboBox<Object>>();
     
     comComBox = new JComboBox<String>();
-    comComBox.addActionListener(new ComBoListener());
     comComBox.setName(comComBox_name);
     if (comComBox.getItemAt(1) != null)
       comComBox.setSelectedIndex(1);
     add(comComBox);
     
-    
     baudComBox = new JComboBox<Integer>(baudComBoxArray);
-    baudComBox.addActionListener(new ComBoListener());
     baudComBox.setName(baudComBox_name);
     if (baudComBox.getItemAt(6) != null)
       baudComBox.setSelectedIndex(6);
     add(baudComBox);
     
     parityComBox = new JComboBox<Parity>(Parity.values());
-    parityComBox.addActionListener(new ComBoListener());
     parityComBox.setName(parityComBox_name);
     if (parityComBox.getItemAt(0) != null)
       parityComBox.setSelectedIndex(0);
     add(parityComBox);
   
     dataBitsComBox = new JComboBox<DataBit>(DataBit.values());
-    dataBitsComBox.addActionListener(new ComBoListener());
     dataBitsComBox.setName(dataBitsComBox_name);
-    if (dataBitsComBox.getItemAt(1) != null)
-      dataBitsComBox.setSelectedIndex(1);
+    if (dataBitsComBox.getItemAt(3) != null)
+      dataBitsComBox.setSelectedIndex(3);
     add(dataBitsComBox);
     
     stopBitsComBox = new JComboBox<StopBit>(StopBit.values());
-    stopBitsComBox.addActionListener(new ComBoListener());
     stopBitsComBox.setName(stopBitsComBox_name);
     if (stopBitsComBox.getItemAt(0) != null)
       stopBitsComBox.setSelectedIndex(0);
     add(stopBitsComBox);
 
     flowCombox = new JComboBox<Flow>(Flow.values());
-    flowCombox.addActionListener(new ComBoListener());
     flowCombox.setName(flowCombox_name);
     if (flowCombox.getItemAt(0) != null)
       flowCombox.setSelectedIndex(0);
     add(flowCombox);
-    
-    initialized = true;
   }
-  
-
-  /**
-   * Loads the values entered in all the fields. 
-   */
-  private void loadAllFieldValues() {
-          for (JComboBox<Object> combobox : comboBoxList){
-                  readComBoBox(combobox);
-          }    
-  }
-  
-  /**
-   * @brief Reads the current selection and copies it to the approriate attribute
-   *            The target attribute is decided by combobox item class.
-   * @param combobox JComboBox<Object> 
-   */
-  private void readComBoBox(JComboBox<Object> combobox){
-
-	  if (!initialized)
-		  return;
-          
-          if (combobox.getClass().equals(baudRate.getClass())){
-            setBaudRate((Integer)combobox.getSelectedItem());
-          }else if (combobox.getClass().equals(dataBit.getClass())){
-            setDataBits((DataBit)combobox.getSelectedItem());
-          }else if (combobox.getClass().equals(parity.getClass())){
-            setParity((Parity)combobox.getSelectedItem());
-          }else if (combobox.getClass().equals(dataBit.getClass())){
-            setDataBits((DataBit)combobox.getSelectedItem());
-          }else if (combobox.getClass().equals(flow.getClass())){
-            setFlow((Flow)combobox.getSelectedItem());
-          }
-  }
-  
   
   // INNER CLASSES
-  public class ComBoListener implements ActionListener{
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      JComboBox<Object> combobox = (JComboBox<Object>)e.getSource();
-      readComBoBox(combobox);
-    }  
-  }// end of inner class ComBoListener
 
-  
   // ENUMS
 
   public enum DataBit{
-	  DATABITS_5 ("5",0),
-	  DATABITS_6 ("6",1),
-	  DATABITS_7 ("7",2),
-	  DATABITS_8 ("8",4);
+	  DATABITS_5 ("5",5),
+	  DATABITS_6 ("6",6),
+	  DATABITS_7 ("7",7),
+	  DATABITS_8 ("8",8);
 
     private String _name;
     private int _nr;
@@ -348,15 +210,5 @@ public class PortSettingPanel extends JPanel {
   private String  flowCombox_name = "flow";  
     
   private Integer[] baudComBoxArray = {110,300,600,1200,2400,4800,9600,14400,19200,38400};     
-  
-  private ArrayList<JComboBox<Object>> comboBoxList; // holds all comboboxes
-
-  private Integer baudRate = 9600;
-  private DataBit dataBit = DataBit.DATABITS_8;
-  private Parity parity = Parity.PARITY_NONE;
-  private StopBit stopBit = StopBit.STOPBITS_1;
-  private Flow flow = Flow.FLOWCONTROL_NONE;
-  
-  private Boolean initialized = false;
   
 }// end class PortSettingPanel

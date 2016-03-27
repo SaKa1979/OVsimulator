@@ -1,16 +1,9 @@
 package controller;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import model.Communicator;
 import view.ViewManager;
 import view.PortSettingPanel;
-import view.PortSettingPanel.DataBit;
-import view.PortSettingPanel.Flow;
-import view.PortSettingPanel.Parity;
-import view.PortSettingPanel.StopBit;
 import view.ProtocolPanel;
 import view.ProtocolPanel.Proto;
 import view.VehicleButton;
@@ -34,6 +27,7 @@ public class SimControler implements Event {
 
     viewManager.addEventSubscriber(this);
     communicator.addSimController(this);
+    communicator.setViewManager(viewManager);
     communicator.addObserver(viewManager);
     communicator.searchForPorts();
   }
@@ -45,28 +39,25 @@ public class SimControler implements Event {
    */
   public void signal(Object o){
 	  if (o instanceof PortSettingPanel){
-		  PortSettingPanel portSettingPanel = (PortSettingPanel)o;
-		  String port = (String) portSettingPanel.getComPort();
-		  int baudRate = portSettingPanel.getBaudRate();
-		  DataBit dataBits = portSettingPanel.getDataBits();  
-		  Parity parity = portSettingPanel.getParity();    
-		  StopBit stopBits = portSettingPanel.getStopBits();  
-		  Flow flow = portSettingPanel.getFlow();
-		  String s_portSetting = port + "|" + baudRate + "|" + dataBits.getName() + "|" + parity.getName() + "|" + stopBits.getName() + "|" + flow.getName();
-		  viewManager.writeToBottomInfoComSettings(s_portSetting,Color.BLACK);
+		  if (communicator.isbConnected()){
+		  communicator.disconnect();
+		  }
 		  communicator.connect();
+		  if(communicator.isbConnected()){
+		    if(communicator.initIOStream()){
+		      communicator.initListener();
+		    }
+		  }
 	  }else if (o instanceof ProtocolPanel){
 		  ProtocolPanel pp = (ProtocolPanel)o;
 		  Proto proto = pp.getSelectedProto();
-		  viewManager.writeToBottomProto(proto.name());
+		  viewManager.writeToBottomProto(proto.name(), Color.BLACK);
 		  if (proto == Proto.KAR){
-			  viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()));
+			  viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()), Color.BLACK);
 		  }
-
 	  }else if (o instanceof VehicleButton){
 		  VehicleButton vb = (VehicleButton)o;
-		  
-		  viewManager.writeToFeedback(vb.toString(), Color.black, 8);
+		  viewManager.writeToFeedback(vb.toString(), Color.blue, 8);
 	  }
   }
   

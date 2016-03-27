@@ -20,6 +20,9 @@ import javax.swing.ButtonGroup;
 
 public class ProtocolPanel extends JPanel {
 
+  private static final long serialVersionUID = 1L;
+
+
   /**
    * Constructor.
    */

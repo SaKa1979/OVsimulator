@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 
 public class VehicleSimulation extends JPanel {
 
+  private static final long serialVersionUID = 1L;
+
   /**
    * Create the panel.
    */

@@ -11,6 +11,7 @@ public class Main {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
+          @SuppressWarnings("unused")
           SimControler simulator = new SimControler();
         }
         catch (Exception e) {
