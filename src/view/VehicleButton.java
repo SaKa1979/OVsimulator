@@ -38,6 +38,7 @@ public class VehicleButton extends JButton{
   // PRIVATE METHODS
   private void initialize(){
     setIcon(imagefactory.getImageIcon("emptyVehicle"));
+    this.setEnabled(false);
     setVerticalTextPosition(JButton.BOTTOM);
     setHorizontalTextPosition(JButton.CENTER);
     // handle the RMB action. This shall spawn a JOption with all the vehicle simulation settings
@@ -87,6 +88,7 @@ public class VehicleButton extends JButton{
               second = vehicleSettingPanel.getSecond();
               reserve1 = vehicleSettingPanel.getReserve1();
               reserve2 = vehicleSettingPanel.getReserve2();
+              setEnabled(true);
               setButtonText();
               setVehicleTypeImage(vehicleType);
               break;
@@ -323,7 +325,8 @@ public class VehicleButton extends JButton{
   private int vehServiceNr;                     // CVN: 4
   private int companyNr;                        // CVN: 5
   private int vehicleId;                        // CVN: 6
-  private int signalGroupNr;                    // CVN: 7 + Direction 200,201,202
+  private int signalGroupNr;                    // CVN: 7 KAR
+  private Directions direction;                 // CVN: 7 VECOM
   private VehicleStatus vehicleStatus;          // CVN: 8
   private PriorityClass priorityClass;          // CVN: 9
   private PunctualityClass punctualityClass;    // CVN: 10
