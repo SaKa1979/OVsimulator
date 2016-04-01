@@ -3,6 +3,8 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import view.ProtocolPanel.Proto;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

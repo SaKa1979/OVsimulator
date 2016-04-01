@@ -22,7 +22,6 @@ public class ProtocolPanel extends JPanel {
 
   private static final long serialVersionUID = 1L;
 
-
   /**
    * Constructor.
    */
@@ -130,6 +129,7 @@ public class ProtocolPanel extends JPanel {
         }
       }
     });
+    sicsCB.setEnabled(false); // TOTO future
     buttonGroup.add(sicsCB);
     GridBagConstraints gbc_chckbxSics = new GridBagConstraints();
     gbc_chckbxSics.anchor = GridBagConstraints.NORTH;
@@ -139,7 +139,6 @@ public class ProtocolPanel extends JPanel {
     gbc_chckbxSics.gridy = 2;
     add(sicsCB, gbc_chckbxSics);
    
-    
   }
   /**
    * Loads the values entered in all the fields. 

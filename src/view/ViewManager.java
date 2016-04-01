@@ -15,6 +15,8 @@ import javax.swing.text.StyledDocument;
 
 import controller.Event;
 import images.ImageFactory;
+import view.ProtocolPanel.Proto;
+
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
@@ -39,7 +41,7 @@ import javax.swing.border.LineBorder;
  * @brief This is the main user interface frame and acts as manager for the panels shown 
  *        on the main view
  */
-public class ViewManager extends JFrame implements Observer{
+public class ViewManager extends JFrame{
 
   private static final long serialVersionUID = 1L;
   
@@ -64,10 +66,26 @@ public class ViewManager extends JFrame implements Observer{
     vehicleSimulation.createAndAddVehicleButton(a_listener);
   }
 
+  /**
+   * @brief The subsriber gets a signal when a certain event takes place.
+   * @param a_subscriber
+   */
   public void addEventSubscriber(Event a_subscriber){
     subscriber  = a_subscriber;
   }
+  
+  public PortSettingPanel getPortSettingPanel() {
+    return portSettingPanel;
+  }
 
+  public ProtocolPanel getProtocolPanel() {
+    return protocolPanel;
+  }
+  
+  public ViewManager getViewManager(){
+    return this;
+  }
+  
   /**
    * @brief writes given text to FEEDBACK pane on a new line
    * @param aText
@@ -204,28 +222,14 @@ public class ViewManager extends JFrame implements Observer{
    * @brief to indicate that there is (no )a connection to a com port.
    * @param connected.
    */
-  public void connectedIndication(Boolean connected){
-    if(connected){
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGreen"));
+  public void rxtxIndication(Boolean rx, boolean tx){
+    if(rx || tx){
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledYellow"));
     }
     else{
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledRed"));      
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGrey"));      
     }
   }
-
-  public void update(Observable o, Object arg) {
-    // TODO Auto-generated method stub
-    feedbackTxtpn.setText("obervable called me");
-  }
-
-  public PortSettingPanel getPortSettingPanel() {
-    return portSettingPanel;
-  }
-
-  public ProtocolPanel getProtocolPanel() {
-    return protocolPanel;
-  }
-
 
   // PRIVATE METHODS
   private void initialize() {
@@ -392,7 +396,6 @@ public class ViewManager extends JFrame implements Observer{
             JOptionPane.PLAIN_MESSAGE); 
         switch (ok){
           case 0:
-//            portSettingPanel.handleOK();
             // signal Communicator for we have some COM settings to update
             subscriber.signal(portSettingPanel);
             break;

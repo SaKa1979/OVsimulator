@@ -35,73 +35,6 @@ public class VehicleButton extends JButton{
   }
 
 
-  // PRIVATE METHODS
-  private void initialize(){
-    setIcon(imagefactory.getImageIcon("emptyVehicle"));
-    this.setEnabled(false);
-    setVerticalTextPosition(JButton.BOTTOM);
-    setHorizontalTextPosition(JButton.CENTER);
-    // handle the RMB action. This shall spawn a JOption with all the vehicle simulation settings
-    addMouseListener(new MouseAdapter() {
-      public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
-          int ok = JOptionPane.showConfirmDialog(null,
-              vehicleSettingPanel,
-              "Vehicle Setting",
-              JOptionPane.OK_CANCEL_OPTION,
-              JOptionPane.PLAIN_MESSAGE); 
-          switch (ok){
-            case 0:
-              loopNr = vehicleSettingPanel.getLoopNr();                         
-              vehicleType = vehicleSettingPanel.getVehicleType();
-              lineNr = vehicleSettingPanel.getLineNr();
-              vehServiceNr = vehicleSettingPanel.getVehServiceNr();
-              companyNr = vehicleSettingPanel.getCompanyNr();
-              vehicleId = vehicleSettingPanel.getVehicleId();
-              signalGroupNr = vehicleSettingPanel.getSignalGroupNr();
-              vehicleStatus = vehicleSettingPanel.getVehicleStatus();
-              priorityClass = vehicleSettingPanel.getPriorityClass();
-              punctualityClass = vehicleSettingPanel.getPunctualityClass();
-              punctuality = vehicleSettingPanel.getPunctuality();
-              vehicleLength = vehicleSettingPanel.getVehicleLength();
-              vehicleSpeed = vehicleSettingPanel.getVehicleSpeed();
-              distanceToStop = vehicleSettingPanel.getDistanceToStop();
-              timeToStop = vehicleSettingPanel.getTimeToStop();
-              journeyNr = vehicleSettingPanel.getJourneyNr();
-              journeyType = vehicleSettingPanel.getJourneyType();
-              route = vehicleSettingPanel.getRoute();
-              command = vehicleSettingPanel.getCommands();
-              activation = vehicleSettingPanel.getActivation();
-              latDeg = vehicleSettingPanel.getLatDeg();
-              latMin = vehicleSettingPanel.getLatMin();
-              latSec = vehicleSettingPanel.getLatSec();
-              latSSec = vehicleSettingPanel.getLatSSec();
-              longDeg = vehicleSettingPanel.getLongDeg();
-              longMin = vehicleSettingPanel.getLongMin();
-              longSec = vehicleSettingPanel.getLongSec();
-              longSSec = vehicleSettingPanel.getLongSSec();
-              year = vehicleSettingPanel.getYear();
-              month = vehicleSettingPanel.getMonth();
-              day = vehicleSettingPanel.getDay();
-              hour = vehicleSettingPanel.getHour();
-              minute = vehicleSettingPanel.getMinute();
-              second = vehicleSettingPanel.getSecond();
-              reserve1 = vehicleSettingPanel.getReserve1();
-              reserve2 = vehicleSettingPanel.getReserve2();
-              setEnabled(true);
-              setButtonText();
-              setVehicleTypeImage(vehicleType);
-              break;
-            case 2:
-              // do nothing
-              break;
-          }
-        }
-      }
-    });
-    vehicleSettingPanel = new VehicleSettingPanel(this);
-  }
-
   // PUBLIC METHODS
   public void setButtonText(){
     setText("L" + loopNr + " FC" + signalGroupNr);
@@ -317,6 +250,74 @@ public class VehicleButton extends JButton{
     }
   }// end enum PunctualityClass
 
+  // PRIVATE METHODS
+  private void initialize(){
+    setIcon(imagefactory.getImageIcon("emptyVehicle"));
+    this.setEnabled(false);
+    setVerticalTextPosition(JButton.BOTTOM);
+    setHorizontalTextPosition(JButton.CENTER);
+    // handle the RMB action. This shall spawn a JOption with all the vehicle simulation settings
+    addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
+          vehicleSettingPanel.setProto();
+          int ok = JOptionPane.showConfirmDialog(null,
+              vehicleSettingPanel,
+              "Vehicle Setting",
+              JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.PLAIN_MESSAGE); 
+          switch (ok){
+            case 0:
+              loopNr = vehicleSettingPanel.getLoopNr();                         
+              vehicleType = vehicleSettingPanel.getVehicleType();
+              lineNr = vehicleSettingPanel.getLineNr();
+              vehServiceNr = vehicleSettingPanel.getVehServiceNr();
+              companyNr = vehicleSettingPanel.getCompanyNr();
+              vehicleId = vehicleSettingPanel.getVehicleId();
+              signalGroupNr = vehicleSettingPanel.getSignalGroupNr();
+              vehicleStatus = vehicleSettingPanel.getVehicleStatus();
+              priorityClass = vehicleSettingPanel.getPriorityClass();
+              punctualityClass = vehicleSettingPanel.getPunctualityClass();
+              punctuality = vehicleSettingPanel.getPunctuality();
+              vehicleLength = vehicleSettingPanel.getVehicleLength();
+              vehicleSpeed = vehicleSettingPanel.getVehicleSpeed();
+              distanceToStop = vehicleSettingPanel.getDistanceToStop();
+              timeToStop = vehicleSettingPanel.getTimeToStop();
+              journeyNr = vehicleSettingPanel.getJourneyNr();
+              journeyType = vehicleSettingPanel.getJourneyType();
+              route = vehicleSettingPanel.getRoute();
+              command = vehicleSettingPanel.getCommands();
+              activation = vehicleSettingPanel.getActivation();
+              latDeg = vehicleSettingPanel.getLatDeg();
+              latMin = vehicleSettingPanel.getLatMin();
+              latSec = vehicleSettingPanel.getLatSec();
+              latSSec = vehicleSettingPanel.getLatSSec();
+              longDeg = vehicleSettingPanel.getLongDeg();
+              longMin = vehicleSettingPanel.getLongMin();
+              longSec = vehicleSettingPanel.getLongSec();
+              longSSec = vehicleSettingPanel.getLongSSec();
+              year = vehicleSettingPanel.getYear();
+              month = vehicleSettingPanel.getMonth();
+              day = vehicleSettingPanel.getDay();
+              hour = vehicleSettingPanel.getHour();
+              minute = vehicleSettingPanel.getMinute();
+              second = vehicleSettingPanel.getSecond();
+              reserve1 = vehicleSettingPanel.getReserve1();
+              reserve2 = vehicleSettingPanel.getReserve2();
+              setEnabled(true);
+              setButtonText();
+              setVehicleTypeImage(vehicleType);
+              break;
+            case 2:
+              // do nothing
+              break;
+          }
+        }
+      }
+    });
+    vehicleSettingPanel = new VehicleSettingPanel(this);
+  }
+  
   // PRIVATE ATTRIBUTE
   private String name;
   private int loopNr;                           // CVN: 1
