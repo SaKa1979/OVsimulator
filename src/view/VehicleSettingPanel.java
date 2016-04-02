@@ -6,6 +6,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import view.ProtocolPanel.Proto;
 import view.VehicleButton.Commands;
 import view.VehicleButton.Directions;
 import view.VehicleButton.JourneyType;
@@ -15,17 +16,11 @@ import view.VehicleButton.VehicleStatus;
 import view.VehicleButton.VehicleTypes;
 
 import javax.swing.JTextField;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.Insets;
 import javax.swing.JLabel;
 
@@ -51,7 +46,90 @@ public class VehicleSettingPanel extends JPanel {
 
   // PUBLIC METHODS
   public void setProto() {
-    
+    Proto proto = ViewManager.getInstance().getProtocolPanel().getSelectedProto();
+    switch(proto){
+      case KAR:
+        loopNrTF.setEnabled(true);
+        vehicleTypeComBox.setEnabled(true);
+        lineNrTF.setEnabled(true);
+        vehServiceNrTF.setEnabled(true);
+        companyNrTF.setEnabled(true);
+        vehicleIdTF.setEnabled(true);
+        signalGroupNrTF.setEnabled(true);
+        directionsComBox.setEnabled(false);
+        vehicleStatusComBox.setEnabled(true);
+        priorityClassComBox.setEnabled(true);
+        punctualityClassComBox.setEnabled(true);
+        punctualityTF.setEnabled(true);
+        vehicleLengthTF.setEnabled(true);
+        vehicleSpeedTF.setEnabled(true);
+        distanceToStopTF.setEnabled(true);
+        timeToStopTF.setEnabled(true);
+        journeyNrTF.setEnabled(true);
+        journeyTypeComBox.setEnabled(true);
+        routeTF.setEnabled(true);
+        commandComBox.setEnabled(true);
+        activationTF.setEnabled(true);
+        latDegTF.setEnabled(true);
+        latMinTF.setEnabled(true);
+        latSecTF.setEnabled(true);
+        latSSecTF.setEnabled(true);
+        longDegTF.setEnabled(true);
+        longMinTF.setEnabled(true);
+        longSecTF.setEnabled(true);
+        longSSecTF.setEnabled(true);
+        yearTF.setEnabled(true);
+        monthTF.setEnabled(true);
+        dayTF.setEnabled(true);
+        hourTF.setEnabled(true);
+        minuteTF.setEnabled(true);
+        secondTF.setEnabled(true);
+        reserve1TF.setEnabled(true);
+        reserve2TF.setEnabled(true);
+        break;
+      case VECOM:
+        loopNrTF.setEnabled(true);
+        vehicleTypeComBox.setEnabled(true);
+        lineNrTF.setEnabled(true);
+        vehServiceNrTF.setEnabled(true);
+        companyNrTF.setEnabled(true);
+        vehicleIdTF.setEnabled(true);
+        signalGroupNrTF.setEnabled(false);
+        directionsComBox.setEnabled(true);
+        vehicleStatusComBox.setEnabled(true);
+        priorityClassComBox.setEnabled(true);
+        punctualityClassComBox.setEnabled(true);
+        punctualityTF.setEnabled(true);
+        vehicleLengthTF.setEnabled(false);
+        vehicleSpeedTF.setEnabled(false);
+        distanceToStopTF.setEnabled(false);
+        timeToStopTF.setEnabled(false);
+        journeyNrTF.setEnabled(false);
+        journeyTypeComBox.setEnabled(true);
+        routeTF.setEnabled(true);
+        commandComBox.setEnabled(true);
+        activationTF.setEnabled(false);
+        latDegTF.setEnabled(false);
+        latMinTF.setEnabled(false);
+        latSecTF.setEnabled(false);
+        latSSecTF.setEnabled(false);
+        longDegTF.setEnabled(false);
+        longMinTF.setEnabled(false);
+        longSecTF.setEnabled(false);
+        longSSecTF.setEnabled(false);
+        yearTF.setEnabled(false);
+        monthTF.setEnabled(false);
+        dayTF.setEnabled(false);
+        hourTF.setEnabled(false);
+        minuteTF.setEnabled(false);
+        secondTF.setEnabled(false);
+        reserve1TF.setEnabled(false);
+        reserve2TF.setEnabled(false);
+        break;
+      case SICS:
+        //as if
+        break;
+    }
     
   }
   public int getLoopNr(){

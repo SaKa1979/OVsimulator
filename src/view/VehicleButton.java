@@ -8,7 +8,6 @@ import images.ImageFactory;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 /**
  * @brief A button representing a vehicle detection. 

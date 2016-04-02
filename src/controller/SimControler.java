@@ -66,7 +66,7 @@ public class SimControler implements Event {
   }
 
   // PRIVATE ATTRIBUTES
-  ViewManager viewManager = new ViewManager(800, 650);
+  ViewManager viewManager = ViewManager.getInstance();
   Communicator communicator = new Communicator();
 
 }// end ov class SimControler

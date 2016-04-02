@@ -15,8 +15,6 @@ import javax.swing.text.StyledDocument;
 
 import controller.Event;
 import images.ImageFactory;
-import view.ProtocolPanel.Proto;
-
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
@@ -26,29 +24,27 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
 
 /**
  * @author Sander
  * @brief This is the main user interface frame and acts as manager for the panels shown 
  *        on the main view
+ * @category singleton
  */
 public class ViewManager extends JFrame{
 
+  private static ViewManager viewManager = new ViewManager(800, 650);
   private static final long serialVersionUID = 1L;
   
   /**
    *  Constructor
    */
-  public ViewManager(int sX, int sY) {
+  private ViewManager(int sX, int sY) {
     sizeX = sX;
     sizeY = sY;
     setMinimumSize(new Dimension(sizeX, sizeY));
@@ -57,6 +53,11 @@ public class ViewManager extends JFrame{
   }
 
   // PUBLIC METHODS
+  
+  public static ViewManager getInstance(){
+    return viewManager;
+  }
+  
   /**
    * @brief Add a VehicleButton to the VehicleSimulation pane and tie it to a
    *        given ActionListener
