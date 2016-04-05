@@ -3,6 +3,8 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import view.VehicleButton.Direction;
+
 import java.awt.GridLayout;
 import javax.swing.JComboBox;
 
@@ -48,6 +50,7 @@ public class PortSettingPanel extends JPanel {
   public Flow getFlow() {
     return (Flow) flowCombox.getSelectedItem();
   }
+  
   
   // PRIVATE METHODS
   private void initialize(){
@@ -203,7 +206,7 @@ public class PortSettingPanel extends JPanel {
   private String  dataBitsComBox_name = "databits";
   private String  parityComBox_name = "parity";  
   private String  stopBitsComBox_name = "stopbits";
-  private String  flowCombox_name = "flow";  
+  private String  flowCombox_name = "flow";
     
   private Integer[] baudComBoxArray = {110,300,600,1200,2400,4800,9600,14400,19200,38400};     
   

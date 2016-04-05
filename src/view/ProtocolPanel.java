@@ -83,6 +83,7 @@ public class ProtocolPanel extends JPanel {
     add(karCB, gbc_chckbxKAR);
     
     sidTF = new JTextField();
+    sidTF.setDocument(new LengthRestrictedDocument(4));
     sidTF.setEnabled(false);
     sidTF.setName(sidTF_name);
     sidTF.setText("0000");
@@ -94,7 +95,6 @@ public class ProtocolPanel extends JPanel {
     gbc_sidTF.gridy = 0;
     add(sidTF, gbc_sidTF);
     fieldsList.add(sidTF);
-    karCB.setSelected(true);
 
     // VECOM
     vecomCB = new JCheckBox("VECOM");
@@ -129,7 +129,7 @@ public class ProtocolPanel extends JPanel {
         }
       }
     });
-    sicsCB.setEnabled(false); // TOTO future
+    sicsCB.setEnabled(false); // TODO future
     buttonGroup.add(sicsCB);
     GridBagConstraints gbc_chckbxSics = new GridBagConstraints();
     gbc_chckbxSics.anchor = GridBagConstraints.NORTH;
@@ -160,7 +160,7 @@ public class ProtocolPanel extends JPanel {
     if (!tf.isEnabled()) 
       return;
     try{
-      number = Integer.parseInt(tf.getText().substring(0, 3));
+      number = Integer.parseInt(tf.getText());
     }catch(NumberFormatException nfe){
       JOptionPane.showMessageDialog(null, nfe.toString(), "Input error", JOptionPane.ERROR_MESSAGE);
       number = 0;
@@ -184,7 +184,7 @@ public class ProtocolPanel extends JPanel {
   //INNER CLASSES
   
   // ENUMS
-  public enum Proto {KAR, VECOM, SICS};
+  public enum Proto {KAR, VECOM, SICS, NONE};
   
   // PRIVATE ATTRIBUTES
   private JCheckBox chckbxKAR;
@@ -195,7 +195,7 @@ public class ProtocolPanel extends JPanel {
   
   private String sidTF_name = "sid";
   private ArrayList<JTextField> fieldsList; // holds all textfields
-  private Proto selectedProto;
+  private Proto selectedProto = Proto.NONE;
 
 
 private int kar_sid;

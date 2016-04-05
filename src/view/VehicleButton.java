@@ -93,16 +93,20 @@ public class VehicleButton extends JButton{
   }
   // ENUMS
 
-  public enum Directions {
-    GEENINFO ("geen info",0), 
-    RECHTS ("rechtsaf",1),
-    LINKS ("linksaf",2),
-    RECHT ("rechtdoor",3);
+  public enum ManualControl {
+    NOMANUALCONTROL ("geen info",0), 
+    TURNRIGHT ("turn right",1),
+    TURNLEFT ("turn left ",2),
+    FORWARD ("straight ahead",3),
+    READYTOSTART ("ready to start", 5),
+    RTS_TR ("ready to start and turn right", 6),
+    RTS_TL ("ready to start and turn left", 7),
+    RTS_F ("ready to start and forward", 8);
 
     private String _name;
     private int _nr;
     // constructor
-    private Directions(String a_Name, int a_Nr){
+    private ManualControl(String a_Name, int a_Nr){
       _name = a_Name;
       _nr = a_Nr;
     }
@@ -112,7 +116,7 @@ public class VehicleButton extends JButton{
     public int getNr(){
       return _nr;
     }
-  }// end enum Directions
+  }// end enum ManualControl
 
   public enum Commands {
     RESERVE ("reserve",0), 
@@ -249,6 +253,28 @@ public class VehicleButton extends JButton{
     }
   }// end enum PunctualityClass
 
+  public enum Direction {
+    UNKNOWN ("unknown",0), 
+    FORWARD ("unknown",1),
+    RESERVED ("reserved",2),
+    BACKWARDS ("backwards",3);
+
+    private String _name;
+    private int _nr;
+    // constructor
+    private Direction(String a_Name, int a_Nr){
+      _name = a_Name;
+      _nr = a_Nr;
+    }
+
+    public  String getName(){
+      return _name;
+    }
+    public int getNr(){
+      return _nr;
+    }
+  }// end enum Direction
+  
   // PRIVATE METHODS
   private void initialize(){
     setIcon(imagefactory.getImageIcon("emptyVehicle"));
@@ -326,7 +352,7 @@ public class VehicleButton extends JButton{
   private int companyNr;                        // CVN: 5
   private int vehicleId;                        // CVN: 6
   private int signalGroupNr;                    // CVN: 7 KAR
-  private Directions direction;                 // CVN: 7 VECOM
+  private ManualControl manualControl;          // CVN: 7 VECOM
   private VehicleStatus vehicleStatus;          // CVN: 8
   private PriorityClass priorityClass;          // CVN: 9
   private PunctualityClass punctualityClass;    // CVN: 10
@@ -338,6 +364,7 @@ public class VehicleButton extends JButton{
   private int journeyNr;                        // CVN: 16 
   private JourneyType journeyType;              // CVN: 17
   private int route;                            // CVN: 18
+  private Direction dir;                        // CVN: 18 VECOM
   private Commands command;                     // CVN: 19
   private int activation;                       // CVN: 20
   private int latDeg;                           // CVN: 21a

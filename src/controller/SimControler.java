@@ -1,7 +1,10 @@
 package controller;
 
 import java.awt.Color;
+import java.util.ArrayList;
+
 import model.Communicator;
+import model.Protocol;
 import view.ViewManager;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
@@ -22,9 +25,14 @@ public class SimControler implements Event {
     return viewManager;
   }
 
+  /*
+   * TODO 
+   * public Protocol getProtocol(){
+   *    return protocol;
+   */
+
   // PRIVATE METHOD
   private void initialize(){
-
     viewManager.addEventSubscriber(this);
     communicator.addSimController(this);
     communicator.setViewManager(viewManager);
@@ -51,14 +59,29 @@ public class SimControler implements Event {
       ProtocolPanel pp = (ProtocolPanel)o;
       Proto proto = pp.getSelectedProto();
       viewManager.writeToBottomProto(proto.name(), Color.BLACK);
-      if (proto == Proto.KAR){
-        viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()), Color.BLACK);
-      }
+      // TODO create wanted protocol
+        switch (proto){
+        case KAR:
+               protocol = new KarProtocol();
+               protocol.addEventSubscriber(this);
+               viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()), Color.BLACK);
+               break;
+        case VECOM:
+               protocol = new VecomProtocol();
+               protocol.addEventSubscriber(this);
+               break;
+        default:
+        protocol = null;
+        }
     }else if (o instanceof VehicleButton){
       VehicleButton vb = (VehicleButton)o;
       if (communicator.isbConnected()){
-        //TODO serial write
-        viewManager.writeToFeedback(vb.toString(), Color.blue, 8);
+        //TODO call protocol to create hex from vehicleSettingPanel
+          ArrayList<Byte> HEXmsg = protocol.createSerialMessage(vb);
+          for(Byte b : HEXmsg){
+               communicator.writeData(b);
+               viewManager.writeToFeedback(b+"", Color.blue, 8);
+               }
       }else{
         viewManager.writeToFeedback("No connection available at the moment.", Color.red, 8);
       }
@@ -68,5 +91,6 @@ public class SimControler implements Event {
   // PRIVATE ATTRIBUTES
   ViewManager viewManager = ViewManager.getInstance();
   Communicator communicator = new Communicator();
+  Protocol protocol;
 
 }// end ov class SimControler

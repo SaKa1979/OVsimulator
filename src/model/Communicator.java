@@ -212,6 +212,11 @@ public class Communicator extends Observable implements SerialPortEventListener 
         {
           comLog = new String(new byte[] {singleData});
           viewManager.writeToFeedback(comLog, Color.GRAY, 8); // Just for testing purposes. TODO remove when finished
+          /*
+           * TODO hand over the received byte to the Protocol for further processing
+           * Protocol p = simControler.getProtocol();
+           * p.processData(singleData); 
+           */
         }
         else
         {

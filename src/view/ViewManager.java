@@ -238,7 +238,7 @@ public class ViewManager extends JFrame{
     this.setResizable(true);
     this.setTitle("OV simulator");
     this.setIconImage(imagefactory.getImageIcon("swarcoLogo").getImage());
-    this.setBounds(100, 100, 685, 490);
+    this.setBounds(25, 25, 685, 490);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] {150, 650};
@@ -468,7 +468,7 @@ public class ViewManager extends JFrame{
   // port settings class
   private PortSettingPanel portSettingPanel;
   private ProtocolPanel protocolPanel;
-  private Event subscriber ;
+  private Event subscriber;
   private JTextPane bottomInfoProtoXtraInfoTxtpn;
 
 

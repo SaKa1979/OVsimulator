@@ -8,7 +8,8 @@ import javax.swing.text.PlainDocument;
 
 import view.ProtocolPanel.Proto;
 import view.VehicleButton.Commands;
-import view.VehicleButton.Directions;
+import view.VehicleButton.Direction;
+import view.VehicleButton.ManualControl;
 import view.VehicleButton.JourneyType;
 import view.VehicleButton.PriorityClass;
 import view.VehicleButton.PunctualityClass;
@@ -20,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
 import java.awt.GridBagLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JLabel;
@@ -49,86 +51,148 @@ public class VehicleSettingPanel extends JPanel {
     Proto proto = ViewManager.getInstance().getProtocolPanel().getSelectedProto();
     switch(proto){
       case KAR:
+        setBorder(new TitledBorder(null, "Vehicle Setting for KAR", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         loopNrTF.setEnabled(true);
+        lblLoop.setForeground(Color.BLACK);
         vehicleTypeComBox.setEnabled(true);
+        lblVehtype.setForeground(Color.BLACK);
         lineNrTF.setEnabled(true);
+        lblLine.setForeground(Color.BLACK);
         vehServiceNrTF.setEnabled(true);
+        lblService.setForeground(Color.BLACK);
         companyNrTF.setEnabled(true);
+        lblCompany.setForeground(Color.BLACK);
         vehicleIdTF.setEnabled(true);
-        signalGroupNrTF.setEnabled(true);
-        directionsComBox.setEnabled(false);
+        lblVehId.setForeground(Color.BLACK);
+        signalgroupNrTF.setEnabled(true);
+        lblDirection.setForeground(Color.BLACK);
+        manualControlComBox.setEnabled(false);
+        lblManualControl.setForeground(Color.GRAY);
         vehicleStatusComBox.setEnabled(true);
+        lblVehStatus.setForeground(Color.BLACK);
         priorityClassComBox.setEnabled(true);
+        lblPrioClass.setForeground(Color.BLACK);
         punctualityClassComBox.setEnabled(true);
+        lblPunctClass.setForeground(Color.BLACK);
         punctualityTF.setEnabled(true);
+        lblPunctuality.setForeground(Color.BLACK);
         vehicleLengthTF.setEnabled(true);
+        lblVehLength.setForeground(Color.BLACK);
         vehicleSpeedTF.setEnabled(true);
+        lblVehSpeed.setForeground(Color.BLACK);
         distanceToStopTF.setEnabled(true);
+        lblDistToStop.setForeground(Color.BLACK);
         timeToStopTF.setEnabled(true);
+        lblTimeToStop.setForeground(Color.BLACK);
         journeyNrTF.setEnabled(true);
+        lblJourneyNr.setForeground(Color.BLACK);
         journeyTypeComBox.setEnabled(true);
+        lblJourneyType.setForeground(Color.BLACK);
         routeTF.setEnabled(true);
+        lblRoute.setForeground(Color.BLACK);
+        DirectionComBox.setEnabled(false);
+        lblDirection.setForeground(Color.GRAY);//18 VECOM
         commandComBox.setEnabled(true);
+        lblCommand.setForeground(Color.BLACK);
         activationTF.setEnabled(true);
+        lblActivation.setForeground(Color.BLACK);
         latDegTF.setEnabled(true);
+        lblLatitude.setForeground(Color.BLACK);
         latMinTF.setEnabled(true);
         latSecTF.setEnabled(true);
         latSSecTF.setEnabled(true);
+        lblLongitude.setForeground(Color.BLACK);
         longDegTF.setEnabled(true);
         longMinTF.setEnabled(true);
         longSecTF.setEnabled(true);
         longSSecTF.setEnabled(true);
+        lblDate.setForeground(Color.BLACK);
         yearTF.setEnabled(true);
         monthTF.setEnabled(true);
         dayTF.setEnabled(true);
+        lblTime.setForeground(Color.BLACK);
         hourTF.setEnabled(true);
         minuteTF.setEnabled(true);
         secondTF.setEnabled(true);
+        lblReserve_1.setForeground(Color.BLACK);
         reserve1TF.setEnabled(true);
+        lblReserve_2.setForeground(Color.BLACK);
         reserve2TF.setEnabled(true);
         break;
       case VECOM:
+        setBorder(new TitledBorder(null, "Vehicle Setting for VECOM", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         loopNrTF.setEnabled(true);
+        lblLoop.setForeground(Color.BLACK);//1
         vehicleTypeComBox.setEnabled(true);
+        lblVehtype.setForeground(Color.BLACK);//2
         lineNrTF.setEnabled(true);
+        lblLine.setForeground(Color.BLACK);//3
         vehServiceNrTF.setEnabled(true);
-        companyNrTF.setEnabled(true);
+        lblService.setForeground(Color.BLACK);//4
+        companyNrTF.setEnabled(false);
+        lblCompany.setForeground(Color.GRAY);//5
         vehicleIdTF.setEnabled(true);
-        signalGroupNrTF.setEnabled(false);
-        directionsComBox.setEnabled(true);
-        vehicleStatusComBox.setEnabled(true);
-        priorityClassComBox.setEnabled(true);
+        lblVehId.setForeground(Color.BLACK);//6
+        signalgroupNrTF.setEnabled(false);
+        lblDirection.setForeground(Color.GRAY);//7
+        manualControlComBox.setEnabled(true);
+        lblManualControl.setForeground(Color.BLACK);//7
+        vehicleStatusComBox.setEnabled(false);
+        lblVehStatus.setForeground(Color.GRAY);//8
+        priorityClassComBox.setEnabled(false);
+        lblPrioClass.setForeground(Color.GRAY);//9
         punctualityClassComBox.setEnabled(true);
-        punctualityTF.setEnabled(true);
+        lblPunctClass.setForeground(Color.BLACK);//10
+        punctualityTF.setEnabled(false);
+        lblPunctuality.setForeground(Color.GRAY);//11
         vehicleLengthTF.setEnabled(false);
+        lblVehLength.setForeground(Color.GRAY);//12
         vehicleSpeedTF.setEnabled(false);
+        lblVehSpeed.setForeground(Color.GRAY);//13
         distanceToStopTF.setEnabled(false);
-        timeToStopTF.setEnabled(false);
-        journeyNrTF.setEnabled(false);
+        lblDistToStop.setForeground(Color.GRAY);//14
+        timeToStopTF.setEnabled(true);
+        lblTimeToStop.setForeground(Color.GRAY);//15
+        journeyNrTF.setEnabled(true);
+        lblJourneyNr.setForeground(Color.BLACK);//16
         journeyTypeComBox.setEnabled(true);
-        routeTF.setEnabled(true);
-        commandComBox.setEnabled(true);
+        lblJourneyType.setForeground(Color.BLACK);//17
+        routeTF.setEnabled(false);
+        lblRoute.setForeground(Color.GRAY);//18
+        DirectionComBox.setEnabled(true);
+        lblDirection.setForeground(Color.BLACK);//18 VECOM
+        commandComBox.setEnabled(false);
+        lblCommand.setForeground(Color.GRAY);//19
         activationTF.setEnabled(false);
+        lblActivation.setForeground(Color.GRAY);//20
         latDegTF.setEnabled(false);
+        lblLatitude.setForeground(Color.GRAY);//21
         latMinTF.setEnabled(false);
         latSecTF.setEnabled(false);
         latSSecTF.setEnabled(false);
+        lblLongitude.setForeground(Color.GRAY);
         longDegTF.setEnabled(false);
         longMinTF.setEnabled(false);
         longSecTF.setEnabled(false);
         longSSecTF.setEnabled(false);
+        lblDate.setForeground(Color.GRAY);//22
         yearTF.setEnabled(false);
         monthTF.setEnabled(false);
         dayTF.setEnabled(false);
+        lblTime.setForeground(Color.GRAY);
         hourTF.setEnabled(false);
         minuteTF.setEnabled(false);
         secondTF.setEnabled(false);
+        lblReserve_1.setForeground(Color.GRAY);//23
         reserve1TF.setEnabled(false);
+        lblReserve_2.setForeground(Color.GRAY);//24
         reserve2TF.setEnabled(false);
         break;
       case SICS:
         //as if
         break;
+        default:
+          break;
     }
     
   }
@@ -150,11 +214,14 @@ public class VehicleSettingPanel extends JPanel {
   public int getVehicleId(){
     return textFieldToInt(vehicleIdTF);
   }
-  public Directions getDirections(){
-    return (Directions) directionsComBox.getSelectedItem();
+  public ManualControl getManualControl(){
+    return (ManualControl) manualControlComBox.getSelectedItem();
+  }
+  public Direction getDirection(){
+    return (Direction) DirectionComBox.getSelectedItem();
   }
   public int getSignalGroupNr(){
-    return textFieldToInt(signalGroupNrTF);
+    return textFieldToInt(signalgroupNrTF);
   }
   public VehicleStatus getVehicleStatus(){
     return (VehicleStatus) vehicleStatusComBox.getSelectedItem();
@@ -366,43 +433,43 @@ public class VehicleSettingPanel extends JPanel {
     add(vehicleIdTF, gbc_vehicleIdTF);
 
     // CVN: 7 signal group KAR
-    lblSignalgroup = new JLabel("SignalGroup (7)");
+    lblSignalGroup = new JLabel("SignalGroup (7)");
     GridBagConstraints gbc_lblSignalgroup = new GridBagConstraints();
     gbc_lblSignalgroup.insets = new Insets(0, 0, 5, 5);
     gbc_lblSignalgroup.anchor = GridBagConstraints.EAST;
     gbc_lblSignalgroup.gridx = 0;
     gbc_lblSignalgroup.gridy = 6;
-    add(lblSignalgroup, gbc_lblSignalgroup);
-    signalGroupNrTF = new JTextField();
-    signalGroupNrTF.setDocument(new LengthRestrictedDocument(3));
-    signalGroupNrTF.setText("0");
-    signalGroupNrTF.setToolTipText("Signal group number for KAR 0-255");
+    add(lblSignalGroup, gbc_lblSignalgroup);
+    signalgroupNrTF = new JTextField();
+    signalgroupNrTF.setDocument(new LengthRestrictedDocument(3));
+    signalgroupNrTF.setText("0");
+    signalgroupNrTF.setToolTipText("Direction for KAR 0-255");
     GridBagConstraints gbc_signalGroupNrTF = new GridBagConstraints();
     gbc_signalGroupNrTF.insets = new Insets(0, 0, 5, 5);
     gbc_signalGroupNrTF.anchor = GridBagConstraints.NORTH;
     gbc_signalGroupNrTF.fill = GridBagConstraints.BOTH;
     gbc_signalGroupNrTF.gridx = 1;
     gbc_signalGroupNrTF.gridy = 6;
-    add(signalGroupNrTF, gbc_signalGroupNrTF);
+    add(signalgroupNrTF, gbc_signalGroupNrTF);
 
-    // CVN: 7 direction VECOM
-    lblDirection = new JLabel("Direction (7)");
-    GridBagConstraints gbc_lblDirection = new GridBagConstraints();
-    gbc_lblDirection.insets = new Insets(0, 0, 5, 5);
-    gbc_lblDirection.anchor = GridBagConstraints.EAST;
-    gbc_lblDirection.gridx = 0;
-    gbc_lblDirection.gridy = 7;
-    add(lblDirection, gbc_lblDirection);
-    directionsComBox = new JComboBox<Directions>(Directions.values());
-    directionsComBox.setSelectedIndex(0);
-    directionsComBox.setToolTipText("Direction number for Vecom");
-    GridBagConstraints gbc_directionsComBox = new GridBagConstraints();
-    gbc_directionsComBox.insets = new Insets(0, 0, 5, 5);
-    gbc_directionsComBox.anchor = GridBagConstraints.NORTH;
-    gbc_directionsComBox.fill = GridBagConstraints.BOTH;
-    gbc_directionsComBox.gridx = 1;
-    gbc_directionsComBox.gridy = 7;
-    add(directionsComBox, gbc_directionsComBox);
+    // CVN: 7 manual control VECOM
+    lblManualControl = new JLabel("Manual control(7)");
+    GridBagConstraints gbc_lblManualControl = new GridBagConstraints();
+    gbc_lblManualControl.insets = new Insets(0, 0, 5, 5);
+    gbc_lblManualControl.anchor = GridBagConstraints.EAST;
+    gbc_lblManualControl.gridx = 0;
+    gbc_lblManualControl.gridy = 7;
+    add(lblManualControl, gbc_lblManualControl);
+    manualControlComBox = new JComboBox<ManualControl>(ManualControl.values());
+    manualControlComBox.setSelectedIndex(0);
+    manualControlComBox.setToolTipText("Manual control number for Vecom");
+    GridBagConstraints gbc_ManualControlComBox = new GridBagConstraints();
+    gbc_ManualControlComBox.insets = new Insets(0, 0, 5, 5);
+    gbc_ManualControlComBox.anchor = GridBagConstraints.NORTH;
+    gbc_ManualControlComBox.fill = GridBagConstraints.BOTH;
+    gbc_ManualControlComBox.gridx = 1;
+    gbc_ManualControlComBox.gridy = 7;
+    add(manualControlComBox, gbc_ManualControlComBox);
 
     // CVN: 8 vehicle status
     lblVehStatus = new JLabel("Veh. Status (8)");
@@ -619,7 +686,27 @@ public class VehicleSettingPanel extends JPanel {
     gbc_routeTF.fill = GridBagConstraints.BOTH;
     gbc_routeTF.gridx = 3;
     gbc_routeTF.gridy = 4;
-    add(routeTF, gbc_routeTF); 
+    add(routeTF, gbc_routeTF);
+    
+    // CVN: 18 direction to route VECOM
+    lblDirection = new JLabel("Direction(18)");
+    GridBagConstraints gbc_lblDirection = new GridBagConstraints();
+    gbc_lblDirection.insets = new Insets(0, 0, 5, 5);
+    gbc_lblDirection.anchor = GridBagConstraints.EAST;
+    gbc_lblDirection.gridx = 2;
+    gbc_lblDirection.gridy = 5;
+    add(lblDirection, gbc_lblDirection);
+    DirectionComBox = new JComboBox<Direction>(Direction.values());
+    DirectionComBox.setSelectedIndex(0);
+    DirectionComBox.setToolTipText("Direction field for VECOM");
+    GridBagConstraints gbc_DirectionComBox = new GridBagConstraints();
+    gbc_DirectionComBox.gridwidth = 4;
+    gbc_DirectionComBox.insets = new Insets(0, 0, 5, 5);
+    gbc_DirectionComBox.anchor = GridBagConstraints.NORTH;
+    gbc_DirectionComBox.fill = GridBagConstraints.BOTH;
+    gbc_DirectionComBox.gridx = 3;
+    gbc_DirectionComBox.gridy = 5;
+    add(DirectionComBox, gbc_DirectionComBox);
 
     // CVN: 19 command on
     lblCommand = new JLabel("Command (19)");
@@ -627,7 +714,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblCommand.insets = new Insets(0, 0, 5, 5);
     gbc_lblCommand.anchor = GridBagConstraints.EAST;
     gbc_lblCommand.gridx = 2;
-    gbc_lblCommand.gridy = 5;
+    gbc_lblCommand.gridy = 6;
     add(lblCommand, gbc_lblCommand);
     commandComBox = new JComboBox<Commands>(Commands.values());
     commandComBox.setSelectedIndex(0);
@@ -638,7 +725,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_commandComBox.anchor = GridBagConstraints.NORTH;
     gbc_commandComBox.fill = GridBagConstraints.BOTH;
     gbc_commandComBox.gridx = 3;
-    gbc_commandComBox.gridy = 5;
+    gbc_commandComBox.gridy = 6;
     add(commandComBox, gbc_commandComBox);
 
     // CVN: 20 activation
@@ -647,7 +734,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblActivation.insets = new Insets(0, 0, 5, 5);
     gbc_lblActivation.anchor = GridBagConstraints.EAST;
     gbc_lblActivation.gridx = 2;
-    gbc_lblActivation.gridy = 6;
+    gbc_lblActivation.gridy = 7;
     add(lblActivation, gbc_lblActivation);
     activationTF = new JTextField();
     activationTF.setDocument(new LengthRestrictedDocument(5));
@@ -659,7 +746,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_activationTF.anchor = GridBagConstraints.NORTH;
     gbc_activationTF.fill = GridBagConstraints.BOTH;
     gbc_activationTF.gridx = 3;
-    gbc_activationTF.gridy = 6;
+    gbc_activationTF.gridy = 7;
     add(activationTF, gbc_activationTF);
 
     // CVN: 21 (a) latitude degrees
@@ -668,7 +755,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblLatitude.insets = new Insets(0, 0, 5, 5);
     gbc_lblLatitude.anchor = GridBagConstraints.EAST;
     gbc_lblLatitude.gridx = 2;
-    gbc_lblLatitude.gridy = 7;
+    gbc_lblLatitude.gridy = 8;
     add(lblLatitude, gbc_lblLatitude);
     latDegTF = new JTextField();
     latDegTF.setDocument(new LengthRestrictedDocument(2));
@@ -679,7 +766,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latDegTF.anchor = GridBagConstraints.NORTH;
     gbc_latDegTF.fill = GridBagConstraints.BOTH;
     gbc_latDegTF.gridx = 3;
-    gbc_latDegTF.gridy = 7;
+    gbc_latDegTF.gridy = 8;
     add(latDegTF, gbc_latDegTF);
 
     // CVN: 21 (b) latitude minutes
@@ -692,7 +779,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latMinTF.anchor = GridBagConstraints.NORTH;
     gbc_latMinTF.fill = GridBagConstraints.BOTH;
     gbc_latMinTF.gridx = 4;
-    gbc_latMinTF.gridy = 7;
+    gbc_latMinTF.gridy = 8;
     add(latMinTF, gbc_latMinTF);
 
     // CVN: 21 (c) latitude seconds
@@ -705,7 +792,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latSecTF.anchor = GridBagConstraints.NORTH;
     gbc_latSecTF.fill = GridBagConstraints.BOTH;
     gbc_latSecTF.gridx = 5;
-    gbc_latSecTF.gridy = 7;
+    gbc_latSecTF.gridy = 8;
     add(latSecTF, gbc_latSecTF);
 
     // CVN: 21 (d) latitude 100th seconds
@@ -718,7 +805,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latSSecTF.anchor = GridBagConstraints.NORTH;
     gbc_latSSecTF.fill = GridBagConstraints.BOTH;
     gbc_latSSecTF.gridx = 6;
-    gbc_latSSecTF.gridy = 7;
+    gbc_latSSecTF.gridy = 8;
     add(latSSecTF, gbc_latSSecTF);
 
     // CVN: 21 (e) longitude degrees
@@ -727,7 +814,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblLongitude.insets = new Insets(0, 0, 5, 5);
     gbc_lblLongitude.anchor = GridBagConstraints.EAST;
     gbc_lblLongitude.gridx = 2;
-    gbc_lblLongitude.gridy = 8;
+    gbc_lblLongitude.gridy = 9;
     add(lblLongitude, gbc_lblLongitude);
     longDegTF = new JTextField();
     longDegTF.setDocument(new LengthRestrictedDocument(3));
@@ -738,7 +825,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longDegTF.anchor = GridBagConstraints.NORTH;
     gbc_longDegTF.fill = GridBagConstraints.BOTH;
     gbc_longDegTF.gridx = 3;
-    gbc_longDegTF.gridy = 8;
+    gbc_longDegTF.gridy = 9;
     add(longDegTF, gbc_longDegTF);
 
     // CVN: 21 (f) longitude minutes
@@ -751,7 +838,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longMinTF.anchor = GridBagConstraints.NORTH;
     gbc_longMinTF.fill = GridBagConstraints.BOTH;
     gbc_longMinTF.gridx = 4;
-    gbc_longMinTF.gridy = 8;
+    gbc_longMinTF.gridy = 9;
     add(longMinTF, gbc_longMinTF);
 
     // CVN: 21 (g) longitude seconds
@@ -764,7 +851,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longSecTF.anchor = GridBagConstraints.NORTH;
     gbc_longSecTF.fill = GridBagConstraints.BOTH;
     gbc_longSecTF.gridx = 5;
-    gbc_longSecTF.gridy = 8;
+    gbc_longSecTF.gridy = 9;
     add(longSecTF, gbc_longSecTF);
 
     // CVN: 21 (h) longitude 100th seconds
@@ -777,7 +864,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longSSecTF.anchor = GridBagConstraints.NORTH;
     gbc_longSSecTF.fill = GridBagConstraints.BOTH;
     gbc_longSSecTF.gridx = 6;
-    gbc_longSSecTF.gridy = 8;
+    gbc_longSSecTF.gridy = 9;
     add(longSSecTF, gbc_longSSecTF);
 
     // CVN: 22 (a) year
@@ -786,7 +873,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblDate.insets = new Insets(0, 0, 5, 5);
     gbc_lblDate.anchor = GridBagConstraints.EAST;
     gbc_lblDate.gridx = 2;
-    gbc_lblDate.gridy = 9;
+    gbc_lblDate.gridy = 10;
     add(lblDate, gbc_lblDate);
     yearTF = new JTextField();
     yearTF.setDocument(new LengthRestrictedDocument(4));
@@ -798,7 +885,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_yearTF.anchor = GridBagConstraints.NORTH;
     gbc_yearTF.fill = GridBagConstraints.BOTH;
     gbc_yearTF.gridx = 3;
-    gbc_yearTF.gridy = 9;
+    gbc_yearTF.gridy = 10;
     add(yearTF, gbc_yearTF);
 
     // CVN: 22 (b) month
@@ -811,7 +898,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_monthTF.anchor = GridBagConstraints.NORTH;
     gbc_monthTF.fill = GridBagConstraints.BOTH;
     gbc_monthTF.gridx = 5;
-    gbc_monthTF.gridy = 9;
+    gbc_monthTF.gridy = 10;
     add(monthTF, gbc_monthTF);
 
     // CVN: 22 (c) day
@@ -824,7 +911,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_dayTF.anchor = GridBagConstraints.NORTH;
     gbc_dayTF.fill = GridBagConstraints.BOTH;
     gbc_dayTF.gridx = 6;
-    gbc_dayTF.gridy = 9;
+    gbc_dayTF.gridy = 10;
     add(dayTF, gbc_dayTF);
 
     // CVN: 22 (d) hour
@@ -833,7 +920,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblTime.insets = new Insets(0, 0, 5, 5);
     gbc_lblTime.anchor = GridBagConstraints.EAST;
     gbc_lblTime.gridx = 2;
-    gbc_lblTime.gridy = 10;
+    gbc_lblTime.gridy = 11;
     add(lblTime, gbc_lblTime);
     hourTF = new JTextField();
     hourTF.setDocument(new LengthRestrictedDocument(2));
@@ -844,7 +931,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_hourTF.anchor = GridBagConstraints.NORTH;
     gbc_hourTF.fill = GridBagConstraints.BOTH;
     gbc_hourTF.gridx = 3;
-    gbc_hourTF.gridy = 10;
+    gbc_hourTF.gridy = 11;
     add(hourTF, gbc_hourTF);
 
     // CVN: 22 (d) minute
@@ -857,7 +944,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_minuteTF.anchor = GridBagConstraints.NORTH;
     gbc_minuteTF.fill = GridBagConstraints.BOTH;
     gbc_minuteTF.gridx = 4;
-    gbc_minuteTF.gridy = 10;
+    gbc_minuteTF.gridy = 11;
     add(minuteTF, gbc_minuteTF);
 
     // CVN: 22 (d) second
@@ -870,7 +957,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_secondTF.anchor = GridBagConstraints.NORTH;
     gbc_secondTF.fill = GridBagConstraints.BOTH;
     gbc_secondTF.gridx = 5;
-    gbc_secondTF.gridy = 10;
+    gbc_secondTF.gridy = 11;
     add(secondTF, gbc_secondTF);
 
     // CVN: 23 reserve1
@@ -879,7 +966,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblReserve_1.insets = new Insets(0, 0, 5, 5);
     gbc_lblReserve_1.anchor = GridBagConstraints.EAST;
     gbc_lblReserve_1.gridx = 2;
-    gbc_lblReserve_1.gridy = 11;
+    gbc_lblReserve_1.gridy = 12;
     add(lblReserve_1, gbc_lblReserve_1);
     reserve1TF = new JTextField();
     reserve1TF.setText("0");
@@ -890,7 +977,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_reserve1TF.anchor = GridBagConstraints.NORTH;
     gbc_reserve1TF.fill = GridBagConstraints.BOTH;
     gbc_reserve1TF.gridx = 3;
-    gbc_reserve1TF.gridy = 11;
+    gbc_reserve1TF.gridy = 12;
     add(reserve1TF, gbc_reserve1TF);
 
     // CVN: 24 reserve2
@@ -899,7 +986,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblReserve_2.insets = new Insets(0, 0, 5, 5);
     gbc_lblReserve_2.anchor = GridBagConstraints.EAST;
     gbc_lblReserve_2.gridx = 2;
-    gbc_lblReserve_2.gridy = 12;
+    gbc_lblReserve_2.gridy = 13;
     add(lblReserve_2, gbc_lblReserve_2);
     reserve2TF = new JTextField();
     reserve2TF.setText("0");
@@ -910,7 +997,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_reserve2TF.anchor = GridBagConstraints.NORTH;
     gbc_reserve2TF.fill = GridBagConstraints.BOTH;
     gbc_reserve2TF.gridx = 3;
-    gbc_reserve2TF.gridy = 12;
+    gbc_reserve2TF.gridy = 13;
     add(reserve2TF, gbc_reserve2TF);   
   } 
 
@@ -947,11 +1034,11 @@ public class VehicleSettingPanel extends JPanel {
   private JTextField vehServiceNrTF;
   private JTextField companyNrTF;
   private JTextField vehicleIdTF;
-  private JTextField signalGroupNrTF; 
-  private JComboBox<Directions> directionsComBox;
+  private JTextField signalgroupNrTF; 
+  private JComboBox<ManualControl> manualControlComBox;
   private JComboBox<VehicleStatus> vehicleStatusComBox; 
   private JComboBox<PriorityClass> priorityClassComBox;
-  private JComboBox<PunctualityClass> punctualityClassComBox; 
+  private JComboBox<PunctualityClass> punctualityClassComBox;
   private JTextField punctualityTF;     
   private JTextField vehicleLengthTF;    
   private JTextField vehicleSpeedTF;     
@@ -959,7 +1046,8 @@ public class VehicleSettingPanel extends JPanel {
   private JTextField timeToStopTF;
   private JTextField journeyNrTF; 
   private JComboBox<JourneyType> journeyTypeComBox; 
-  private JTextField routeTF; 
+  private JTextField routeTF;
+  private JComboBox<Direction> DirectionComBox;
   private JComboBox<Commands> commandComBox;
   private JTextField activationTF; 
   private JTextField latDegTF;  
@@ -985,8 +1073,8 @@ public class VehicleSettingPanel extends JPanel {
   private JLabel lblService;
   private JLabel lblCompany;
   private JLabel lblVehId;
-  private JLabel lblSignalgroup;
-  private JLabel lblDirection;
+  private JLabel lblSignalGroup;
+  private JLabel lblManualControl;
   private JLabel lblVehStatus;
   private JLabel lblPrioClass;
   private JLabel lblPunctClass;
@@ -998,6 +1086,7 @@ public class VehicleSettingPanel extends JPanel {
   private JLabel lblJourneyNr;
   private JLabel lblJourneyType;
   private JLabel lblRoute;
+  private JLabel lblDirection;
   private JLabel lblCommand;
   private JLabel lblActivation;
   private JLabel lblLatitude;
