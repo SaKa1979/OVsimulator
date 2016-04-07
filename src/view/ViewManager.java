@@ -102,7 +102,7 @@ public class ViewManager extends JFrame{
     StyleConstants.setForeground(feedbackTxtpnStyle, color);
 
     try{
-      sDoc.insertString(sDoc.getLength(), "\n"+ a_text, feedbackTxtpnStyle);
+      sDoc.insertString(sDoc.getLength(), a_text, feedbackTxtpnStyle);
     }
     catch (Exception e){
       System.out.println(e);
@@ -224,11 +224,17 @@ public class ViewManager extends JFrame{
    * @param connected.
    */
   public void rxtxIndication(Boolean rx, boolean tx){
-    if(rx || tx){
+    if (rx && tx){
+      rx = false; tx = false;
+    }
+    
+    if(rx){
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGreen"));
+    }else if (tx){
       RxTxLbl.setIcon(imagefactory.getImageIcon("ledYellow"));
     }
     else{
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGrey"));      
+      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGray"));      
     }
   }
 

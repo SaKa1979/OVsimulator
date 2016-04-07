@@ -16,7 +16,7 @@ public abstract class Protocol {
     subscriber  = a_subscriber;
   }
 
-  protected void signalSubscriber(){
+  public void signalSubscriber(){
     subscriber.signal(this);
   }
   
@@ -35,9 +35,8 @@ public abstract class Protocol {
   
   /**
    * @brief Calculates the CRC from a given Byte set
-   * @return
    */
-  public abstract ArrayList<Byte> getCRC(ArrayList<Byte> byteList);
+  protected abstract void addCRC(ArrayList<Byte> message);
 
   // PRIVATE ATTRIBUTES
   private Event subscriber;

@@ -80,7 +80,7 @@ public class SimControler implements Event {
           ArrayList<Byte> HEXmsg = protocol.createSerialMessage(vb);
           for(Byte b : HEXmsg){
                communicator.writeData(b);
-               viewManager.writeToFeedback(b+"", Color.blue, 8);
+               viewManager.writeToFeedback(b+" ", Color.blue, 8);
                }
       }else{
         viewManager.writeToFeedback("No connection available at the moment.", Color.red, 8);

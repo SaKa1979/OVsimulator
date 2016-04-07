@@ -49,11 +49,13 @@ public class VehicleButton extends JButton{
 
   private void setVehicleTypeImage(VehicleTypes vt){
     switch (vt){
-    case BUS:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.BUS._name));
+    case BUS_CITY:
+    case BUS_REG:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.BUS_CITY._name));
         break;
-    case TRAM:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.TRAM._name));
+    case TRAM_CITY:
+    case TRAM_REG:
+        setIcon(imagefactory.getImageIcon(VehicleTypes.TRAM_CITY._name));
         break;
     case TAXI:
         setIcon(imagefactory.getImageIcon(VehicleTypes.TAXI._name));
@@ -72,25 +74,128 @@ public class VehicleButton extends JButton{
     	break;
     }
   }
-
-  public String toString(){
-    String s =               " LoopNr "              
-        + loopNr               + " SignalGroupNr "       
-        + signalGroupNr        + " Command "             
-        + command              + " VehicleType "         
-        + vehicleType          + " LineNr "              
-        + lineNr               + " VehicleId "           
-        + vehicleId            + " VehicleLength "       
-        + vehicleLength        + " VehicleSpeed "        
-        + vehicleSpeed         + " DistanceToStop "      
-        + distanceToStop       + " TimeToStop "          
-        + timeToStop           + " VehicleStatus "       
-        + vehicleStatus        + " PriorityClass "       
-        + priorityClass        + " PunctualityClass "    
-        + punctualityClass     + " Punctuality "         
-        + punctuality;
-    return s;
+  
+  public int getLoopNr() {
+    return loopNr;
   }
+  public VehicleTypes getVehicleType() {
+    return vehicleType;
+  }
+  public int getLineNr() {
+    return lineNr;
+  }
+  public int getVehServiceNr() {
+    return vehServiceNr;
+  }
+  public int getCompanyNr() {
+    return companyNr;
+  }
+  public int getVehicleId() {
+    return vehicleId;
+  }
+  public int getSignalGroupNr() {
+    return signalGroupNr;
+  }
+  public ManualControl getManualControl() {
+    return manualControl;
+  }
+  public VehicleStatus getVehicleStatus() {
+    return vehicleStatus;
+  }
+  public PriorityClass getPriorityClass() {
+    return priorityClass;
+  }
+  public PunctualityClass getPunctualityClass() {
+    return punctualityClass;
+  }
+  public int getPunctuality() {
+    return punctuality;
+  }
+  public int getVehicleLength() {
+    return vehicleLength;
+  }
+  public int getVehicleSpeed() {
+    return vehicleSpeed;
+  }
+  public int getDistanceToStop() {
+    return distanceToStop;
+  }
+  public int getTimeToStop() {
+    return timeToStop;
+  }
+  public int getJourneyNr() {
+    return journeyNr;
+  }
+  public JourneyType getJourneyType() {
+    return journeyType;
+  }
+  public int getRoute() {
+    return route;
+  }
+  public Direction getDir() {
+    return dir;
+  }
+  public Commands getCommand() {
+    return command;
+  }
+  public int getActivation() {
+    return activation;
+  }
+  public int getLatDeg() {
+    return latDeg;
+  }
+  public int getLatMin() {
+    return latMin;
+  }
+  public int getLatSec() {
+    return latSec;
+  }
+  public int getLatSSec() {
+    return latSSec;
+  }
+  public int getLongDeg() {
+    return longDeg;
+  }
+  public int getLongMin() {
+    return longMin;
+  }
+  public int getLongSec() {
+    return longSec;
+  }
+  public int getLongSSec() {
+    return longSSec;
+  }
+  public int getYear() {
+    return year;
+  }
+  public int getMonth() {
+    return month;
+  }
+  public int getDay() {
+    return day;
+  }
+  public int getHour() {
+    return hour;
+  }
+  public int getMinute() {
+    return minute;
+  }
+  public int getSecond() {
+    return second;
+  }
+  public int getReserve1() {
+    return reserve1;
+  }
+  public int getReserve2() {
+    return reserve2;
+  }
+  public VehicleSettingPanel getVehicleSettingPanel() {
+    return vehicleSettingPanel;
+  }
+  public ImageFactory getImagefactory() {
+    return imagefactory;
+  }
+
   // ENUMS
 
   public enum ManualControl {
@@ -140,13 +245,15 @@ public class VehicleButton extends JButton{
   }// end enum Commands
 
   public enum VehicleTypes {
-    BUS ("Bus",0), 
-    TRAM ("Tram",1),
-    TAXI ("Taxi",2),
-    AMBULANCE ("Ambulance",3),
-    BRANDWEER ("Brandweer",4),
-    POLITIE ("Politie",5),
-    UNKNOWN("Unknown",6);
+    BUS_CITY ("Bus",0), 
+    TRAM_CITY ("Tram",1),
+    BUS_REG ("Bus",2), 
+    TRAM_REG ("Tram",3),
+    TAXI ("Taxi",4),
+    AMBULANCE ("Ambulance",5),
+    BRANDWEER ("Brandweer",6),
+    POLITIE ("Politie",7),
+    UNKNOWN("Unknown",8);
 
     private String _name;
     private int _nr;
@@ -212,7 +319,11 @@ public class VehicleButton extends JButton{
     TELAAT ("te laat",1),
     OPTIJD ("op tijd",2),
     TEVROEG ("te vroeg",3),
-    BUITENDIENST ("geen dienst",4);
+    BUITENDIENST ("geen dienst",4),
+    NORMAL ("vecom normaal",5),
+    SYSTEM ("vecom system",6),
+    RESERVE1 ("vecom reseve1",7),
+    RESERVE2 ("vecom reseve2",7);
 
     private String _name;
     private int _nr;
@@ -300,6 +411,7 @@ public class VehicleButton extends JButton{
               companyNr = vehicleSettingPanel.getCompanyNr();
               vehicleId = vehicleSettingPanel.getVehicleId();
               signalGroupNr = vehicleSettingPanel.getSignalGroupNr();
+              manualControl = vehicleSettingPanel.getManualControl();
               vehicleStatus = vehicleSettingPanel.getVehicleStatus();
               priorityClass = vehicleSettingPanel.getPriorityClass();
               punctualityClass = vehicleSettingPanel.getPunctualityClass();
@@ -311,6 +423,7 @@ public class VehicleButton extends JButton{
               journeyNr = vehicleSettingPanel.getJourneyNr();
               journeyType = vehicleSettingPanel.getJourneyType();
               route = vehicleSettingPanel.getRoute();
+              dir = vehicleSettingPanel.getDirection();
               command = vehicleSettingPanel.getCommands();
               activation = vehicleSettingPanel.getActivation();
               latDeg = vehicleSettingPanel.getLatDeg();

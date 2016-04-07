@@ -20,9 +20,8 @@ public class KarProtocol extends Protocol {
   }
 
   @Override
-  public ArrayList<Byte> getCRC(ArrayList<Byte> byteList) {
+  protected void addCRC(ArrayList<Byte> message) {
     // TODO Auto-generated method stub
-    return null;
   }
 
 }

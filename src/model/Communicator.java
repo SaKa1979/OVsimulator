@@ -179,6 +179,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
   public void writeData(Byte singleData){
     try
     {
+      viewManager.rxtxIndication(false, true);
       output.write(singleData);
       output.flush();
       //this is a delimiter for the data
@@ -193,6 +194,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
       comLog = "Failed to write data.";
       viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
     }
+    viewManager.rxtxIndication(false, false);
   }
 
   /**
@@ -206,6 +208,8 @@ public class Communicator extends Observable implements SerialPortEventListener 
     {
       try
       {
+        viewManager.rxtxIndication(true, false);
+        
         byte singleData = (byte)input.read();
 
         if (singleData != NEW_LINE_ASCII)
@@ -229,6 +233,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
         viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
       }
     }
+    viewManager.rxtxIndication(false, false);
   }
 
   /**

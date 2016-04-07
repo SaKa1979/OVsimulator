@@ -42,9 +42,9 @@ public class ImageFactory {
   
   public ImageIcon getImageIcon(String name)
   {
-    if (name.equals(VehicleTypes.BUS.getName()))
+    if (name.equals(VehicleTypes.BUS_CITY.getName()))
       return busImage;
-    else if (name.equals(VehicleTypes.TRAM.getName()))
+    else if (name.equals(VehicleTypes.TRAM_CITY.getName()))
       return tramImage;
     else if (name.equals(VehicleTypes.TAXI.getName()))
       return taxiImage;
