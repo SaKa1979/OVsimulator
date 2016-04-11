@@ -47,30 +47,30 @@ public class VehicleButton extends JButton{
     this.name = name;
   }
 
-  private void setVehicleTypeImage(VehicleTypes vt){
+  private void setVehicleTypeImage(VehicleType vt){
     switch (vt){
     case BUS_CITY:
     case BUS_REG:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.BUS_CITY._name));
+        setIcon(imagefactory.getImageIcon(VehicleType.BUS_CITY._name));
         break;
     case TRAM_CITY:
     case TRAM_REG:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.TRAM_CITY._name));
+        setIcon(imagefactory.getImageIcon(VehicleType.TRAM_CITY._name));
         break;
     case TAXI:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.TAXI._name));
+        setIcon(imagefactory.getImageIcon(VehicleType.TAXI._name));
         break;
     case AMBULANCE:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.AMBULANCE._name));
+        setIcon(imagefactory.getImageIcon(VehicleType.AMBULANCE._name));
         break;
     case BRANDWEER:
-        setIcon(imagefactory.getImageIcon(VehicleTypes.BRANDWEER._name));
+        setIcon(imagefactory.getImageIcon(VehicleType.BRANDWEER._name));
         break;
     case POLITIE:
-    	setIcon(imagefactory.getImageIcon(VehicleTypes.POLITIE._name));
+    	setIcon(imagefactory.getImageIcon(VehicleType.POLITIE._name));
     	break;
     default:
-    	setIcon(imagefactory.getImageIcon(VehicleTypes.UNKNOWN._name));
+    	setIcon(imagefactory.getImageIcon(VehicleType.UNKNOWN._name));
     	break;
     }
   }
@@ -78,7 +78,7 @@ public class VehicleButton extends JButton{
   public int getLoopNr() {
     return loopNr;
   }
-  public VehicleTypes getVehicleType() {
+  public VehicleType getVehicleType() {
     return vehicleType;
   }
   public int getLineNr() {
@@ -132,8 +132,8 @@ public class VehicleButton extends JButton{
   public int getRoute() {
     return route;
   }
-  public Direction getDir() {
-    return dir;
+  public Direction getDirection() {
+    return direction;
   }
   public Commands getCommand() {
     return command;
@@ -196,6 +196,127 @@ public class VehicleButton extends JButton{
     return imagefactory;
   }
 
+  public void setLoopNr(int loopNr) {
+    this.loopNr = loopNr;
+  }
+  public void setVehicleType(VehicleType vehicleType) {
+    this.vehicleType = vehicleType;
+  }
+  public void setLineNr(int lineNr) {
+    this.lineNr = lineNr;
+  }
+  public void setVehServiceNr(int vehServiceNr) {
+    this.vehServiceNr = vehServiceNr;
+  }
+  public void setCompanyNr(int companyNr) {
+    this.companyNr = companyNr;
+  }
+  public void setVehicleId(int vehicleId) {
+    this.vehicleId = vehicleId;
+  }
+  public void setSignalGroupNr(int signalGroupNr) {
+    this.signalGroupNr = signalGroupNr;
+  }
+  public void setManualControl(ManualControl manualControl) {
+    this.manualControl = manualControl;
+  }
+  public void setVehicleStatus(VehicleStatus vehicleStatus) {
+    this.vehicleStatus = vehicleStatus;
+  }
+  public void setPriorityClass(PriorityClass priorityClass) {
+    this.priorityClass = priorityClass;
+  }
+  public void setPunctualityClass(PunctualityClass punctualityClass) {
+    this.punctualityClass = punctualityClass;
+  }
+  public void setPunctuality(int punctuality) {
+    this.punctuality = punctuality;
+  }
+  public void setVehicleLength(int vehicleLength) {
+    this.vehicleLength = vehicleLength;
+  }
+  public void setVehicleSpeed(int vehicleSpeed) {
+    this.vehicleSpeed = vehicleSpeed;
+  }
+  public void setDistanceToStop(int distanceToStop) {
+    this.distanceToStop = distanceToStop;
+  }
+  public void setTimeToStop(int timeToStop) {
+    this.timeToStop = timeToStop;
+  }
+  public void setJourneyNr(int journeyNr) {
+    this.journeyNr = journeyNr;
+  }
+  public void setJourneyType(JourneyType journeyType) {
+    this.journeyType = journeyType;
+  }
+  public void setRoute(int route) {
+    this.route = route;
+  }
+  public void setDirection(Direction direction) {
+    this.direction = direction;
+  }
+  public void setCommand(Commands command) {
+    this.command = command;
+  }
+  public void setActivation(int activation) {
+    this.activation = activation;
+  }
+  public void setLatDeg(int latDeg) {
+    this.latDeg = latDeg;
+  }
+  public void setLatMin(int latMin) {
+    this.latMin = latMin;
+  }
+  public void setLatSec(int latSec) {
+    this.latSec = latSec;
+  }
+  public void setLatSSec(int latSSec) {
+    this.latSSec = latSSec;
+  }
+  public void setLongDeg(int longDeg) {
+    this.longDeg = longDeg;
+  }
+  public void setLongMin(int longMin) {
+    this.longMin = longMin;
+  }
+  public void setLongSec(int longSec) {
+    this.longSec = longSec;
+  }
+  public void setLongSSec(int longSSec) {
+    this.longSSec = longSSec;
+  }
+  public void setYear(int year) {
+    this.year = year;
+  }
+  public void setMonth(int month) {
+    this.month = month;
+  }
+  public void setDay(int day) {
+    this.day = day;
+  }
+  public void setHour(int hour) {
+    this.hour = hour;
+  }
+  public void setMinute(int minute) {
+    this.minute = minute;
+  }
+  public void setSecond(int second) {
+    this.second = second;
+  }
+  public void setReserve1(int reserve1) {
+    this.reserve1 = reserve1;
+  }
+  public void setReserve2(int reserve2) {
+    this.reserve2 = reserve2;
+  }
+  public void setVehicleSettingPanel(VehicleSettingPanel vehicleSettingPanel) {
+    this.vehicleSettingPanel = vehicleSettingPanel;
+  }
+  public void setImagefactory(ImageFactory imagefactory) {
+    this.imagefactory = imagefactory;
+  }
+
   // ENUMS
 
   public enum ManualControl {
@@ -244,7 +365,7 @@ public class VehicleButton extends JButton{
     }
   }// end enum Commands
 
-  public enum VehicleTypes {
+  public enum VehicleType {
     BUS_CITY ("Bus",0), 
     TRAM_CITY ("Tram",1),
     BUS_REG ("Bus",2), 
@@ -258,7 +379,7 @@ public class VehicleButton extends JButton{
     private String _name;
     private int _nr;
     // constructor
-    private VehicleTypes(String a_Name, int a_Nr){
+    private VehicleType(String a_Name, int a_Nr){
       _name = a_Name;
       _nr = a_Nr;
     }
@@ -268,7 +389,7 @@ public class VehicleButton extends JButton{
     public int getNr(){
       return _nr;
     }
-  }// end enum VehicleTypes
+  }// end enum VehicleType
 
   public enum VehicleStatus {
     GEENINFO ("geen info",0), 
@@ -423,7 +544,7 @@ public class VehicleButton extends JButton{
               journeyNr = vehicleSettingPanel.getJourneyNr();
               journeyType = vehicleSettingPanel.getJourneyType();
               route = vehicleSettingPanel.getRoute();
-              dir = vehicleSettingPanel.getDirection();
+              direction = vehicleSettingPanel.getDirection();
               command = vehicleSettingPanel.getCommands();
               activation = vehicleSettingPanel.getActivation();
               latDeg = vehicleSettingPanel.getLatDeg();
@@ -459,7 +580,7 @@ public class VehicleButton extends JButton{
   // PRIVATE ATTRIBUTE
   private String name;
   private int loopNr;                           // CVN: 1
-  private VehicleTypes vehicleType;             // CVN: 2
+  private VehicleType vehicleType;             // CVN: 2
   private int lineNr;                           // CVN: 3
   private int vehServiceNr;                     // CVN: 4
   private int companyNr;                        // CVN: 5
@@ -477,7 +598,7 @@ public class VehicleButton extends JButton{
   private int journeyNr;                        // CVN: 16 
   private JourneyType journeyType;              // CVN: 17
   private int route;                            // CVN: 18
-  private Direction dir;                        // CVN: 18 VECOM
+  private Direction direction;                  // CVN: 18 VECOM
   private Commands command;                     // CVN: 19
   private int activation;                       // CVN: 20
   private int latDeg;                           // CVN: 21a

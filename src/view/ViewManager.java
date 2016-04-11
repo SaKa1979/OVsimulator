@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.ScrollPaneConstants;
 
 /**
  * @author Sander
@@ -103,6 +104,7 @@ public class ViewManager extends JFrame{
 
     try{
       sDoc.insertString(sDoc.getLength(), a_text, feedbackTxtpnStyle);
+      feedbackTxtpn.setCaretPosition(sDoc.getLength());
     }
     catch (Exception e){
       System.out.println(e);
@@ -283,9 +285,13 @@ public class ViewManager extends JFrame{
     FeedbackPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
     JScrollPane scrollPane = new JScrollPane();
+    scrollPane.setEnabled(true);
+    scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     FeedbackPanel.add(scrollPane);
 
     feedbackTxtpn = new JTextPane();
+    feedbackTxtpn.setEnabled(true);
+    feedbackTxtpn.setEditable(false);
     feedbackTxtpn.setBackground(SystemColor.inactiveCaptionBorder);
     scrollPane.setViewportView(feedbackTxtpn);
 

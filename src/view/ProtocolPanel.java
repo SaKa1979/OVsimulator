@@ -50,6 +50,9 @@ public class ProtocolPanel extends JPanel {
   public Proto getSelectedProto() {
 	  return selectedProto;
   }
+  public void setSelectedProto(Proto proto){
+    selectedProto = proto;
+  }
 
   public int getKar_sid() {
 	  return kar_sid;

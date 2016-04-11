@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Observable;
@@ -38,7 +39,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
   public boolean isbConnected() {
     return bConnected;
   }
-  
+
   /**
    * @brief search for all the serial ports   
    * @pre   adds all the found ports to a combo box of the GUI
@@ -176,18 +177,18 @@ public class Communicator extends Observable implements SerialPortEventListener 
    * @brief write data through the serial port
    * @param data: a byte to send
    */
-  public void writeData(Byte singleData){
+  public void writeData(ArrayList<Byte> data){
     try
     {
       viewManager.rxtxIndication(false, true);
-      output.write(singleData);
-      output.flush();
-      //this is a delimiter for the data
-      output.write(DASH_ASCII);
-      output.flush();
-      comLog = new String(new byte[] {singleData});
-      viewManager.writeToFeedback(comLog, Color.BLACK, 8); // Just for testing purposes. TODO remove when finished
 
+      for(Byte b : data){
+        output.write(b);
+        comLog = convertDec2HexString(b);
+        viewManager.writeToFeedback("0x" + comLog + " ", Color.BLACK, 8);
+      }
+      viewManager.writeToFeedback("\n", Color.BLACK, 8);
+      output.flush();
     }
     catch (Exception e)
     {
@@ -209,13 +210,13 @@ public class Communicator extends Observable implements SerialPortEventListener 
       try
       {
         viewManager.rxtxIndication(true, false);
-        
+
         byte singleData = (byte)input.read();
 
         if (singleData != NEW_LINE_ASCII)
         {
-          comLog = new String(new byte[] {singleData});
-          viewManager.writeToFeedback(comLog, Color.GRAY, 8); // Just for testing purposes. TODO remove when finished
+          //          comLog = convertDec2HexString(singleData);
+          //          viewManager.writeToFeedback(comLog, Color.GRAY, 8);
           /*
            * TODO hand over the received byte to the Protocol for further processing
            * Protocol p = simControler.getProtocol();
@@ -263,7 +264,20 @@ public class Communicator extends Observable implements SerialPortEventListener 
       viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
     }
   }
-  
+
+
+  /**
+   * Converts decimal to hexidecimal String value
+   * @param given Byte
+   * @return the hexadecimal value in String represenation
+   */
+  public String convertDec2HexString(Byte hexByte){
+    StringBuilder sb = new StringBuilder();
+    sb.append(String.format("%02X", hexByte));
+
+    return sb.toString();
+  }
+
   // PRIVATE METHODS
 
   private void setConnected(boolean b) {

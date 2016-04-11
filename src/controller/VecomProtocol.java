@@ -9,25 +9,25 @@ public class VecomProtocol extends Protocol {
 
   // PUBLIC METHODS
   public VecomProtocol(){
-    transmissionCounter = 0;
-    overloop = 0; // start with 'arrival at loop' 
+    transmissionCounter = 1;
+    overloop = (byte) 0xFF; // start with 'arrival at loop' 
   }
 
   @Override
   public ArrayList<Byte> createSerialMessage(VehicleButton vb) {
-    ArrayList<Byte> msg = new ArrayList<Byte>();
+    ArrayList<Byte> dataFrame = new ArrayList<Byte>();
 
     transmissionCounter += 1;
-    System.out.println("" + transmissionCounter );
+
     /** 
      * Byte 0 default 0x29
      */
-    msg.add((byte)0x29);
+    dataFrame.add((byte)0x29);
 
     /** 
      * Byte 1 default 0x0D
      */
-    msg.add((byte)0x0D);
+    dataFrame.add((byte)0x0D);
 
     /** 
      * Byte 2 vehicleType 
@@ -35,28 +35,28 @@ public class VecomProtocol extends Protocol {
     {
       switch (vb.getVehicleType()){
         case POLITIE:
-          msg.add((byte)0x10); // Police
+          dataFrame.add((byte)0x10); // Police
           break;
         case BRANDWEER:
-          msg.add((byte)0x08); // Fire brigade
+          dataFrame.add((byte)0x08); // Fire brigade
           break;
         case AMBULANCE:
-          msg.add((byte)0x0C); // Ambulance
+          dataFrame.add((byte)0x0C); // Ambulance
           break;
         case TAXI:
-          msg.add((byte)0x04); // Taxi
+          dataFrame.add((byte)0x04); // Taxi
           break;
         case TRAM_CITY:
-          msg.add((byte)0x80); // City tram
+          dataFrame.add((byte)0x80); // City tram
           break;
         case BUS_CITY:
-          msg.add((byte)0xA0); // City Bus
+          dataFrame.add((byte)0xA0); // City Bus
           break;
         case TRAM_REG:
-          msg.add((byte)0xC0); // Regional tram
+          dataFrame.add((byte)0xC0); // Regional tram
           break;
         case BUS_REG:
-          msg.add((byte)0xE0); // Regional bus
+          dataFrame.add((byte)0xE0); // Regional bus
           break;
         default:
       }
@@ -67,7 +67,7 @@ public class VecomProtocol extends Protocol {
      * Sets the given linenumber attribute with max on 0xFF
      */
     {
-      msg.add((byte)(vb.getLineNr() % 256));
+      dataFrame.add((byte)(vb.getLineNr() % 256));
     }
 
     /**
@@ -92,7 +92,7 @@ public class VecomProtocol extends Protocol {
           break;
         default:
       }
-      msg.add((byte)temp_byte);
+      dataFrame.add((byte)temp_byte);
     }
 
     /**
@@ -100,7 +100,7 @@ public class VecomProtocol extends Protocol {
      * -vehSrvNr : vehicle service number 0 - 1023
      */
     {
-      msg.add((byte)(vb.getVehServiceNr() / 4));
+      dataFrame.add((byte)(vb.getVehServiceNr() / 4));
     }
 
     /**
@@ -146,49 +146,48 @@ public class VecomProtocol extends Protocol {
         default:
           temp_byte |= 0x00; // Normal
       }
-      msg.add((byte)temp_byte);
+      dataFrame.add((byte)temp_byte);
     }
 
     /**Byte 7 staff number lo
      * -staffNr 0 - 16777215 !NOT USED IN CVN!
      */
-    msg.add((byte)0);
+    dataFrame.add((byte)0);
 
     /**
      * Byte 8 staff number mo
      * -staffNr 0 - 16777215 !NOT USED IN CVN!
      */
-    msg.add((byte)0);
+    dataFrame.add((byte)0);
 
     /**
      * Byte 9 staff number ho
      * -staffNr 0 - 16777215 !NOT USED IN CVN!
      */
-    msg.add((byte)0);
+    dataFrame.add((byte)0);
 
     /**
      * Byte 10 vehicleId aka fleetnumber lo
      * -fleetNr 0 - 1048575
      */
-    msg.add((byte)(vb.getVehicleId() % 256));
+    dataFrame.add((byte)(vb.getVehicleId() % 256));
 
     /**
      * Byte 11 vehicleId aka fleetnumber mo
      * -fleetNr 0 - 1048575
      */
-    msg.add((byte)(vb.getVehicleId() / 256));
+    dataFrame.add((byte)(vb.getVehicleId() / 256));
 
     /**
      * Byte 12 transmissionCounter (4 msb) | vehicleId aka fleetnumber ho (4 lsb)
      * -fleetNr : 0 - 1048575
      * -transCounter : 1 - 128
      */
-    msg.add((byte)(transmissionCounter << 4));
     {
       int temp_byte = vb.getVehicleId() / 65536;
       temp_byte |= transmissionCounter << 4;
 
-      msg.add((byte)temp_byte);    
+      dataFrame.add((byte)temp_byte);    
     }
 
     /**
@@ -201,25 +200,25 @@ public class VecomProtocol extends Protocol {
     {
       switch(vb.getManualControl()){
         case NOMANUALCONTROL:
-          msg.add((byte) 0x00);
+          dataFrame.add((byte) 0x00);
           break;
         case TURNRIGHT:
-          msg.add((byte) 0x02);
+          dataFrame.add((byte) 0x02);
           break;
         case TURNLEFT:
-          msg.add((byte) 0x01);
+          dataFrame.add((byte) 0x01);
           break;
         case FORWARD:
-          msg.add((byte) 0x03);
+          dataFrame.add((byte) 0x03);
           break;
         case READYTOSTART:
         case RTS_F:
         case RTS_TL:
         case RTS_TR:
-          msg.add((byte) 0x00);
+          dataFrame.add((byte) 0x00);
           break;
         default:
-          msg.add((byte) 0x00);
+          dataFrame.add((byte) 0x00);
           break;
       }
     }
@@ -235,7 +234,7 @@ public class VecomProtocol extends Protocol {
 
       temp_byte |= (overloop & 0x80);
 
-      switch(vb.getDir()){
+      switch(vb.getDirection()){
         case BACKWARDS:
           temp_byte |= 0x03;
           break;
@@ -252,18 +251,24 @@ public class VecomProtocol extends Protocol {
           temp_byte |= 0x00;
           break;
       }
-      temp_byte |= vb.getLoopNr() & 0xFF;
+      temp_byte |= vb.getLoopNr() & 0xF;
 
-      msg.add(temp_byte);
+      dataFrame.add(temp_byte);
     }
 
-    addCRC(msg);
-    addDLE(msg);
-
-    // byte ETX
-    msg.add((byte) 0x03);
-
-    return msg;
+    ArrayList<Byte> header = addHeader();
+    ArrayList<Byte> dle = addDLE(dataFrame);
+    ArrayList<Byte> crc = addCRC(dataFrame);
+    
+    ArrayList<Byte> message = new ArrayList<>();
+    
+    // build complete message
+    message.addAll(header);
+    message.addAll(dle);
+    message.add((byte) 0x03);// ETX
+    message.addAll(crc);
+    
+    return message;
   }
 
   @Override
@@ -271,66 +276,81 @@ public class VecomProtocol extends Protocol {
     // TODO Auto-generated method stub
   }
 
-  // PROTECTED METHODS
-  @Override
-  protected void addCRC(ArrayList<Byte> message) {
-    byte temp = 0, crc1 = 0, crc2 = 0;
+  // PRIVATE METHODS
 
-    for (int i = 0; i < message.size(); i++ ){
+  private ArrayList<Byte> addHeader(){
+    ArrayList<Byte> header = new ArrayList<Byte>();
+    /**
+     * SOH
+     */
+    header.add((byte)0x01);
+
+    /**
+     * ADDRESS
+     */
+    header.add((byte)0xF0);
+
+    /**
+     * STX
+     */
+    header.add((byte)0x02);
+
+    return header;
+  }
+  
+  /**
+   * calculates CRC over given dataFrame
+   * @param dataFrame
+   * @return crc: 2 Bytes CRC
+   */
+  protected ArrayList<Byte> addCRC(ArrayList<Byte> dataFrame) {
+    byte temp = 0, crc1 = 0, crc2 = 0;
+    ArrayList<Byte> crc = new ArrayList<Byte>();
+
+    for (int i = 0; i < dataFrame.size(); i++ ){
       temp = crc1;
-      crc1 = (byte) (crc2 ^ message.get(i));
+      crc1 = (byte) (crc2 ^ dataFrame.get(i));
       crc2 = temp;
     }
-
-    message.add(crc1);
-    message.add(crc2);
+    crc.add(crc1);
+    crc.add(crc2);
+    return crc;
   }
-
-  // PRIVATE METHODS
 
   /**
    * When the data frame of the given message contains a key word byte
    * than this byte needs to be followed by a DLE value
    * @param message: message containing header-dataframe-CRC
+   * @return dle: copy of dataframe with DLE(s) inserted. 
    */
-  private void addDLE(ArrayList<Byte> message){
-    int numberOfKeyWords = 0;
+  private ArrayList<Byte> addDLE(ArrayList<Byte> dataFrame){
+    ArrayList<Byte> dle = new ArrayList<Byte>();
 
-    // first lets count the number of DLE's we need to insert
-    for (int i = 0; i < message.size(); i++ ){
-      switch(message.get(i)){
-        case (byte) 0xF1:
-          numberOfKeyWords += 1;
+    for (int i = 0; i < dataFrame.size(); i++ ){
+      switch(dataFrame.get(i)){
+        case (byte) 0x03:
+          dle.add((byte) 0x10);
+          dle.add(dataFrame.get(i));
         break;
-        case (byte) 0xF2:
-          numberOfKeyWords += 1;
+        case (byte) 0x04:
+          dle.add((byte) 0x10);
+          dle.add(dataFrame.get(i));
         break;
-        case (byte) 0xF3:
-          numberOfKeyWords += 1;
+        case (byte) 0x05:
+          dle.add((byte) 0x10);
+          dle.add(dataFrame.get(i));
         break;
-        case (byte) 0xF4:
-          numberOfKeyWords += 1;
+        case (byte) 0x10:
+          dle.add((byte) 0x10);
+          dle.add(dataFrame.get(i));
         break;
+        default:
+          dle.add(dataFrame.get(i));
       }
     }
-    // then insert the DLE at right position
-    for (int i = 0; i < message.size()+ numberOfKeyWords; i++ ){
-      switch(message.get(i)){
-        case (byte) 0xF1:
-          message.add(i, (byte) 0x03);
-        break;
-        case (byte) 0xF2:
-          message.add(i, (byte) 0x03);
-        break;
-        case (byte) 0xF3:
-          message.add(i, (byte) 0x03);
-        break;
-        case (byte) 0xF4:
-          message.add(i, (byte) 0x03);
-        break;
-      }
-    }
+    return dle;
   }
+  
 
   // PRIVATE ATTRIBUTES
   int transmissionCounter;

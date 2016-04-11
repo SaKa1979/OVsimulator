@@ -3,7 +3,7 @@ package images;
 import java.net.URL;
 import javax.swing.ImageIcon;
 
-import view.VehicleButton.VehicleTypes;
+import view.VehicleButton.VehicleType;
 
 /**
  * @author Sander
@@ -42,19 +42,19 @@ public class ImageFactory {
   
   public ImageIcon getImageIcon(String name)
   {
-    if (name.equals(VehicleTypes.BUS_CITY.getName()))
+    if (name.equals(VehicleType.BUS_CITY.getName()))
       return busImage;
-    else if (name.equals(VehicleTypes.TRAM_CITY.getName()))
+    else if (name.equals(VehicleType.TRAM_CITY.getName()))
       return tramImage;
-    else if (name.equals(VehicleTypes.TAXI.getName()))
+    else if (name.equals(VehicleType.TAXI.getName()))
       return taxiImage;
-    else if (name.equals(VehicleTypes.AMBULANCE.getName()))
+    else if (name.equals(VehicleType.AMBULANCE.getName()))
       return ambulanceImage;
-    else if (name.equals(VehicleTypes.BRANDWEER.getName()))
+    else if (name.equals(VehicleType.BRANDWEER.getName()))
       return brandweerImage;
-    else if (name.equals(VehicleTypes.POLITIE.getName()))
+    else if (name.equals(VehicleType.POLITIE.getName()))
       return politieImage;
-    else if (name.equals(VehicleTypes.UNKNOWN.getName()))
+    else if (name.equals(VehicleType.UNKNOWN.getName()))
       return unknownImage;
     else if (name.equals("ledRed"))
         return ledRedImage;

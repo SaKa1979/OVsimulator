@@ -33,10 +33,6 @@ public abstract class Protocol {
    */
   public abstract void processData(Byte b);
   
-  /**
-   * @brief Calculates the CRC from a given Byte set
-   */
-  protected abstract void addCRC(ArrayList<Byte> message);
 
   // PRIVATE ATTRIBUTES
   private Event subscriber;

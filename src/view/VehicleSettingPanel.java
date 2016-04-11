@@ -14,7 +14,7 @@ import view.VehicleButton.JourneyType;
 import view.VehicleButton.PriorityClass;
 import view.VehicleButton.PunctualityClass;
 import view.VehicleButton.VehicleStatus;
-import view.VehicleButton.VehicleTypes;
+import view.VehicleButton.VehicleType;
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -153,8 +153,8 @@ public class VehicleSettingPanel extends JPanel {
         lblDistToStop.setForeground(Color.GRAY);//14
         timeToStopTF.setEnabled(true);
         lblTimeToStop.setForeground(Color.GRAY);//15
-        journeyNrTF.setEnabled(true);
-        lblJourneyNr.setForeground(Color.BLACK);//16
+        journeyNrTF.setEnabled(false);
+        lblJourneyNr.setForeground(Color.GRAY);//16
         journeyTypeComBox.setEnabled(true);
         lblJourneyType.setForeground(Color.BLACK);//17
         routeTF.setEnabled(false);
@@ -199,8 +199,8 @@ public class VehicleSettingPanel extends JPanel {
   public int getLoopNr(){
     return textFieldToInt(loopNrTF);
   }
-  public VehicleTypes getVehicleType(){
-    return (VehicleTypes) vehicleTypeComBox.getSelectedItem();
+  public VehicleType getVehicleType(){
+    return (VehicleType) vehicleTypeComBox.getSelectedItem();
   }
   public int getLineNr(){
     return textFieldToInt(lineNrTF);
@@ -342,7 +342,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblVehtype.gridx = 0;
     gbc_lblVehtype.gridy = 1;
     add(lblVehtype, gbc_lblVehtype);
-    vehicleTypeComBox = new JComboBox<VehicleTypes>(VehicleTypes.values());
+    vehicleTypeComBox = new JComboBox<VehicleType>(VehicleType.values());
     vehicleTypeComBox.setSelectedIndex(0);
     GridBagConstraints gbc_vehicleTypeComBox = new GridBagConstraints();
     gbc_vehicleTypeComBox.insets = new Insets(0, 0, 5, 5);
@@ -1029,7 +1029,7 @@ public class VehicleSettingPanel extends JPanel {
   private VehicleButton vehicle_button;
 
   private JTextField loopNrTF;
-  private JComboBox<VehicleTypes> vehicleTypeComBox;
+  private JComboBox<VehicleType> vehicleTypeComBox;
   private JTextField lineNrTF;
   private JTextField vehServiceNrTF;
   private JTextField companyNrTF;

@@ -60,30 +60,30 @@ public class SimControler implements Event {
       Proto proto = pp.getSelectedProto();
       viewManager.writeToBottomProto(proto.name(), Color.BLACK);
       // TODO create wanted protocol
-        switch (proto){
+      switch (proto){
         case KAR:
-               protocol = new KarProtocol();
-               protocol.addEventSubscriber(this);
-               viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()), Color.BLACK);
-               break;
+          protocol = new KarProtocol();
+          protocol.addEventSubscriber(this);
+          viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()), Color.BLACK);
+          break;
         case VECOM:
-               protocol = new VecomProtocol();
-               protocol.addEventSubscriber(this);
-               break;
+          protocol = new VecomProtocol();
+          protocol.addEventSubscriber(this);
+          break;
         default:
-        protocol = null;
-        }
+          protocol = null;
+      }
     }else if (o instanceof VehicleButton){
       VehicleButton vb = (VehicleButton)o;
-      if (communicator.isbConnected()){
-        //TODO call protocol to create hex from vehicleSettingPanel
+      if (protocol != null){
+        if (communicator.isbConnected()){
           ArrayList<Byte> HEXmsg = protocol.createSerialMessage(vb);
-          for(Byte b : HEXmsg){
-               communicator.writeData(b);
-               viewManager.writeToFeedback(b+" ", Color.blue, 8);
-               }
+            communicator.writeData(HEXmsg);
+        }else{
+          viewManager.writeToFeedback("No connection available at the moment.", Color.red, 8);
+        }
       }else{
-        viewManager.writeToFeedback("No connection available at the moment.", Color.red, 8);
+        viewManager.writeToFeedback("No protocol selected.", Color.red, 8);
       }
     }
   }
