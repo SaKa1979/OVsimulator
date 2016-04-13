@@ -180,14 +180,14 @@ public class Communicator extends Observable implements SerialPortEventListener 
   public void writeData(ArrayList<Byte> data){
     try
     {
-      viewManager.rxtxIndication(false, true);
+      viewManager.rxtxIndication(ComTransmission.TX);
 
       for(Byte b : data){
         output.write(b);
         comLog = convertDec2HexString(b);
-        viewManager.writeToFeedback("0x" + comLog + " ", Color.BLACK, 8);
+//        viewManager.writeToFeedback(0, "0x" + comLog + " ", Color.BLACK, 8);
       }
-      viewManager.writeToFeedback("\n", Color.BLACK, 8);
+      viewManager.writeToFeedback(0, "\n", Color.BLACK, 8);
       output.flush();
     }
     catch (Exception e)
@@ -195,7 +195,6 @@ public class Communicator extends Observable implements SerialPortEventListener 
       comLog = "Failed to write data.";
       viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
     }
-    viewManager.rxtxIndication(false, false);
   }
 
   /**
@@ -209,23 +208,20 @@ public class Communicator extends Observable implements SerialPortEventListener 
     {
       try
       {
-        viewManager.rxtxIndication(true, false);
+        viewManager.rxtxIndication(ComTransmission.RX);
 
         byte singleData = (byte)input.read();
 
         if (singleData != NEW_LINE_ASCII)
         {
-          //          comLog = convertDec2HexString(singleData);
-          //          viewManager.writeToFeedback(comLog, Color.GRAY, 8);
-          /*
-           * TODO hand over the received byte to the Protocol for further processing
-           * Protocol p = simControler.getProtocol();
-           * p.processData(singleData); 
-           */
+           //hand over the received byte to the Protocol for further processing
+           Protocol p = simControler.getProtocol();
+           if (p != null)
+             p.processData(singleData); 
         }
         else
         {
-          viewManager.writeToFeedback("\n", Color.GRAY, 8);
+          //nothing
         }
       }
       catch (Exception e)
@@ -234,7 +230,6 @@ public class Communicator extends Observable implements SerialPortEventListener 
         viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
       }
     }
-    viewManager.rxtxIndication(false, false);
   }
 
   /**
@@ -271,7 +266,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
    * @param given Byte
    * @return the hexadecimal value in String represenation
    */
-  public String convertDec2HexString(Byte hexByte){
+  public static final String convertDec2HexString(Byte hexByte){
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("%02X", hexByte));
 
@@ -311,5 +306,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
   // ENUMS
   //for containing the ports that will be found
   private Enumeration<?> ports = null;
+  
+  public enum ComTransmission {RX,TX,NONE};
 
 }

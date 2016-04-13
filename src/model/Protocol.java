@@ -20,6 +20,10 @@ public abstract class Protocol {
     subscriber.signal(this);
   }
   
+  public ArrayList<Byte> getSendMessage() {
+    return sendMessage;
+  }
+  
   /**
    * @brief create a message from a given VehicleButton
    * @param vb: The calling VehicleButton
@@ -36,4 +40,6 @@ public abstract class Protocol {
 
   // PRIVATE ATTRIBUTES
   private Event subscriber;
+  protected ArrayList<Byte> receivedMessage = null;
+  protected ArrayList<Byte> sendMessage = null;
 } // end of class Protocol

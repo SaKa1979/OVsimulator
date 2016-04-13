@@ -3,6 +3,8 @@ package controller;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import javax.swing.Timer;
+
 import model.Communicator;
 import model.Protocol;
 import view.ViewManager;
@@ -25,11 +27,9 @@ public class SimControler implements Event {
     return viewManager;
   }
 
-  /*
-   * TODO 
-   * public Protocol getProtocol(){
-   *    return protocol;
-   */
+  public Protocol getProtocol(){
+    return protocol;
+  }
 
   // PRIVATE METHOD
   private void initialize(){
@@ -59,7 +59,6 @@ public class SimControler implements Event {
       ProtocolPanel pp = (ProtocolPanel)o;
       Proto proto = pp.getSelectedProto();
       viewManager.writeToBottomProto(proto.name(), Color.BLACK);
-      // TODO create wanted protocol
       switch (proto){
         case KAR:
           protocol = new KarProtocol();
@@ -77,13 +76,23 @@ public class SimControler implements Event {
       VehicleButton vb = (VehicleButton)o;
       if (protocol != null){
         if (communicator.isbConnected()){
-          ArrayList<Byte> HEXmsg = protocol.createSerialMessage(vb);
-            communicator.writeData(HEXmsg);
+          protocol.createSerialMessage(vb);
         }else{
-          viewManager.writeToFeedback("No connection available at the moment.", Color.red, 8);
+          viewManager.writeToFeedback(0, "No connection available at the moment.", Color.red, 8);
         }
       }else{
-        viewManager.writeToFeedback("No protocol selected.", Color.red, 8);
+        viewManager.writeToFeedback(0, "No protocol selected.", Color.red, 8);
+      }
+    }else if (o instanceof Protocol){
+      Protocol proto = (Protocol)o;
+      if (protocol != null){
+        if (communicator.isbConnected()){
+          communicator.writeData(proto.getSendMessage());
+        }else{
+          viewManager.writeToFeedback(0, "No connection available at the moment.", Color.red, 8);
+        }
+      }else{
+        viewManager.writeToFeedback(0, "No protocol selected.", Color.red, 8);
       }
     }
   }

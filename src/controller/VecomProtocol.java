@@ -1,9 +1,15 @@
 package controller;
 
+import java.awt.Color;
 import java.util.ArrayList;
-
+import java.util.HashMap;
+import java.util.Map;
+import model.Communicator;
 import model.Protocol;
 import view.VehicleButton;
+import view.ViewManager;
+import static model.Communicator.*;
+
 
 public class VecomProtocol extends Protocol {
 
@@ -11,11 +17,14 @@ public class VecomProtocol extends Protocol {
   public VecomProtocol(){
     transmissionCounter = 1;
     overloop = (byte) 0xFF; // start with 'arrival at loop' 
+    state = State.WAIT_FOR_POLL;
   }
 
   @Override
   public ArrayList<Byte> createSerialMessage(VehicleButton vb) {
     ArrayList<Byte> dataFrame = new ArrayList<Byte>();
+    Map<String,String> feedback = new HashMap<String,String>();
+    ViewManager viewManager = ViewManager.getInstance();
 
     transmissionCounter += 1;
 
@@ -61,6 +70,7 @@ public class VecomProtocol extends Protocol {
         default:
       }
     }
+    feedback.put("line2", "0x" + convertDec2HexString(dataFrame.get(2)) + " " + vb.getVehicleType().getName());
 
     /**
      * Byte 3 LineNumber lo
@@ -255,25 +265,79 @@ public class VecomProtocol extends Protocol {
 
       dataFrame.add(temp_byte);
     }
+    feedback.put("line1", "0x" + convertDec2HexString(dataFrame.get(14)) + " " + vb.getVehicleType().getName());
 
     ArrayList<Byte> header = addHeader();
     ArrayList<Byte> dle = addDLE(dataFrame);
     ArrayList<Byte> crc = addCRC(dataFrame);
-    
+
     ArrayList<Byte> message = new ArrayList<>();
-    
+
     // build complete message
     message.addAll(header);
     message.addAll(dle);
-    message.add((byte) 0x03);// ETX
+    message.add(ETX);// ETX
     message.addAll(crc);
-    
+
+    viewManager.writeToFeedback(0, feedback.get("line1"), Color.BLACK, 8);
+
+    sendMessage = message;
+    dataframe_set = true;
+
     return message;
   }
 
   @Override
   public void processData(Byte b) {
-    // TODO Auto-generated method stub
+
+    //start building message 
+    if (receivedMessage == null){
+      receivedMessage = new ArrayList<Byte>();
+    }
+
+    switch(state){
+      case WAIT_FOR_POLL:
+        receivedMessage.add(b);
+        if (b == P)                                     // start of POLL message
+          state = State.BUILD_POLL;
+        break;
+      case BUILD_POLL:
+        receivedMessage.add(b);
+        if (b == ENQ){                                  // end of poll message. We either respond with eot or dataframe message
+          if (receivedMessage.get(1) == OWN_ADDRESS){   // meant for us
+            if (dataframe_set){                         // there is a dataframe ready to send
+              signalSubscriber();                       // let the Simcontroler know
+              receivedMessage = null;
+              state = State.WAIT_FOR_REPLY;
+            }else{                                      // send EOT message
+              sendMessage = eot();
+              signalSubscriber();
+              receivedMessage = null;
+              state = State.WAIT_FOR_POLL;
+            }
+          }
+        }
+        break;
+      case WAIT_FOR_REPLY:
+        if (b == OWN_ADDRESS){
+          state = State.BUILD_REPLY;
+        }
+        break;
+      case BUILD_REPLY:
+        if (b == ACK){
+          sendMessage = eot();
+          signalSubscriber();
+          state = State.WAIT_FOR_POLL;
+        }else if (b == NAK){
+          signalSubscriber();
+          receivedMessage = null;
+          state = State.WAIT_FOR_REPLY;
+        }
+        break;
+      default:
+        break; 
+    }
+
   }
 
   // PRIVATE METHODS
@@ -283,7 +347,7 @@ public class VecomProtocol extends Protocol {
     /**
      * SOH
      */
-    header.add((byte)0x01);
+    header.add(SOH);
 
     /**
      * ADDRESS
@@ -293,11 +357,11 @@ public class VecomProtocol extends Protocol {
     /**
      * STX
      */
-    header.add((byte)0x02);
+    header.add(STX);
 
     return header;
   }
-  
+
   /**
    * calculates CRC over given dataFrame
    * @param dataFrame
@@ -328,32 +392,58 @@ public class VecomProtocol extends Protocol {
 
     for (int i = 0; i < dataFrame.size(); i++ ){
       switch(dataFrame.get(i)){
-        case (byte) 0x03:
-          dle.add((byte) 0x10);
+        case ETX:
+          dle.add(DLE);
           dle.add(dataFrame.get(i));
-        break;
-        case (byte) 0x04:
-          dle.add((byte) 0x10);
+          break;
+        case EOT:
+          dle.add(DLE);
           dle.add(dataFrame.get(i));
-        break;
-        case (byte) 0x05:
-          dle.add((byte) 0x10);
+          break;
+        case ENQ:
+          dle.add(DLE);
           dle.add(dataFrame.get(i));
-        break;
-        case (byte) 0x10:
-          dle.add((byte) 0x10);
+          break;
+        case DLE:
+          dle.add(DLE);
           dle.add(dataFrame.get(i));
-        break;
+          break;
         default:
           dle.add(dataFrame.get(i));
       }
     }
     return dle;
   }
-  
+
+  private ArrayList<Byte> eot(){
+    ArrayList<Byte> eot = new ArrayList<Byte>();
+    eot.add(NULL);
+    eot.add(EOT);
+    return eot;
+  }
+
+  // ENUMS
+  public enum State {WAIT_FOR_POLL,
+    BUILD_POLL,
+    WAIT_FOR_REPLY,
+    BUILD_REPLY}
 
   // PRIVATE ATTRIBUTES
   int transmissionCounter;
   byte overloop;
+  State state;
+  boolean dataframe_set;
 
+  private static final byte SOH = (byte)0x01;
+  private static final byte STX = (byte)0x02;
+  private static final byte ETX = (byte)0x03;
+  private static final byte EOT = (byte)0x04;
+  private static final byte ENQ = (byte)0x05;
+  private static final byte ACK = (byte)0x06;
+  private static final byte DLE = (byte)0x10;
+  private static final byte NAK = (byte)0x15;
+  private static final byte P   = (byte)0x50;
+  private static final byte S   = (byte)0x53;
+  private static final byte NULL = (byte)0x00;
+  private static final byte OWN_ADDRESS = (byte) 0xF0;
 }

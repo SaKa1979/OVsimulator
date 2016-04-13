@@ -15,6 +15,8 @@ import javax.swing.text.StyledDocument;
 
 import controller.Event;
 import images.ImageFactory;
+import model.Communicator.ComTransmission;
+
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
@@ -24,6 +26,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import javax.swing.Timer;
+
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
@@ -94,7 +98,7 @@ public class ViewManager extends JFrame{
    * @param color
    * @param size
    */
-  public void writeToFeedback(String a_text, Color color, int size){
+  public void writeToFeedback(int offset, String a_text, Color color, int size){
     MutableAttributeSet attrs = feedbackTxtpn.getInputAttributes();
     StyleConstants.setFontFamily(attrs, "TimesRoman");
     StyleConstants.setFontSize(attrs, size);
@@ -103,7 +107,7 @@ public class ViewManager extends JFrame{
     StyleConstants.setForeground(feedbackTxtpnStyle, color);
 
     try{
-      sDoc.insertString(sDoc.getLength(), a_text, feedbackTxtpnStyle);
+      sDoc.insertString(sDoc.getLength() + offset, a_text, feedbackTxtpnStyle);
       feedbackTxtpn.setCaretPosition(sDoc.getLength());
     }
     catch (Exception e){
@@ -222,22 +226,35 @@ public class ViewManager extends JFrame{
   }
   
   /**
-   * @brief to indicate that there is (no )a connection to a com port.
+   * @brief to indicate that there is a transmission through a com port.
    * @param connected.
    */
-  public void rxtxIndication(Boolean rx, boolean tx){
-    if (rx && tx){
-      rx = false; tx = false;
+  public void rxtxIndication(ComTransmission rxtx){
+    
+    switch (rxtx){
+      case RX:
+        if(lblRx.getIcon().equals(imagefactory.getImageIcon("ledGreen")) == false)
+          lblRx.setIcon(imagefactory.getImageIcon("ledGreen"));
+        timer = new Timer(100, new TimerActionListener(lblRx));
+        timer.setInitialDelay(100);
+        timer.start();
+        break;
+      case TX:
+        if(lblTx.getIcon().equals(imagefactory.getImageIcon("ledYellow")) == false)
+          lblTx.setIcon(imagefactory.getImageIcon("ledYellow"));
+        timer = new Timer(100, new TimerActionListener(lblTx));
+        timer.setInitialDelay(100);
+        timer.start();
+        break;
+      case NONE:
+        break;
+      default:
+        lblRx.setIcon(imagefactory.getImageIcon("ledGray"));
+        lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
+        break;
     }
     
-    if(rx){
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGreen"));
-    }else if (tx){
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledYellow"));
-    }
-    else{
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGray"));      
-    }
+
   }
 
   // PRIVATE METHODS
@@ -311,8 +328,8 @@ public class ViewManager extends JFrame{
     GridBagLayout gbl_bottomInfoPanel = new GridBagLayout();
     gbl_bottomInfoPanel.columnWidths = new int[] {198, 198, 198, 198};
     gbl_bottomInfoPanel.rowHeights = new int[] {30, 30};
-    gbl_bottomInfoPanel.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0};
-    gbl_bottomInfoPanel.rowWeights = new double[]{0.0, 1.0};
+    gbl_bottomInfoPanel.columnWeights = new double[]{0.0, 1.0, 1.0, 1.0};
+    gbl_bottomInfoPanel.rowWeights = new double[]{1.0, 1.0};
     bottomInfoPanel.setLayout(gbl_bottomInfoPanel);
 
       // bottom version detail info text pane
@@ -341,13 +358,31 @@ public class ViewManager extends JFrame{
       bottomInfoPanel.add(bottomInfoComSettingTxtpn, gbc_bottomInfoComSettingTxtpn);
       bottomInfoComSettingTxtpn.setText("");
       bottomInfoComSettingTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Port settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+      
+      ComNoticepanel = new JPanel();
+      GridBagConstraints gbc_ComNoticepanel = new GridBagConstraints();
+      gbc_ComNoticepanel.gridheight = 2;
+      gbc_ComNoticepanel.insets = new Insets(0, 0, 5, 0);
+      gbc_ComNoticepanel.fill = GridBagConstraints.BOTH;
+      gbc_ComNoticepanel.gridx = 3;
+      gbc_ComNoticepanel.gridy = 0;
+      bottomInfoPanel.add(ComNoticepanel, gbc_ComNoticepanel);
+      ComNoticepanel.setLayout(new GridLayout(4, 2, 0, 0));
+      
+      lblTx = new JLabel("TX");
+      ComNoticepanel.add(lblTx);
+      lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
+      
+      lblRx = new JLabel("RX");
+      lblRx.setIcon(imagefactory.getImageIcon("ledGray"));
+      ComNoticepanel.add(lblRx);
 
       // bottom communication status detail info text pane
       bottomInfoComStatusTxtpn = new JTextPane();
       bottomInfoComStatusTxtpn.setEditable(false);
       bottomInfoComStatusTxtpn.setBackground(SystemColor.control);
       GridBagConstraints gbc_bottomInfoComStatusTxtpn = new GridBagConstraints();
-      gbc_bottomInfoComStatusTxtpn.insets = new Insets(0, 0, 5, 5);
+      gbc_bottomInfoComStatusTxtpn.insets = new Insets(0, 0, 0, 5);
       gbc_bottomInfoComStatusTxtpn.fill = GridBagConstraints.BOTH;
       gbc_bottomInfoComStatusTxtpn.gridx = 1;
       gbc_bottomInfoComStatusTxtpn.gridy = 1;
@@ -374,22 +409,12 @@ public class ViewManager extends JFrame{
       bottomInfoProtoXtraInfoTxtpn.setEditable(false);
       bottomInfoProtoXtraInfoTxtpn.setBackground(SystemColor.control);
       GridBagConstraints gbc_bottomInfoProtoXtraInfoTxtpn = new GridBagConstraints();
-      gbc_bottomInfoProtoXtraInfoTxtpn.insets = new Insets(0, 0, 5, 5);
+      gbc_bottomInfoProtoXtraInfoTxtpn.insets = new Insets(0, 0, 0, 5);
       gbc_bottomInfoProtoXtraInfoTxtpn.fill = GridBagConstraints.BOTH;
       gbc_bottomInfoProtoXtraInfoTxtpn.gridx = 2;
       gbc_bottomInfoProtoXtraInfoTxtpn.gridy = 1;
       bottomInfoPanel.add(bottomInfoProtoXtraInfoTxtpn, gbc_bottomInfoProtoXtraInfoTxtpn);
       bottomInfoProtoXtraInfoTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocol settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-
-      // is there a connection
-      RxTxLbl = new JLabel("RxTx");
-      RxTxLbl.setIcon(imagefactory.getImageIcon("ledGray"));
-      GridBagConstraints gbc_RxTxLbl = new GridBagConstraints();
-      gbc_RxTxLbl.insets = new Insets(0, 0, 5, 0);
-      gbc_RxTxLbl.fill = GridBagConstraints.BOTH;
-      gbc_RxTxLbl.gridx = 3;
-      gbc_RxTxLbl.gridy = 0;
-      bottomInfoPanel.add(RxTxLbl, gbc_RxTxLbl);
 
     // menu bar
     menuBar = new JMenuBar();
@@ -456,6 +481,23 @@ public class ViewManager extends JFrame{
       subscriber.signal(vb);
     }
   };
+  /**
+   * @brief Action listener for a reaction to a rxtx led timeout
+   * @author Sander
+   * @TODO change this for a timer with callback slot
+   */
+  public class TimerActionListener implements ActionListener {
+    
+    public TimerActionListener(JLabel label){
+      this.label = label;
+    };
+    
+    public void actionPerformed(ActionEvent e) {
+      label.setIcon(imagefactory.getImageIcon("ledGray"));
+      timer.stop();
+    }
+    JLabel label = null;
+  }
 
   // PRIVATE ATTRIBUTES
   int sizeX, sizeY;
@@ -470,7 +512,6 @@ public class ViewManager extends JFrame{
   private JTextPane bottomInfoComSettingTxtpn;
   private JTextPane bottomInfoComStatusTxtpn;
   private JTextPane bottomInfoProtoTxtpn;
-  private JLabel RxTxLbl;
 
   private JMenuBar menuBar;
   private JMenu mnSetting;
@@ -483,5 +524,9 @@ public class ViewManager extends JFrame{
   private Event subscriber;
   private JTextPane bottomInfoProtoXtraInfoTxtpn;
 
+  Timer timer = null;
+  private JPanel ComNoticepanel;
+  private JLabel lblRx;
+  private JLabel lblTx;
 
 } // end of Ovmain 
