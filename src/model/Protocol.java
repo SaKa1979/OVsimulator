@@ -16,8 +16,8 @@ public abstract class Protocol {
     subscriber  = a_subscriber;
   }
 
-  public void signalSubscriber(){
-    subscriber.signal(this);
+  public void signalSubscriber(Object a_arg){
+    subscriber.signal(this, a_arg);
   }
   
   public ArrayList<Byte> getSendMessage() {

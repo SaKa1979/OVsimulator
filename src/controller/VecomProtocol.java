@@ -1,14 +1,9 @@
 package controller;
 
-import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import model.Communicator;
 import model.Protocol;
 import view.VehicleButton;
 import view.ViewManager;
-import static model.Communicator.*;
 
 
 public class VecomProtocol extends Protocol {
@@ -23,8 +18,7 @@ public class VecomProtocol extends Protocol {
   @Override
   public ArrayList<Byte> createSerialMessage(VehicleButton vb) {
     ArrayList<Byte> dataFrame = new ArrayList<Byte>();
-    Map<String,String> feedback = new HashMap<String,String>();
-    ViewManager viewManager = ViewManager.getInstance();
+    ViewManager.getInstance();
 
     transmissionCounter += 1;
 
@@ -70,7 +64,6 @@ public class VecomProtocol extends Protocol {
         default:
       }
     }
-    feedback.put("line2", "0x" + convertDec2HexString(dataFrame.get(2)) + " " + vb.getVehicleType().getName());
 
     /**
      * Byte 3 LineNumber lo
@@ -265,7 +258,6 @@ public class VecomProtocol extends Protocol {
 
       dataFrame.add(temp_byte);
     }
-    feedback.put("line1", "0x" + convertDec2HexString(dataFrame.get(14)) + " " + vb.getVehicleType().getName());
 
     ArrayList<Byte> header = addHeader();
     ArrayList<Byte> dle = addDLE(dataFrame);
@@ -276,10 +268,8 @@ public class VecomProtocol extends Protocol {
     // build complete message
     message.addAll(header);
     message.addAll(dle);
-    message.add(ETX);// ETX
+    message.add(ETX);
     message.addAll(crc);
-
-    viewManager.writeToFeedback(0, feedback.get("line1"), Color.BLACK, 8);
 
     sendMessage = message;
     dataframe_set = true;
@@ -290,13 +280,9 @@ public class VecomProtocol extends Protocol {
   @Override
   public void processData(Byte b) {
 
-    //start building message 
-    if (receivedMessage == null){
-      receivedMessage = new ArrayList<Byte>();
-    }
-
     switch(state){
       case WAIT_FOR_POLL:
+        receivedMessage = new ArrayList<Byte>();
         receivedMessage.add(b);
         if (b == P)                                     // start of POLL message
           state = State.BUILD_POLL;
@@ -306,35 +292,50 @@ public class VecomProtocol extends Protocol {
         if (b == ENQ){                                  // end of poll message. We either respond with eot or dataframe message
           if (receivedMessage.get(1) == OWN_ADDRESS){   // meant for us
             if (dataframe_set){                         // there is a dataframe ready to send
-              signalSubscriber();                       // let the Simcontroler know
-              receivedMessage = null;
+              signalSubscriber(null);                   // let the Simcontroler know
+              dataframe_set = false;
               state = State.WAIT_FOR_REPLY;
+              System.out.println("POLL received and dataframe send");
             }else{                                      // send EOT message
               sendMessage = eot();
-              signalSubscriber();
-              receivedMessage = null;
+              signalSubscriber(null);
               state = State.WAIT_FOR_POLL;
+              System.out.println("POLL received and EOT send");
             }
           }
         }
         break;
       case WAIT_FOR_REPLY:
+        receivedMessage = new ArrayList<Byte>();
+        receivedMessage.add(b);
         if (b == OWN_ADDRESS){
           state = State.BUILD_REPLY;
+        }else if (b == NULL){
+          state = State.BUILD_EOT;
         }
         break;
       case BUILD_REPLY:
+        receivedMessage.add(b);
         if (b == ACK){
           sendMessage = eot();
-          signalSubscriber();
+          signalSubscriber("ACK\n");
           state = State.WAIT_FOR_POLL;
+          System.out.println("ACK received");
         }else if (b == NAK){
-          signalSubscriber();
-          receivedMessage = null;
+          signalSubscriber("NAK\n");
           state = State.WAIT_FOR_REPLY;
+          System.out.println("NAK received");
         }
         break;
+      case BUILD_EOT:
+        receivedMessage.add(b);
+        if(b == EOT){
+          state = State.WAIT_FOR_POLL;
+          System.out.println("EOT received");
+        }
       default:
+        state = State.WAIT_FOR_POLL;
+        System.out.println("UNKNOWN received");
         break; 
     }
 
@@ -426,7 +427,8 @@ public class VecomProtocol extends Protocol {
   public enum State {WAIT_FOR_POLL,
     BUILD_POLL,
     WAIT_FOR_REPLY,
-    BUILD_REPLY}
+    BUILD_REPLY,
+    BUILD_EOT}
 
   // PRIVATE ATTRIBUTES
   int transmissionCounter;
@@ -443,7 +445,6 @@ public class VecomProtocol extends Protocol {
   private static final byte DLE = (byte)0x10;
   private static final byte NAK = (byte)0x15;
   private static final byte P   = (byte)0x50;
-  private static final byte S   = (byte)0x53;
   private static final byte NULL = (byte)0x00;
   private static final byte OWN_ADDRESS = (byte) 0xF0;
 }

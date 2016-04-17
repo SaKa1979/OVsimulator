@@ -18,7 +18,7 @@ import view.PortSettingPanel.Flow;
 import view.PortSettingPanel.Parity;
 import view.PortSettingPanel.StopBit;
 
-public class Communicator extends Observable implements SerialPortEventListener {
+public class Communicator extends Observable implements SerialPortEventListener, Runnable {
 
   /**
    * Constructor
@@ -39,15 +39,22 @@ public class Communicator extends Observable implements SerialPortEventListener 
   public boolean isbConnected() {
     return bConnected;
   }
+  
 
   /**
-   * @brief search for all the serial ports   
+   * @brief search for all the serial ports in a separate thread
+   *        to increase the application startup time
    * @pre   adds all the found ports to a combo box of the GUI
    */
   public void searchForPorts()
   {
+    Thread thread = new Thread(this);
+    thread.start();
+  }
+  
+  @Override
+  public void run() {
     ports = CommPortIdentifier.getPortIdentifiers();
-
     while (ports.hasMoreElements())
     {
       CommPortIdentifier currentPort = (CommPortIdentifier)ports.nextElement();
@@ -59,17 +66,16 @@ public class Communicator extends Observable implements SerialPortEventListener 
         portMap.put(currentPort.getName(), currentPort);
         viewManager.getPortSettingPanel().setComPort(comPort);
       }
-    }
-  }
-
+    } 
+  };
+  
   /**
    * @brief connect to the selected port in the combo box
    * @pre   ports are already found by using the searchForPorts method
    * @post  the connected comm port is stored in commPort, otherwise,
    *        an exception is generated
    */
-
-  public void connect(){
+  public boolean connect(){
     PortSettingPanel portSettingPanel = viewManager.getPortSettingPanel();
     int baudRate = portSettingPanel.getBaudRate();
     DataBit dataBits = portSettingPanel.getDataBits();  
@@ -88,17 +94,22 @@ public class Communicator extends Observable implements SerialPortEventListener 
       //the CommPort object can be casted to a SerialPort object
       serialPort = (SerialPort)commPort;
 
-      //for controlling GUI elements
-      setConnected(true); 
+      //for controling GUI elements
+      if (commPort != null)
+       setConnected(true);
     }
     catch (PortInUseException e)
     {
       comLog = selectedPort + " is in use.";
+      setConnected(false);
+      viewManager.setConnected(bConnected);
       viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
     }
     catch (Exception e)
     {
       comLog = "Failed to open." + selectedPort;
+      setConnected(false);
+      viewManager.setConnected(bConnected);
       viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
     }
 
@@ -110,12 +121,16 @@ public class Communicator extends Observable implements SerialPortEventListener 
           parity.getNr());
     } catch (UnsupportedCommOperationException ex) {
       System.err.println(ex.getMessage());
+      setConnected(false);
+      viewManager.setConnected(bConnected);
     }
     try {
       serialPort.setFlowControlMode(
           flow.getNr());
     } catch (UnsupportedCommOperationException ex) {
       System.err.println(ex.getMessage());
+      setConnected(false);
+      viewManager.setConnected(bConnected);
     }
 
     // write the settings to gui
@@ -126,7 +141,8 @@ public class Communicator extends Observable implements SerialPortEventListener 
         + stopBits.getName() 
         + "." + flow.getName();
     viewManager.writeToBottomInfoComSettings(comLog, Color.BLACK);
-    viewManager.writeTobottomInfoComStatus("Connected", Color.BLACK);
+    
+    return bConnected;
   }
 
   /**
@@ -184,10 +200,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
 
       for(Byte b : data){
         output.write(b);
-        comLog = convertDec2HexString(b);
-//        viewManager.writeToFeedback(0, "0x" + comLog + " ", Color.BLACK, 8);
       }
-      viewManager.writeToFeedback(0, "\n", Color.BLACK, 8);
       output.flush();
     }
     catch (Exception e)
@@ -209,6 +222,7 @@ public class Communicator extends Observable implements SerialPortEventListener 
       try
       {
         viewManager.rxtxIndication(ComTransmission.RX);
+        viewManager.setConnected(bConnected);
 
         byte singleData = (byte)input.read();
 
@@ -249,14 +263,9 @@ public class Communicator extends Observable implements SerialPortEventListener 
       input.close();
       output.close();
       setConnected(false);
-
-      comLog = "Disconnected.";
-      viewManager.writeTobottomInfoComStatus(comLog, Color.BLACK);
     }
     catch (Exception e)
     {
-      comLog = "Failed to close " + serialPort.getName();
-      viewManager.writeTobottomInfoComStatus(comLog, Color.RED);
     }
   }
 
@@ -277,6 +286,10 @@ public class Communicator extends Observable implements SerialPortEventListener 
 
   private void setConnected(boolean b) {
     bConnected = b;
+    if (bConnected)
+    viewManager.writeTobottomInfoComStatus("Got COM" + selectedPortIdentifier.getName(), Color.BLACK);
+    else
+      viewManager.writeTobottomInfoComStatus("-", Color.BLACK);
   }
 
   // LISTENERS
@@ -307,6 +320,8 @@ public class Communicator extends Observable implements SerialPortEventListener 
   //for containing the ports that will be found
   private Enumeration<?> ports = null;
   
-  public enum ComTransmission {RX,TX,NONE};
+  public enum ComTransmission {RX,TX,NONE}
+
+
 
 }

@@ -34,6 +34,8 @@ import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JButton;
+import javax.swing.border.LineBorder;
 
 /**
  * @author Sander
@@ -45,7 +47,7 @@ public class ViewManager extends JFrame{
 
   private static ViewManager viewManager = new ViewManager(800, 650);
   private static final long serialVersionUID = 1L;
-  
+
   /**
    *  Constructor
    */
@@ -58,11 +60,11 @@ public class ViewManager extends JFrame{
   }
 
   // PUBLIC METHODS
-  
+
   public static ViewManager getInstance(){
     return viewManager;
   }
-  
+
   /**
    * @brief Add a VehicleButton to the VehicleSimulation pane and tie it to a
    *        given ActionListener
@@ -79,7 +81,7 @@ public class ViewManager extends JFrame{
   public void addEventSubscriber(Event a_subscriber){
     subscriber  = a_subscriber;
   }
-  
+
   public PortSettingPanel getPortSettingPanel() {
     return portSettingPanel;
   }
@@ -87,11 +89,19 @@ public class ViewManager extends JFrame{
   public ProtocolPanel getProtocolPanel() {
     return protocolPanel;
   }
-  
+
   public ViewManager getViewManager(){
     return this;
   }
-  
+  public void clearFeedback(){
+    StyledDocument sDoc = feedbackTxtpn.getStyledDocument();
+    try{
+      sDoc.remove(0, sDoc.getLength());
+    }
+    catch (Exception e){
+    }
+  }
+
   /**
    * @brief writes given text to FEEDBACK pane on a new line
    * @param aText
@@ -111,7 +121,6 @@ public class ViewManager extends JFrame{
       feedbackTxtpn.setCaretPosition(sDoc.getLength());
     }
     catch (Exception e){
-      System.out.println(e);
     }
   }
 
@@ -180,7 +189,7 @@ public class ViewManager extends JFrame{
       System.out.println(e);
     }
   }
-  
+
   /**
    * @brief writes given text to PROTO pane
    * @param aText
@@ -224,37 +233,41 @@ public class ViewManager extends JFrame{
       System.out.println(e);
     }
   }
-  
+
   /**
    * @brief to indicate that there is a transmission through a com port.
    * @param connected.
    */
   public void rxtxIndication(ComTransmission rxtx){
-    
+
     switch (rxtx){
       case RX:
-        if(lblRx.getIcon().equals(imagefactory.getImageIcon("ledGreen")) == false)
-          lblRx.setIcon(imagefactory.getImageIcon("ledGreen"));
-        timer = new Timer(100, new TimerActionListener(lblRx));
-        timer.setInitialDelay(100);
-        timer.start();
+        if(lblRx.getIcon().equals(imagefactory.getImageIcon("ledYellow")) == false){
+          lblRx.setIcon(imagefactory.getImageIcon("ledYellow"));
+          timer_RX_TO = new Timer(200, new RxTimerActionListener(lblRx));
+          timer_RX_TO.start();
+        }
         break;
       case TX:
-        if(lblTx.getIcon().equals(imagefactory.getImageIcon("ledYellow")) == false)
+        if(lblTx.getIcon().equals(imagefactory.getImageIcon("ledYellow")) == false){
           lblTx.setIcon(imagefactory.getImageIcon("ledYellow"));
-        timer = new Timer(100, new TimerActionListener(lblTx));
-        timer.setInitialDelay(100);
-        timer.start();
+          timer_TX_TO = new Timer(200, new TxTimerActionListener(lblTx));
+          timer_TX_TO.start();
+        }
         break;
       case NONE:
-        break;
       default:
         lblRx.setIcon(imagefactory.getImageIcon("ledGray"));
         lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
-        break;
     }
-    
+  }
 
+  public void setConnected(boolean connect){
+    if (connect){
+      lblConnected.setIcon(imagefactory.getImageIcon("ledGreen"));
+    }else{
+      lblConnected.setIcon(imagefactory.getImageIcon("ledGray"));
+    }
   }
 
   // PRIVATE METHODS
@@ -282,7 +295,7 @@ public class ViewManager extends JFrame{
     vehicleSimulation.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_vehicleSimulation = new GridBagConstraints();
     gbc_vehicleSimulation.anchor = GridBagConstraints.LINE_START;
-    gbc_vehicleSimulation.insets = new Insets(0, 0, 5, 5);
+    gbc_vehicleSimulation.insets = new Insets(5, 5, 0, 0);
     gbc_vehicleSimulation.fill = GridBagConstraints.NONE;
     gbc_vehicleSimulation.gridx = 0;
     gbc_vehicleSimulation.gridy = 0;
@@ -294,7 +307,7 @@ public class ViewManager extends JFrame{
     GridBagConstraints gbc_FeedbackPanel = new GridBagConstraints();
     gbc_FeedbackPanel.weighty = 0.5;
     gbc_FeedbackPanel.weightx = 0.5;
-    gbc_FeedbackPanel.insets = new Insets(5, 0, 5, 0);
+    gbc_FeedbackPanel.insets = new Insets(5, 0, 0, 5);
     gbc_FeedbackPanel.fill = GridBagConstraints.BOTH;
     gbc_FeedbackPanel.gridx = 1;
     gbc_FeedbackPanel.gridy = 0;
@@ -316,6 +329,7 @@ public class ViewManager extends JFrame{
     bottomInfoPanel = new JPanel();
     bottomInfoPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_bottomInfoPanel = new GridBagConstraints();
+    gbc_bottomInfoPanel.insets = new Insets(0, 5, 5, 5);
     gbc_bottomInfoPanel.anchor = GridBagConstraints.SOUTH;
     gbc_bottomInfoPanel.weighty = 0.0;
     gbc_bottomInfoPanel.weightx = 0.0;
@@ -332,89 +346,128 @@ public class ViewManager extends JFrame{
     gbl_bottomInfoPanel.rowWeights = new double[]{1.0, 1.0};
     bottomInfoPanel.setLayout(gbl_bottomInfoPanel);
 
-      // bottom version detail info text pane
-      bottomInfoVersionTxtpn = new JTextPane();
-      bottomInfoVersionTxtpn.setEditable(false);
-      bottomInfoVersionTxtpn.setToolTipText("Information about the build. ");
-      bottomInfoVersionTxtpn.setBackground(SystemColor.control);
-      GridBagConstraints gbc_bottomInfoVersionTxtpn = new GridBagConstraints();
-      gbc_bottomInfoVersionTxtpn.fill = GridBagConstraints.BOTH;
-      gbc_bottomInfoVersionTxtpn.insets = new Insets(0, 0, 5, 5);
-      gbc_bottomInfoVersionTxtpn.gridx = 0;
-      gbc_bottomInfoVersionTxtpn.gridy = 0;
-      bottomInfoPanel.add(bottomInfoVersionTxtpn, gbc_bottomInfoVersionTxtpn);
-      bottomInfoVersionTxtpn.setText("");
-      bottomInfoVersionTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Version", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-  
-      // bottom communication settings detail info text pane
-      bottomInfoComSettingTxtpn = new JTextPane();
-      bottomInfoComSettingTxtpn.setEditable(false);
-      bottomInfoComSettingTxtpn.setBackground(SystemColor.control);
-      GridBagConstraints gbc_bottomInfoComSettingTxtpn = new GridBagConstraints();
-      gbc_bottomInfoComSettingTxtpn.fill = GridBagConstraints.BOTH;
-      gbc_bottomInfoComSettingTxtpn.insets = new Insets(0, 0, 5, 5);
-      gbc_bottomInfoComSettingTxtpn.gridx = 1;
-      gbc_bottomInfoComSettingTxtpn.gridy = 0;
-      bottomInfoPanel.add(bottomInfoComSettingTxtpn, gbc_bottomInfoComSettingTxtpn);
-      bottomInfoComSettingTxtpn.setText("");
-      bottomInfoComSettingTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Port settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-      
-      ComNoticepanel = new JPanel();
-      GridBagConstraints gbc_ComNoticepanel = new GridBagConstraints();
-      gbc_ComNoticepanel.gridheight = 2;
-      gbc_ComNoticepanel.insets = new Insets(0, 0, 5, 0);
-      gbc_ComNoticepanel.fill = GridBagConstraints.BOTH;
-      gbc_ComNoticepanel.gridx = 3;
-      gbc_ComNoticepanel.gridy = 0;
-      bottomInfoPanel.add(ComNoticepanel, gbc_ComNoticepanel);
-      ComNoticepanel.setLayout(new GridLayout(4, 2, 0, 0));
-      
-      lblTx = new JLabel("TX");
-      ComNoticepanel.add(lblTx);
-      lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
-      
-      lblRx = new JLabel("RX");
-      lblRx.setIcon(imagefactory.getImageIcon("ledGray"));
-      ComNoticepanel.add(lblRx);
+    // bottom version detail info text pane
+    bottomInfoVersionTxtpn = new JTextPane();
+    bottomInfoVersionTxtpn.setEditable(false);
+    bottomInfoVersionTxtpn.setToolTipText("Information about the build. ");
+    bottomInfoVersionTxtpn.setBackground(SystemColor.control);
+    GridBagConstraints gbc_bottomInfoVersionTxtpn = new GridBagConstraints();
+    gbc_bottomInfoVersionTxtpn.fill = GridBagConstraints.BOTH;
+    gbc_bottomInfoVersionTxtpn.insets = new Insets(0, 5, 5, 5);
+    gbc_bottomInfoVersionTxtpn.gridx = 0;
+    gbc_bottomInfoVersionTxtpn.gridy = 0;
+    bottomInfoPanel.add(bottomInfoVersionTxtpn, gbc_bottomInfoVersionTxtpn);
+    bottomInfoVersionTxtpn.setText("");
+    bottomInfoVersionTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Version", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-      // bottom communication status detail info text pane
-      bottomInfoComStatusTxtpn = new JTextPane();
-      bottomInfoComStatusTxtpn.setEditable(false);
-      bottomInfoComStatusTxtpn.setBackground(SystemColor.control);
-      GridBagConstraints gbc_bottomInfoComStatusTxtpn = new GridBagConstraints();
-      gbc_bottomInfoComStatusTxtpn.insets = new Insets(0, 0, 0, 5);
-      gbc_bottomInfoComStatusTxtpn.fill = GridBagConstraints.BOTH;
-      gbc_bottomInfoComStatusTxtpn.gridx = 1;
-      gbc_bottomInfoComStatusTxtpn.gridy = 1;
-      bottomInfoPanel.add(bottomInfoComStatusTxtpn, gbc_bottomInfoComStatusTxtpn);
-      bottomInfoComStatusTxtpn.setText("Not connected.");
-      bottomInfoComStatusTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Port status", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+    // bottom communication settings detail info text pane
+    bottomInfoComSettingTxtpn = new JTextPane();
+    bottomInfoComSettingTxtpn.setEditable(false);
+    bottomInfoComSettingTxtpn.setBackground(SystemColor.control);
+    GridBagConstraints gbc_bottomInfoComSettingTxtpn = new GridBagConstraints();
+    gbc_bottomInfoComSettingTxtpn.fill = GridBagConstraints.BOTH;
+    gbc_bottomInfoComSettingTxtpn.insets = new Insets(0, 0, 5, 5);
+    gbc_bottomInfoComSettingTxtpn.gridx = 1;
+    gbc_bottomInfoComSettingTxtpn.gridy = 0;
+    bottomInfoPanel.add(bottomInfoComSettingTxtpn, gbc_bottomInfoComSettingTxtpn);
+    bottomInfoComSettingTxtpn.setText("");
+    bottomInfoComSettingTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Port settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
-      // bottom selected protocol info text pane
-      bottomInfoProtoTxtpn = new JTextPane();
-      bottomInfoProtoTxtpn.setEditable(false);
-      bottomInfoProtoTxtpn.setToolTipText("The current selected protocol");
-      bottomInfoProtoTxtpn.setBackground(SystemColor.control);
-      GridBagConstraints gbc_bottomInfoProtoTxtpn = new GridBagConstraints();
-      gbc_bottomInfoProtoTxtpn.fill = GridBagConstraints.BOTH;
-      gbc_bottomInfoProtoTxtpn.insets = new Insets(0, 0, 5, 5);
-      gbc_bottomInfoProtoTxtpn.gridx = 2;
-      gbc_bottomInfoProtoTxtpn.gridy = 0;
-      bottomInfoPanel.add(bottomInfoProtoTxtpn, gbc_bottomInfoProtoTxtpn);
-      bottomInfoProtoTxtpn.setText("-");
-      bottomInfoProtoTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocol", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-  
-      // bottom selected protocol extra info pane
-      bottomInfoProtoXtraInfoTxtpn = new JTextPane();
-      bottomInfoProtoXtraInfoTxtpn.setEditable(false);
-      bottomInfoProtoXtraInfoTxtpn.setBackground(SystemColor.control);
-      GridBagConstraints gbc_bottomInfoProtoXtraInfoTxtpn = new GridBagConstraints();
-      gbc_bottomInfoProtoXtraInfoTxtpn.insets = new Insets(0, 0, 0, 5);
-      gbc_bottomInfoProtoXtraInfoTxtpn.fill = GridBagConstraints.BOTH;
-      gbc_bottomInfoProtoXtraInfoTxtpn.gridx = 2;
-      gbc_bottomInfoProtoXtraInfoTxtpn.gridy = 1;
-      bottomInfoPanel.add(bottomInfoProtoXtraInfoTxtpn, gbc_bottomInfoProtoXtraInfoTxtpn);
-      bottomInfoProtoXtraInfoTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocol settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+    ComNoticepanel = new JPanel();
+    ComNoticepanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+    GridBagConstraints gbc_ComNoticepanel = new GridBagConstraints();
+    gbc_ComNoticepanel.insets = new Insets(6, 0, 6, 5);
+    gbc_ComNoticepanel.gridheight = 2;
+    gbc_ComNoticepanel.fill = GridBagConstraints.BOTH;
+    gbc_ComNoticepanel.gridx = 3;
+    gbc_ComNoticepanel.gridy = 0;
+    bottomInfoPanel.add(ComNoticepanel, gbc_ComNoticepanel);
+    GridBagLayout gbl_ComNoticepanel = new GridBagLayout();
+    gbl_ComNoticepanel.columnWidths = new int[] {75, 75};
+    gbl_ComNoticepanel.rowHeights = new int[] {20, 20, 20};
+    ComNoticepanel.setLayout(gbl_ComNoticepanel);
+
+    btnClearFeedback = new JButton("Clear screen");
+    btnClearFeedback.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        clearFeedback();
+      }
+    });
+    btnClearFeedback.setToolTipText("Clears the feedback screen");
+    GridBagConstraints gbc_btnClearFeedback = new GridBagConstraints();
+    gbc_btnClearFeedback.fill = GridBagConstraints.HORIZONTAL;
+    gbc_btnClearFeedback.gridwidth = 2;
+    gbc_btnClearFeedback.insets = new Insets(0, 5, 0, 5);
+    gbc_btnClearFeedback.gridx = 0;
+    gbc_btnClearFeedback.gridy = 0;
+    ComNoticepanel.add(btnClearFeedback, gbc_btnClearFeedback);
+
+    lblConnected = new JLabel("Connected");
+    GridBagConstraints gbc_lblConnected = new GridBagConstraints();
+    gbc_lblConnected.insets = new Insets(0, 0, 0, 5);
+    gbc_lblConnected.fill = GridBagConstraints.BOTH;
+    gbc_lblConnected.gridx = 1;
+    gbc_lblConnected.gridy = 2;
+    ComNoticepanel.add(lblConnected, gbc_lblConnected);
+    lblConnected.setIcon(imagefactory.getImageIcon("ledGray"));
+
+    lblTx = new JLabel("TX");
+    GridBagConstraints gbc_lblTx = new GridBagConstraints();
+    gbc_lblTx.fill = GridBagConstraints.BOTH;
+    gbc_lblTx.insets = new Insets(5, 5, 5, 5);
+    gbc_lblTx.gridx = 0;
+    gbc_lblTx.gridy = 1;
+    ComNoticepanel.add(lblTx, gbc_lblTx);
+    lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
+
+    lblRx = new JLabel("RX");
+    lblRx.setIcon(imagefactory.getImageIcon("ledGray"));
+    GridBagConstraints gbc_lblRx = new GridBagConstraints();
+    gbc_lblRx.fill = GridBagConstraints.BOTH;
+    gbc_lblRx.insets = new Insets(0, 5, 0, 5);
+    gbc_lblRx.gridx = 0;
+    gbc_lblRx.gridy = 2;
+    ComNoticepanel.add(lblRx, gbc_lblRx);
+
+    // bottom communication status detail info text pane
+    bottomInfoComStatusTxtpn = new JTextPane();
+    bottomInfoComStatusTxtpn.setEditable(false);
+    bottomInfoComStatusTxtpn.setBackground(SystemColor.control);
+    GridBagConstraints gbc_bottomInfoComStatusTxtpn = new GridBagConstraints();
+    gbc_bottomInfoComStatusTxtpn.insets = new Insets(0, 0, 5, 5);
+    gbc_bottomInfoComStatusTxtpn.fill = GridBagConstraints.BOTH;
+    gbc_bottomInfoComStatusTxtpn.gridx = 1;
+    gbc_bottomInfoComStatusTxtpn.gridy = 1;
+    bottomInfoPanel.add(bottomInfoComStatusTxtpn, gbc_bottomInfoComStatusTxtpn);
+    bottomInfoComStatusTxtpn.setText("Not connected.");
+    bottomInfoComStatusTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Port status", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+    // bottom selected protocol info text pane
+    bottomInfoProtoTxtpn = new JTextPane();
+    bottomInfoProtoTxtpn.setEditable(false);
+    bottomInfoProtoTxtpn.setToolTipText("The current selected protocol");
+    bottomInfoProtoTxtpn.setBackground(SystemColor.control);
+    GridBagConstraints gbc_bottomInfoProtoTxtpn = new GridBagConstraints();
+    gbc_bottomInfoProtoTxtpn.fill = GridBagConstraints.BOTH;
+    gbc_bottomInfoProtoTxtpn.insets = new Insets(0, 0, 5, 5);
+    gbc_bottomInfoProtoTxtpn.gridx = 2;
+    gbc_bottomInfoProtoTxtpn.gridy = 0;
+    bottomInfoPanel.add(bottomInfoProtoTxtpn, gbc_bottomInfoProtoTxtpn);
+    bottomInfoProtoTxtpn.setText("-");
+    bottomInfoProtoTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocol", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+
+    // bottom selected protocol extra info pane
+    bottomInfoProtoXtraInfoTxtpn = new JTextPane();
+    bottomInfoProtoXtraInfoTxtpn.setEditable(false);
+    bottomInfoProtoXtraInfoTxtpn.setBackground(SystemColor.control);
+    GridBagConstraints gbc_bottomInfoProtoXtraInfoTxtpn = new GridBagConstraints();
+    gbc_bottomInfoProtoXtraInfoTxtpn.insets = new Insets(0, 0, 5, 5);
+    gbc_bottomInfoProtoXtraInfoTxtpn.fill = GridBagConstraints.BOTH;
+    gbc_bottomInfoProtoXtraInfoTxtpn.gridx = 2;
+    gbc_bottomInfoProtoXtraInfoTxtpn.gridy = 1;
+    bottomInfoPanel.add(bottomInfoProtoXtraInfoTxtpn, gbc_bottomInfoProtoXtraInfoTxtpn);
+    bottomInfoProtoXtraInfoTxtpn.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Protocol settings", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 
     // menu bar
     menuBar = new JMenuBar();
@@ -435,7 +488,7 @@ public class ViewManager extends JFrame{
         switch (ok){
           case 0:
             // signal Communicator for we have some COM settings to update
-            subscriber.signal(portSettingPanel);
+            subscriber.signal(portSettingPanel, null);
             break;
           case 2:
             // do nothing
@@ -457,7 +510,7 @@ public class ViewManager extends JFrame{
         switch (ok){
           case 0:
             protocolPanel.handleOK();
-            subscriber.signal(protocolPanel);
+            subscriber.signal(protocolPanel, null);
             break;
           case 2:
             // do nothing
@@ -478,23 +531,34 @@ public class ViewManager extends JFrame{
     @Override
     public void actionPerformed(ActionEvent e) {
       VehicleButton vb = (VehicleButton)e.getSource();
-      subscriber.signal(vb);
+      subscriber.signal(vb, null);
     }
   };
   /**
    * @brief Action listener for a reaction to a rxtx led timeout
    * @author Sander
-   * @TODO change this for a timer with callback slot
+   * @TODO change this for a timer_RX_TO with callback slot
    */
-  public class TimerActionListener implements ActionListener {
-    
-    public TimerActionListener(JLabel label){
+  public class RxTimerActionListener implements ActionListener {
+
+    public RxTimerActionListener(JLabel label){
       this.label = label;
     };
-    
+
     public void actionPerformed(ActionEvent e) {
       label.setIcon(imagefactory.getImageIcon("ledGray"));
-      timer.stop();
+    }
+    JLabel label = null;
+  }
+  
+  public class TxTimerActionListener implements ActionListener {
+
+    public TxTimerActionListener(JLabel label){
+      this.label = label;
+    };
+
+    public void actionPerformed(ActionEvent e) {
+      label.setIcon(imagefactory.getImageIcon("ledGray"));
     }
     JLabel label = null;
   }
@@ -524,9 +588,13 @@ public class ViewManager extends JFrame{
   private Event subscriber;
   private JTextPane bottomInfoProtoXtraInfoTxtpn;
 
-  Timer timer = null;
+  Timer timer_RX_TO = null;
+  Timer timer_TX_TO = null;
+  
   private JPanel ComNoticepanel;
   private JLabel lblRx;
   private JLabel lblTx;
+  private JLabel lblConnected;
+  private JButton btnClearFeedback;
 
 } // end of Ovmain 
