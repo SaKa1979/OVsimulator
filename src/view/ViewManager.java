@@ -16,6 +16,7 @@ import javax.swing.text.StyledDocument;
 import controller.Event;
 import images.ImageFactory;
 import model.Communicator.ComTransmission;
+import view.ProtocolPanel.Proto;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -26,6 +27,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
 import javax.swing.Timer;
 
 import javax.swing.JMenuItem;
@@ -35,7 +39,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
-import javax.swing.border.LineBorder;
+import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 /**
  * @author Sander
@@ -54,6 +59,7 @@ public class ViewManager extends JFrame{
   private ViewManager(int sX, int sY) {
     sizeX = sX;
     sizeY = sY;
+    showComData = false;
     setMinimumSize(new Dimension(sizeX, sizeY));
     imagefactory = new ImageFactory();
     initialize();
@@ -93,6 +99,11 @@ public class ViewManager extends JFrame{
   public ViewManager getViewManager(){
     return this;
   }
+
+  public boolean isShowComData() {
+    return showComData;
+  }
+
   public void clearFeedback(){
     StyledDocument sDoc = feedbackTxtpn.getStyledDocument();
     try{
@@ -244,14 +255,14 @@ public class ViewManager extends JFrame{
       case RX:
         if(lblRx.getIcon().equals(imagefactory.getImageIcon("ledYellow")) == false){
           lblRx.setIcon(imagefactory.getImageIcon("ledYellow"));
-          timer_RX_TO = new Timer(200, new RxTimerActionListener(lblRx));
+          timer_RX_TO = new Timer(50, new RxTimerActionListener(lblRx));
           timer_RX_TO.start();
         }
         break;
       case TX:
         if(lblTx.getIcon().equals(imagefactory.getImageIcon("ledYellow")) == false){
           lblTx.setIcon(imagefactory.getImageIcon("ledYellow"));
-          timer_TX_TO = new Timer(200, new TxTimerActionListener(lblTx));
+          timer_TX_TO = new Timer(50, new TxTimerActionListener(lblTx));
           timer_TX_TO.start();
         }
         break;
@@ -259,14 +270,6 @@ public class ViewManager extends JFrame{
       default:
         lblRx.setIcon(imagefactory.getImageIcon("ledGray"));
         lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
-    }
-  }
-
-  public void setConnected(boolean connect){
-    if (connect){
-      lblConnected.setIcon(imagefactory.getImageIcon("ledGreen"));
-    }else{
-      lblConnected.setIcon(imagefactory.getImageIcon("ledGray"));
     }
   }
 
@@ -384,7 +387,7 @@ public class ViewManager extends JFrame{
     gbc_ComNoticepanel.gridy = 0;
     bottomInfoPanel.add(ComNoticepanel, gbc_ComNoticepanel);
     GridBagLayout gbl_ComNoticepanel = new GridBagLayout();
-    gbl_ComNoticepanel.columnWidths = new int[] {75, 75};
+    gbl_ComNoticepanel.columnWidths = new int[] {50, 100};
     gbl_ComNoticepanel.rowHeights = new int[] {20, 20, 20};
     ComNoticepanel.setLayout(gbl_ComNoticepanel);
 
@@ -403,21 +406,12 @@ public class ViewManager extends JFrame{
     gbc_btnClearFeedback.gridy = 0;
     ComNoticepanel.add(btnClearFeedback, gbc_btnClearFeedback);
 
-    lblConnected = new JLabel("Connected");
-    GridBagConstraints gbc_lblConnected = new GridBagConstraints();
-    gbc_lblConnected.insets = new Insets(0, 0, 0, 5);
-    gbc_lblConnected.fill = GridBagConstraints.BOTH;
-    gbc_lblConnected.gridx = 1;
-    gbc_lblConnected.gridy = 2;
-    ComNoticepanel.add(lblConnected, gbc_lblConnected);
-    lblConnected.setIcon(imagefactory.getImageIcon("ledGray"));
-
     lblTx = new JLabel("TX");
     GridBagConstraints gbc_lblTx = new GridBagConstraints();
     gbc_lblTx.fill = GridBagConstraints.BOTH;
     gbc_lblTx.insets = new Insets(5, 5, 5, 5);
     gbc_lblTx.gridx = 0;
-    gbc_lblTx.gridy = 1;
+    gbc_lblTx.gridy = 2;
     ComNoticepanel.add(lblTx, gbc_lblTx);
     lblTx.setIcon(imagefactory.getImageIcon("ledGray"));
 
@@ -427,8 +421,29 @@ public class ViewManager extends JFrame{
     gbc_lblRx.fill = GridBagConstraints.BOTH;
     gbc_lblRx.insets = new Insets(0, 5, 0, 5);
     gbc_lblRx.gridx = 0;
-    gbc_lblRx.gridy = 2;
+    gbc_lblRx.gridy = 1;
     ComNoticepanel.add(lblRx, gbc_lblRx);
+
+    cbShowCommunication = new JCheckBox("Show protocol");
+    cbShowCommunication.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED){
+          showComData = true;
+        }
+        else {
+          showComData = false;
+        }
+      }
+    });
+    cbShowCommunication.setHorizontalTextPosition(SwingConstants.LEFT);
+
+    cbShowCommunication.setToolTipText("When this checkbox is selected all the protocol communication between the OV-simulator and the host is displayed on the feedback screen. ");
+    GridBagConstraints gbc_cbShowCommunication = new GridBagConstraints();
+    gbc_cbShowCommunication.anchor = GridBagConstraints.WEST;
+    gbc_cbShowCommunication.insets = new Insets(0, 0, 0, 5);
+    gbc_cbShowCommunication.gridx = 1;
+    gbc_cbShowCommunication.gridy = 1;
+    ComNoticepanel.add(cbShowCommunication, gbc_cbShowCommunication);
 
     // bottom communication status detail info text pane
     bottomInfoComStatusTxtpn = new JTextPane();
@@ -547,10 +562,11 @@ public class ViewManager extends JFrame{
 
     public void actionPerformed(ActionEvent e) {
       label.setIcon(imagefactory.getImageIcon("ledGray"));
+      timer_RX_TO.stop();
     }
     JLabel label = null;
   }
-  
+
   public class TxTimerActionListener implements ActionListener {
 
     public TxTimerActionListener(JLabel label){
@@ -559,12 +575,14 @@ public class ViewManager extends JFrame{
 
     public void actionPerformed(ActionEvent e) {
       label.setIcon(imagefactory.getImageIcon("ledGray"));
+      timer_TX_TO.stop();
     }
     JLabel label = null;
   }
 
   // PRIVATE ATTRIBUTES
   int sizeX, sizeY;
+  boolean showComData;
   // images
   private ImageFactory imagefactory;
   // views and menu
@@ -590,11 +608,11 @@ public class ViewManager extends JFrame{
 
   Timer timer_RX_TO = null;
   Timer timer_TX_TO = null;
-  
+
   private JPanel ComNoticepanel;
   private JLabel lblRx;
   private JLabel lblTx;
-  private JLabel lblConnected;
   private JButton btnClearFeedback;
+  private JCheckBox cbShowCommunication;
 
 } // end of Ovmain 

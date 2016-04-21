@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -17,13 +19,22 @@ import view.VehicleButton.VehicleStatus;
 import view.VehicleButton.VehicleType;
 
 import javax.swing.JTextField;
+import javax.swing.InputVerifier;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import java.awt.GridBagLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+
 import javax.swing.JLabel;
 
 public class VehicleSettingPanel extends JPanel {
@@ -36,6 +47,7 @@ public class VehicleSettingPanel extends JPanel {
    */
   public VehicleSettingPanel(VehicleButton a_vehicle_button) {
     vehicle_button = a_vehicle_button;
+    calendar = new GregorianCalendar();
     setBorder(new TitledBorder(null, "Vehicle Setting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagLayout gridBagLayout = new GridBagLayout();
     gridBagLayout.columnWidths = new int[] {50, 100, 50, 25, 25, 25, 25};
@@ -191,10 +203,10 @@ public class VehicleSettingPanel extends JPanel {
       case SICS:
         //as if
         break;
-        default:
-          break;
+      default:
+        break;
     }
-    
+
   }
   public int getLoopNr(){
     return textFieldToInt(loopNrTF);
@@ -322,8 +334,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblLoop.gridx = 0;
     gbc_lblLoop.gridy = 0;
     add(lblLoop, gbc_lblLoop);
-    loopNrTF = new JTextField();
-    loopNrTF.setDocument(new LengthRestrictedDocument(3));
+    loopNrTF = new NumericField(3, NumericField.DECIMAL);
+    loopNrTF.setAllowNegative(false);
     loopNrTF.setText("0");
     loopNrTF.setToolTipText("Loop 0-127");
     GridBagConstraints gbc_loopNrTF = new GridBagConstraints();
@@ -360,8 +372,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblLine.gridx = 0;
     gbc_lblLine.gridy = 2;
     add(lblLine, gbc_lblLine);
-    lineNrTF = new JTextField();
-    lineNrTF.setDocument(new LengthRestrictedDocument(4));
+    lineNrTF = new NumericField(4, NumericField.DECIMAL);
+    lineNrTF.setAllowNegative(false);
     lineNrTF.setText("0");
     lineNrTF.setToolTipText("Line number 0-9999");
     GridBagConstraints gbc_lineNrTF = new GridBagConstraints();
@@ -380,8 +392,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblService.gridx = 0;
     gbc_lblService.gridy = 3;
     add(lblService, gbc_lblService);
-    vehServiceNrTF = new JTextField();
-    vehServiceNrTF.setDocument(new LengthRestrictedDocument(4));
+    vehServiceNrTF = new NumericField(4, NumericField.DECIMAL);
+    vehServiceNrTF.setAllowNegative(false);
     vehServiceNrTF.setText("0");
     vehServiceNrTF.setToolTipText("Vehicle servie number. Also known as Block number 0-9999");
     GridBagConstraints gbc_vehServiceNrTF = new GridBagConstraints();
@@ -400,8 +412,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblCompany.gridx = 0;
     gbc_lblCompany.gridy = 4;
     add(lblCompany, gbc_lblCompany);
-    companyNrTF = new JTextField();
-    companyNrTF.setDocument(new LengthRestrictedDocument(3));
+    companyNrTF = new NumericField(3, NumericField.DECIMAL);
+    companyNrTF.setAllowNegative(false);
     companyNrTF.setText("0");
     companyNrTF.setToolTipText("Company number 0-255");
     GridBagConstraints gbc_companyNrTF = new GridBagConstraints();
@@ -420,8 +432,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblVehId.gridx = 0;
     gbc_lblVehId.gridy = 5;
     add(lblVehId, gbc_lblVehId);
-    vehicleIdTF = new JTextField();
-    vehicleIdTF.setDocument(new LengthRestrictedDocument(5));
+    vehicleIdTF = new NumericField(5, NumericField.DECIMAL);
+    vehicleIdTF.setAllowNegative(false);
     vehicleIdTF.setText("0");
     vehicleIdTF.setToolTipText("Vehicle ID 0-32767");
     GridBagConstraints gbc_vehicleIdTF = new GridBagConstraints();
@@ -440,8 +452,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblSignalgroup.gridx = 0;
     gbc_lblSignalgroup.gridy = 6;
     add(lblSignalGroup, gbc_lblSignalgroup);
-    signalgroupNrTF = new JTextField();
-    signalgroupNrTF.setDocument(new LengthRestrictedDocument(3));
+    signalgroupNrTF = new NumericField(3, NumericField.DECIMAL);
+    signalgroupNrTF.setAllowNegative(false);
     signalgroupNrTF.setText("0");
     signalgroupNrTF.setToolTipText("Direction for KAR 0-255");
     GridBagConstraints gbc_signalGroupNrTF = new GridBagConstraints();
@@ -533,8 +545,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblPunctuality.gridx = 0;
     gbc_lblPunctuality.gridy = 11;
     add(lblPunctuality, gbc_lblPunctuality);
-    punctualityTF = new JTextField();
-    punctualityTF.setDocument(new LengthRestrictedDocument(2));
+    punctualityTF = new NumericField(2, NumericField.DECIMAL);
+    punctualityTF.setAllowNegative(false);
     punctualityTF.setText("0");
     punctualityTF.setToolTipText("Punctuality 0-99 [s]");
     GridBagConstraints gbc_punctualityTF = new GridBagConstraints();
@@ -553,8 +565,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblVehLength.gridx = 0;
     gbc_lblVehLength.gridy = 12;
     add(lblVehLength, gbc_lblVehLength);
-    vehicleLengthTF = new JTextField();
-    vehicleLengthTF.setDocument(new LengthRestrictedDocument(3));
+    vehicleLengthTF = new NumericField(3, NumericField.DECIMAL);
+    vehicleLengthTF.setAllowNegative(false);
     vehicleLengthTF.setText("0");
     vehicleLengthTF.setToolTipText("Vehicle length 0-255 [m]");
     GridBagConstraints gbc_vehicleLengthTF = new GridBagConstraints();
@@ -573,8 +585,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblVehSpeed.gridx = 0;
     gbc_lblVehSpeed.gridy = 13;
     add(lblVehSpeed, gbc_lblVehSpeed);
-    vehicleSpeedTF = new JTextField();
-    vehicleSpeedTF.setDocument(new LengthRestrictedDocument(2));
+    vehicleSpeedTF = new NumericField(2, NumericField.DECIMAL);
+    vehicleSpeedTF.setAllowNegative(false);
     vehicleSpeedTF.setText("0");
     vehicleSpeedTF.setToolTipText("Vehicle speed 0-99 [m/s]");
     GridBagConstraints gbc_vehicleSpeedTF = new GridBagConstraints();
@@ -593,8 +605,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblDistToStop.gridx = 2;
     gbc_lblDistToStop.gridy = 0;
     add(lblDistToStop, gbc_lblDistToStop);
-    distanceToStopTF = new JTextField();
-    distanceToStopTF.setDocument(new LengthRestrictedDocument(4));
+    distanceToStopTF = new NumericField(4, NumericField.DECIMAL);
+    distanceToStopTF.setAllowNegative(false);
     distanceToStopTF.setText("0");
     distanceToStopTF.setToolTipText("Distance to passage stop mark -99-9999 [m]");
     GridBagConstraints gbc_distanceToStopTF = new GridBagConstraints();
@@ -614,8 +626,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblTimeToStop.gridx = 2;
     gbc_lblTimeToStop.gridy = 1;
     add(lblTimeToStop, gbc_lblTimeToStop);
-    timeToStopTF = new JTextField();
-    timeToStopTF.setDocument(new LengthRestrictedDocument(3));
+    timeToStopTF = new NumericField(3, NumericField.DECIMAL);
+    timeToStopTF.setAllowNegative(false);
     timeToStopTF.setText("0");
     timeToStopTF.setToolTipText("Time to passage stop mark 0-255 [s]");
     GridBagConstraints gbc_timeToStopTF = new GridBagConstraints();
@@ -635,8 +647,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblJourneyNr.gridx = 2;
     gbc_lblJourneyNr.gridy = 2;
     add(lblJourneyNr, gbc_lblJourneyNr);
-    journeyNrTF = new JTextField();
-    journeyNrTF.setDocument(new LengthRestrictedDocument(4));
+    journeyNrTF = new NumericField(4, NumericField.DECIMAL);
+    journeyNrTF.setAllowNegative(false);
     journeyNrTF.setText("0");
     journeyNrTF.setToolTipText("Journey number 0-9999");
     GridBagConstraints gbc_journeyNrTF = new GridBagConstraints();
@@ -675,8 +687,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblRoute.gridx = 2;
     gbc_lblRoute.gridy = 4;
     add(lblRoute, gbc_lblRoute);
-    routeTF = new JTextField();
-    routeTF.setDocument(new LengthRestrictedDocument(2));
+    routeTF = new NumericField(2, NumericField.DECIMAL);
+    routeTF.setAllowNegative(false);
     routeTF.setText("0");
     routeTF.setToolTipText("Route public transport 0-99");
     GridBagConstraints gbc_routeTF = new GridBagConstraints();
@@ -687,7 +699,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_routeTF.gridx = 3;
     gbc_routeTF.gridy = 4;
     add(routeTF, gbc_routeTF);
-    
+
     // CVN: 18 direction to route VECOM
     lblDirection = new JLabel("Direction(18)");
     GridBagConstraints gbc_lblDirection = new GridBagConstraints();
@@ -736,8 +748,8 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblActivation.gridx = 2;
     gbc_lblActivation.gridy = 7;
     add(lblActivation, gbc_lblActivation);
-    activationTF = new JTextField();
-    activationTF.setDocument(new LengthRestrictedDocument(5));
+    activationTF = new NumericField(5, NumericField.DECIMAL);
+    activationTF.setAllowNegative(false);
     activationTF.setText("0");
     activationTF.setToolTipText("Activation point number 0-32767");
     GridBagConstraints gbc_activationTF = new GridBagConstraints();
@@ -757,10 +769,12 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblLatitude.gridx = 2;
     gbc_lblLatitude.gridy = 8;
     add(lblLatitude, gbc_lblLatitude);
-    latDegTF = new JTextField();
-    latDegTF.setDocument(new LengthRestrictedDocument(2));
+    latDegTF = new NumericField(2, NumericField.DECIMAL);
+    latDegTF.setAllowNegative(false);
     latDegTF.setToolTipText("Latitude degrees 0-89");
     latDegTF.setText("0");
+    latDegTF.addActionListener(new TimeVerifier(89));
+    latDegTF.setInputVerifier(new TimeVerifier(89));
     GridBagConstraints gbc_latDegTF = new GridBagConstraints();
     gbc_latDegTF.insets = new Insets(0, 0, 5, 5);
     gbc_latDegTF.anchor = GridBagConstraints.NORTH;
@@ -770,10 +784,12 @@ public class VehicleSettingPanel extends JPanel {
     add(latDegTF, gbc_latDegTF);
 
     // CVN: 21 (b) latitude minutes
-    latMinTF = new JTextField();
-    latMinTF.setDocument(new LengthRestrictedDocument(2));
+    latMinTF = new NumericField(2, NumericField.DECIMAL);
+    latMinTF.setAllowNegative(false);
     latMinTF.setToolTipText("Latitude minutes 0-59");
     latMinTF.setText("0");
+    latMinTF.addActionListener(new TimeVerifier(59));
+    latMinTF.setInputVerifier(new TimeVerifier(59));
     GridBagConstraints gbc_latMinTF = new GridBagConstraints();
     gbc_latMinTF.insets = new Insets(0, 0, 5, 5);
     gbc_latMinTF.anchor = GridBagConstraints.NORTH;
@@ -783,10 +799,12 @@ public class VehicleSettingPanel extends JPanel {
     add(latMinTF, gbc_latMinTF);
 
     // CVN: 21 (c) latitude seconds
-    latSecTF = new JTextField();
-    latSecTF.setDocument(new LengthRestrictedDocument(2));
+    latSecTF = new NumericField(2, NumericField.DECIMAL);
+    latSecTF.setAllowNegative(false);
     latSecTF.setToolTipText("Latitude seconds 0-59");
     latSecTF.setText("0");
+    latSecTF.addActionListener(new TimeVerifier(59));
+    latSecTF.setInputVerifier(new TimeVerifier(59));
     GridBagConstraints gbc_latSecTF = new GridBagConstraints();
     gbc_latSecTF.insets = new Insets(0, 0, 5, 5);
     gbc_latSecTF.anchor = GridBagConstraints.NORTH;
@@ -796,8 +814,8 @@ public class VehicleSettingPanel extends JPanel {
     add(latSecTF, gbc_latSecTF);
 
     // CVN: 21 (d) latitude 100th seconds
-    latSSecTF = new JTextField();
-    latSSecTF.setDocument(new LengthRestrictedDocument(2));
+    latSSecTF = new NumericField(2, NumericField.DECIMAL);
+    latSSecTF.setAllowNegative(false);
     latSSecTF.setToolTipText("100th Seconds 0-99");
     latSSecTF.setText("0");
     GridBagConstraints gbc_latSSecTF = new GridBagConstraints();
@@ -816,10 +834,12 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblLongitude.gridx = 2;
     gbc_lblLongitude.gridy = 9;
     add(lblLongitude, gbc_lblLongitude);
-    longDegTF = new JTextField();
-    longDegTF.setDocument(new LengthRestrictedDocument(3));
+    longDegTF = new NumericField(3, NumericField.DECIMAL);
+    longDegTF.setAllowNegative(false);
     longDegTF.setToolTipText("Longitude degrees 0-179");
     longDegTF.setText("0");
+    longDegTF.addActionListener(new TimeVerifier(179));
+    longDegTF.setInputVerifier(new TimeVerifier(179));
     GridBagConstraints gbc_longDegTF = new GridBagConstraints();
     gbc_longDegTF.insets = new Insets(0, 0, 5, 5);
     gbc_longDegTF.anchor = GridBagConstraints.NORTH;
@@ -829,10 +849,12 @@ public class VehicleSettingPanel extends JPanel {
     add(longDegTF, gbc_longDegTF);
 
     // CVN: 21 (f) longitude minutes
-    longMinTF = new JTextField();
-    longMinTF.setDocument(new LengthRestrictedDocument(2));
+    longMinTF = new NumericField(2, NumericField.DECIMAL);
+    longMinTF.setAllowNegative(false);
     longMinTF.setToolTipText("Longitude minutes 0-59");
     longMinTF.setText("0");
+    longMinTF.addActionListener(new TimeVerifier(59));
+    longMinTF.setInputVerifier(new TimeVerifier(59));
     GridBagConstraints gbc_longMinTF = new GridBagConstraints();
     gbc_longMinTF.insets = new Insets(0, 0, 5, 5);
     gbc_longMinTF.anchor = GridBagConstraints.NORTH;
@@ -842,10 +864,12 @@ public class VehicleSettingPanel extends JPanel {
     add(longMinTF, gbc_longMinTF);
 
     // CVN: 21 (g) longitude seconds
-    longSecTF = new JTextField();
-    longSecTF.setDocument(new LengthRestrictedDocument(2));
+    longSecTF = new NumericField(2, NumericField.DECIMAL);
+    longSecTF.setAllowNegative(false);
     longSecTF.setToolTipText("Longitude seconds 0-59");
     longSecTF.setText("0");
+    longSecTF.addActionListener(new TimeVerifier(59));
+    longSecTF.setInputVerifier(new TimeVerifier(59));
     GridBagConstraints gbc_longSecTF = new GridBagConstraints();
     gbc_longSecTF.insets = new Insets(0, 0, 5, 5);
     gbc_longSecTF.anchor = GridBagConstraints.NORTH;
@@ -855,8 +879,8 @@ public class VehicleSettingPanel extends JPanel {
     add(longSecTF, gbc_longSecTF);
 
     // CVN: 21 (h) longitude 100th seconds
-    longSSecTF = new JTextField();
-    longSSecTF.setDocument(new LengthRestrictedDocument(2));
+    longSSecTF = new NumericField(2, NumericField.DECIMAL);
+    longSSecTF.setAllowNegative(false);
     longSSecTF.setToolTipText("Longitude 100th seconds 0-99");
     longSSecTF.setText("0");
     GridBagConstraints gbc_longSSecTF = new GridBagConstraints();
@@ -875,10 +899,10 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblDate.gridx = 2;
     gbc_lblDate.gridy = 10;
     add(lblDate, gbc_lblDate);
-    yearTF = new JTextField();
-    yearTF.setDocument(new LengthRestrictedDocument(4));
+    yearTF = new NumericField(4, NumericField.DECIMAL);
+    yearTF.setAllowNegative(false);
     yearTF.setToolTipText("Year 0-9999");
-    yearTF.setText("0");
+    yearTF.setText(Integer.toString(calendar.get(Calendar.YEAR)));
     GridBagConstraints gbc_yearTF = new GridBagConstraints();
     gbc_yearTF.gridwidth = 2;
     gbc_yearTF.insets = new Insets(0, 0, 5, 5);
@@ -889,10 +913,12 @@ public class VehicleSettingPanel extends JPanel {
     add(yearTF, gbc_yearTF);
 
     // CVN: 22 (b) month
-    monthTF = new JTextField();
+    monthTF = new NumericField(2, NumericField.DECIMAL);
+    monthTF.setAllowNegative(false);
     monthTF.setToolTipText("Month 1-12");
-    monthTF.setDocument(new LengthRestrictedDocument(2));
-    monthTF.setText("0");
+    monthTF.setText(Integer.toString(calendar.get(Calendar.MONTH)));
+    monthTF.addActionListener(new TimeVerifier(12));
+    monthTF.setInputVerifier(new TimeVerifier(12));
     GridBagConstraints gbc_monthTF = new GridBagConstraints();
     gbc_monthTF.insets = new Insets(0, 0, 5, 5);
     gbc_monthTF.anchor = GridBagConstraints.NORTH;
@@ -902,10 +928,12 @@ public class VehicleSettingPanel extends JPanel {
     add(monthTF, gbc_monthTF);
 
     // CVN: 22 (c) day
-    dayTF = new JTextField();
+    dayTF = new NumericField(2, NumericField.DECIMAL);
+    dayTF.setAllowNegative(false);
     dayTF.setToolTipText("Day of the month 1-31");
-    dayTF.setDocument(new LengthRestrictedDocument(2));
-    dayTF.setText("0");
+    dayTF.setText(Integer.toString(calendar.get(Calendar.DAY_OF_MONTH)));
+    dayTF.addActionListener(new TimeVerifier(31));
+    dayTF.setInputVerifier(new TimeVerifier(31));
     GridBagConstraints gbc_dayTF = new GridBagConstraints();
     gbc_dayTF.insets = new Insets(0, 0, 5, 5);
     gbc_dayTF.anchor = GridBagConstraints.NORTH;
@@ -922,10 +950,12 @@ public class VehicleSettingPanel extends JPanel {
     gbc_lblTime.gridx = 2;
     gbc_lblTime.gridy = 11;
     add(lblTime, gbc_lblTime);
-    hourTF = new JTextField();
-    hourTF.setDocument(new LengthRestrictedDocument(2));
+    hourTF = new NumericField(2, NumericField.DECIMAL);
+    hourTF.setAllowNegative(false);
     hourTF.setToolTipText("Hours 0-23");
-    hourTF.setText("0");
+    hourTF.setText(Integer.toString(calendar.get(Calendar.HOUR_OF_DAY)));
+    hourTF.addActionListener(new TimeVerifier(24));
+    hourTF.setInputVerifier(new TimeVerifier(24));
     GridBagConstraints gbc_hourTF = new GridBagConstraints();
     gbc_hourTF.insets = new Insets(0, 0, 5, 5);
     gbc_hourTF.anchor = GridBagConstraints.NORTH;
@@ -935,10 +965,12 @@ public class VehicleSettingPanel extends JPanel {
     add(hourTF, gbc_hourTF);
 
     // CVN: 22 (d) minute
-    minuteTF = new JTextField();
-    minuteTF.setDocument(new LengthRestrictedDocument(2));
+    minuteTF = new NumericField(2, NumericField.DECIMAL);
+    minuteTF.setAllowNegative(false);
     minuteTF.setToolTipText("Minutes 0-59");
-    minuteTF.setText("0");
+    minuteTF.setText(Integer.toString(calendar.get(Calendar.MINUTE)));
+    minuteTF.addActionListener(new TimeVerifier(59));
+    minuteTF.setInputVerifier(new TimeVerifier(59));
     GridBagConstraints gbc_minuteTF = new GridBagConstraints();
     gbc_minuteTF.insets = new Insets(0, 0, 5, 5);
     gbc_minuteTF.anchor = GridBagConstraints.NORTH;
@@ -948,10 +980,12 @@ public class VehicleSettingPanel extends JPanel {
     add(minuteTF, gbc_minuteTF);
 
     // CVN: 22 (d) second
-    secondTF = new JTextField();
-    secondTF.setDocument(new LengthRestrictedDocument(2));
+    secondTF = new NumericField(2, NumericField.DECIMAL);
+    secondTF.setAllowNegative(false);
     secondTF.setToolTipText("Seconds 0-59");
-    secondTF.setText("0");
+    secondTF.setText(Integer.toString(calendar.get(Calendar.SECOND)));
+    secondTF.setInputVerifier(new TimeVerifier(59));
+    secondTF.addActionListener(new TimeVerifier(59));
     GridBagConstraints gbc_secondTF = new GridBagConstraints();
     gbc_secondTF.insets = new Insets(0, 0, 5, 5);
     gbc_secondTF.anchor = GridBagConstraints.NORTH;
@@ -1024,46 +1058,89 @@ public class VehicleSettingPanel extends JPanel {
   }
 
   //INNER CLASSES
-  
+
+  /**
+   * @brief     Corrects time related input
+   * @author    Sander Kamps
+   */
+  public class TimeVerifier extends InputVerifier implements ActionListener {
+
+    public TimeVerifier(int a_mod){
+      super();
+      mod = a_mod;
+    }
+
+    public void actionPerformed(ActionEvent e){
+      int number;
+      if( e.getSource() instanceof JTextField  ){
+        JTextField tf = (JTextField) e.getSource();
+        number = Integer.parseInt(tf.getText());
+        if (number > mod){
+          JOptionPane.showMessageDialog(null, "Max value is " + Integer.toString(mod), "Input error", JOptionPane.ERROR_MESSAGE);
+          tf.setText(Integer.toString(mod));
+        }
+      } 
+    }
+
+    @Override
+    public boolean verify(JComponent input) {
+      int number;
+      JTextField tf = (JTextField) input;
+      number = Integer.parseInt(tf.getText());
+      if (number <= mod)
+        return true;
+      else{
+        JOptionPane.showMessageDialog(null, "Max value is " + Integer.toString(mod), "Input error", JOptionPane.ERROR_MESSAGE);
+        tf.setText(Integer.toString(mod));
+        return true;
+      }
+    }
+    
+    private int mod;
+  }// end class
+
+
+
   // PRIVATE ATTRIBUTES
   private VehicleButton vehicle_button;
+  private GregorianCalendar calendar;
 
-  private JTextField loopNrTF;
+  private NumericField loopNrTF;
   private JComboBox<VehicleType> vehicleTypeComBox;
-  private JTextField lineNrTF;
-  private JTextField vehServiceNrTF;
-  private JTextField companyNrTF;
-  private JTextField vehicleIdTF;
-  private JTextField signalgroupNrTF; 
+  private NumericField lineNrTF;
+  private NumericField vehServiceNrTF;
+  private NumericField companyNrTF;
+  private NumericField vehicleIdTF;
+  private NumericField signalgroupNrTF; 
   private JComboBox<ManualControl> manualControlComBox;
   private JComboBox<VehicleStatus> vehicleStatusComBox; 
   private JComboBox<PriorityClass> priorityClassComBox;
   private JComboBox<PunctualityClass> punctualityClassComBox;
-  private JTextField punctualityTF;     
-  private JTextField vehicleLengthTF;    
-  private JTextField vehicleSpeedTF;     
-  private JTextField distanceToStopTF; 
-  private JTextField timeToStopTF;
-  private JTextField journeyNrTF; 
+  private NumericField punctualityTF;     
+  private NumericField vehicleLengthTF;    
+  private NumericField vehicleSpeedTF;     
+  private NumericField distanceToStopTF; 
+  private NumericField timeToStopTF;
+  private NumericField journeyNrTF; 
   private JComboBox<JourneyType> journeyTypeComBox; 
-  private JTextField routeTF;
+  private NumericField routeTF;
   private JComboBox<Direction> DirectionComBox;
   private JComboBox<Commands> commandComBox;
-  private JTextField activationTF; 
-  private JTextField latDegTF;  
-  private JTextField latMinTF;  
-  private JTextField latSecTF;  
-  private JTextField latSSecTF; 
-  private JTextField longDegTF; 
-  private JTextField longMinTF; 
-  private JTextField longSecTF; 
-  private JTextField longSSecTF;
-  private JTextField yearTF;    
-  private JTextField monthTF;   
-  private JTextField dayTF;     
-  private JTextField hourTF;    
-  private JTextField minuteTF;  
-  private JTextField secondTF;  
+  private NumericField activationTF; 
+  private NumericField latDegTF;  
+  private NumericField latMinTF;  
+  private NumericField latSecTF;  
+  private NumericField latSSecTF; 
+  private NumericField longDegTF; 
+  private NumericField longMinTF; 
+  private NumericField longSecTF; 
+  private NumericField longSSecTF;
+  private NumericField yearTF;    
+  private NumericField monthTF;   
+  private NumericField dayTF;     
+  private NumericField hourTF;    
+  private NumericField minuteTF;  
+  private NumericField secondTF;  
   private JTextField reserve1TF;
   private JTextField reserve2TF;
 
@@ -1100,26 +1177,3 @@ public class VehicleSettingPanel extends JPanel {
 }// end of class
 
 
-/**
- * @brief Prohobits more than the limit amount of characters to be entered into
- *        a TextField
- * @author Sander
- */
-  final class LengthRestrictedDocument extends PlainDocument {
-  private static final long serialVersionUID = 1L;
-  private final int limit;
-
-  public LengthRestrictedDocument(int limit) {
-    super();
-    this.limit = limit;
-  }
-
-  public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-    if (str == null)
-      return;
-
-    if ((getLength() + str.length()) <= limit) {
-      super.insertString(offs, str, a);
-    }
-  }
-}

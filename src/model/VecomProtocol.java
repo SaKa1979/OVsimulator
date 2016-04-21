@@ -1,7 +1,7 @@
-package controller;
+package model;
 
 import java.util.ArrayList;
-import model.Protocol;
+
 import view.VehicleButton;
 import view.ViewManager;
 
@@ -13,12 +13,14 @@ public class VecomProtocol extends Protocol {
     transmissionCounter = 1;
     overloop = (byte) 0xFF; // start with 'arrival at loop' 
     state = State.WAIT_FOR_POLL;
+    viewManager = ViewManager.getInstance();
+    vcu_address = (byte) viewManager.getProtocolPanel().getVCU_address();
+
   }
 
   @Override
   public ArrayList<Byte> createSerialMessage(VehicleButton vb) {
     ArrayList<Byte> dataFrame = new ArrayList<Byte>();
-    ViewManager.getInstance();
 
     transmissionCounter += 1;
 
@@ -290,27 +292,27 @@ public class VecomProtocol extends Protocol {
       case BUILD_POLL:
         receivedMessage.add(b);
         if (b == ENQ){                                  // end of poll message. We either respond with eot or dataframe message
-          if (receivedMessage.get(1) == OWN_ADDRESS){   // meant for us
+          if (receivedMessage.get(1) == vcu_address){   // meant for us
             if (dataframe_set){                         // there is a dataframe ready to send
-              signalSubscriber(null);                   // let the Simcontroler know
+              signalSubscriber("Send: message\n");      // let the Simcontroler know
               dataframe_set = false;
               state = State.WAIT_FOR_REPLY;
-              System.out.println("POLL received and dataframe send");
             }else{                                      // send EOT message
               sendMessage = eot();
               signalSubscriber(null);
               state = State.WAIT_FOR_POLL;
-              System.out.println("POLL received and EOT send");
             }
+          }else{                                        // NOT meant for us
+            state = State.WAIT_FOR_POLL;
           }
         }
         break;
       case WAIT_FOR_REPLY:
         receivedMessage = new ArrayList<Byte>();
         receivedMessage.add(b);
-        if (b == OWN_ADDRESS){
+        if (b == vcu_address){
           state = State.BUILD_REPLY;
-        }else if (b == NULL){
+        }else {
           state = State.BUILD_EOT;
         }
         break;
@@ -318,24 +320,20 @@ public class VecomProtocol extends Protocol {
         receivedMessage.add(b);
         if (b == ACK){
           sendMessage = eot();
-          signalSubscriber("ACK\n");
+          signalSubscriber("Received: ACK\n");
           state = State.WAIT_FOR_POLL;
-          System.out.println("ACK received");
         }else if (b == NAK){
-          signalSubscriber("NAK\n");
+          signalSubscriber("Received: NAK\n");
           state = State.WAIT_FOR_REPLY;
-          System.out.println("NAK received");
         }
         break;
       case BUILD_EOT:
         receivedMessage.add(b);
         if(b == EOT){
           state = State.WAIT_FOR_POLL;
-          System.out.println("EOT received");
         }
       default:
         state = State.WAIT_FOR_POLL;
-        System.out.println("UNKNOWN received");
         break; 
     }
 
@@ -353,7 +351,7 @@ public class VecomProtocol extends Protocol {
     /**
      * ADDRESS
      */
-    header.add((byte)0xF0);
+    header.add(vcu_address);
 
     /**
      * STX
@@ -432,9 +430,11 @@ public class VecomProtocol extends Protocol {
 
   // PRIVATE ATTRIBUTES
   int transmissionCounter;
+  byte vcu_address;
   byte overloop;
   State state;
   boolean dataframe_set;
+  ViewManager viewManager;
 
   private static final byte SOH = (byte)0x01;
   private static final byte STX = (byte)0x02;

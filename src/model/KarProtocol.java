@@ -1,8 +1,7 @@
-package controller;
+package model;
 
 import java.util.ArrayList;
 
-import model.Protocol;
 import view.VehicleButton;
 
 public class KarProtocol extends Protocol {

@@ -1,12 +1,11 @@
 package controller;
 
 import java.awt.Color;
-import java.util.ArrayList;
-
-import javax.swing.Timer;
-
+import static model.Communicator.*;
 import model.Communicator;
+import model.KarProtocol;
 import model.Protocol;
+import model.VecomProtocol;
 import view.ViewManager;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
@@ -52,15 +51,10 @@ public class SimControler implements Event {
    */
   public void signal(Object a_obj, Object a_arg){
     if (a_obj instanceof PortSettingPanel){
-      if (communicator.isbConnected()){
         communicator.disconnect();
-      }
-      if(communicator.connect()){
-        if(communicator.initIOStream()){
-          communicator.initListener();
-        }
-      }
+        communicator.connect();
     }else if (a_obj instanceof ProtocolPanel){
+        communicator.disconnect();
       ProtocolPanel pp = (ProtocolPanel)a_obj;
       Proto proto = pp.getSelectedProto();
       viewManager.writeToBottomProto(proto.name(), Color.BLACK);
@@ -68,11 +62,14 @@ public class SimControler implements Event {
         case KAR:
           protocol = new KarProtocol();
           protocol.addEventSubscriber(this);
-          viewManager.writeToBottomProtoXtraInfo(Integer.toString(pp.getKar_sid()), Color.BLACK);
+          communicator.connect();
+          viewManager.writeToBottomProtoXtraInfo("SID :" + Integer.toString(pp.getKar_sid()), Color.BLACK);
           break;
         case VECOM:
           protocol = new VecomProtocol();
           protocol.addEventSubscriber(this);
+          communicator.connect();
+          viewManager.writeToBottomProtoXtraInfo("VCU address:" + convertDec2HexString(pp.getVCU_address()), Color.BLACK);
           break;
         default:
           protocol = null;

@@ -3,8 +3,6 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import view.VehicleButton.Direction;
-
 import java.awt.GridLayout;
 import javax.swing.JComboBox;
 
