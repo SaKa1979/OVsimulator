@@ -207,7 +207,7 @@ public class Communicator extends Observable implements SerialPortEventListener,
         output.write(b);
         
         if (viewManager.isShowComData())
-          viewManager.writeToFeedback(0, "0x" + b + "\n", Color.GRAY, 8);
+          viewManager.writeToFeedback(0, "0x" + convertDec2HexString(b) + "\n", new Color(0, 230, 0), 12); //green
       }
       output.flush();
     }
@@ -238,9 +238,9 @@ public class Communicator extends Observable implements SerialPortEventListener,
           //hand over the received byte to the Protocol for further processing
           Protocol p = simControler.getProtocol();
           if (p != null){
-            p.processData(singleData);
             if (viewManager.isShowComData())
-              viewManager.writeToFeedback(0, "0x" + singleData + "\n", Color.GRAY, 8);
+              viewManager.writeToFeedback(0, "0x" + convertDec2HexString(singleData) + "\n", new Color(230, 230, 0), 12); //yellow
+            p.processData(singleData);
           }
         }
         else

@@ -39,7 +39,7 @@ import javax.swing.JLabel;
 
 public class VehicleSettingPanel extends JPanel {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 3L;
 
   /**
    * Constructor for VehicleSettingPanel.
@@ -163,7 +163,7 @@ public class VehicleSettingPanel extends JPanel {
         lblVehSpeed.setForeground(Color.GRAY);//13
         distanceToStopTF.setEnabled(false);
         lblDistToStop.setForeground(Color.GRAY);//14
-        timeToStopTF.setEnabled(true);
+        timeToStopTF.setEnabled(false);
         lblTimeToStop.setForeground(Color.GRAY);//15
         journeyNrTF.setEnabled(false);
         lblJourneyNr.setForeground(Color.GRAY);//16
@@ -208,6 +208,8 @@ public class VehicleSettingPanel extends JPanel {
     }
 
   }
+  //TODO return not the value but the textfield
+  
   public int getLoopNr(){
     return textFieldToInt(loopNrTF);
   }

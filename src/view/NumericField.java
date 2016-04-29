@@ -5,7 +5,7 @@ import javax.swing.JTextField;
 import javax.swing.text.*;
 
 public class NumericField extends JTextField {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8L;
 
     private static final char DOT = '.';
     private static final char NEGATIVE = '-';
@@ -170,7 +170,7 @@ public class NumericField extends JTextField {
     }
 
     class JNumberFieldFilter extends PlainDocument {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 7L;
 
         public JNumberFieldFilter() {
             super();

@@ -4,6 +4,7 @@ import java.awt.Color;
 import static model.Communicator.*;
 import model.Communicator;
 import model.KarProtocol;
+import model.Persister;
 import model.Protocol;
 import model.VecomProtocol;
 import view.ViewManager;
@@ -18,24 +19,16 @@ public class SimControler implements Event {
    * Constructor
    */
   public SimControler(){
-    initialize();
-  }
-
-  // PUBLIC METHOD
-  public ViewManager getViewManager(){
-    return viewManager;
-  }
-
-  public Protocol getProtocol(){
-    return protocol;
-  }
-
-  // PRIVATE METHOD
-  private void initialize(){
     viewManager.addEventSubscriber(this);
     communicator.addSimController(this);
     communicator.setViewManager(viewManager);
     communicator.searchForPorts();
+    persister = new Persister();
+  }
+
+  // PUBLIC METHOD
+  public Protocol getProtocol(){
+    return protocol;
   }
 
   //LISTENERS and SIGNALS
@@ -50,11 +43,22 @@ public class SimControler implements Event {
    *                     by the Protocol when a message needs to be passed to the ViewManager
    */
   public void signal(Object a_obj, Object a_arg){
-    if (a_obj instanceof PortSettingPanel){
-        communicator.disconnect();
-        communicator.connect();
+    if(a_obj instanceof ViewManager){
+      String arg = (String)a_arg;
+      if(arg.equals("openEvent")){
+        persister.openFile();
+      }else if (arg.equals("saveEvent")){
+        persister.saveFile();
+      }else if(arg.equals("saveAsEvent")){
+        persister.saveAsFile();
+      }else if (arg.equals("closeWindowEvent")){
+        persister.closeNoSave();
+      }  
+    }else if (a_obj instanceof PortSettingPanel){
+      communicator.disconnect();
+      communicator.connect();
     }else if (a_obj instanceof ProtocolPanel){
-        communicator.disconnect();
+      communicator.disconnect();
       ProtocolPanel pp = (ProtocolPanel)a_obj;
       Proto proto = pp.getSelectedProto();
       viewManager.writeToBottomProto(proto.name(), Color.BLACK);
@@ -79,8 +83,9 @@ public class SimControler implements Event {
       if (protocol != null){
         if (communicator.isbConnected()){
           protocol.createSerialMessage(vb);
+          viewManager.writeVehicleButtonSetting(vb, protocol);
         }else{
-          viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 8);
+          viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 10);
         }
       }else{
         viewManager.writeToFeedback(0, "No protocol selected.", Color.RED, 8);
@@ -89,9 +94,9 @@ public class SimControler implements Event {
       Protocol proto = (Protocol)a_obj;
       if (protocol != null){
         if (communicator.isbConnected()){
-          communicator.writeData(proto.getSendMessage());
           if (a_arg instanceof String)
-            viewManager.writeToFeedback(0, (String)a_arg, Color.BLACK, 8);
+            viewManager.writeToFeedback(0, (String)a_arg, Color.BLACK, 12);
+          communicator.writeData(proto.getSendMessage());
         }else{
           viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 8);
         }
@@ -105,5 +110,6 @@ public class SimControler implements Event {
   ViewManager viewManager = ViewManager.getInstance();
   Communicator communicator = new Communicator();
   Protocol protocol;
+  Persister persister;
 
 }// end ov class SimControler

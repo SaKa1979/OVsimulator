@@ -17,7 +17,7 @@ import java.awt.event.MouseEvent;
  */
 public class VehicleButton extends JButton{
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 4L;
 
   /**
    *  constructor
@@ -524,7 +524,7 @@ public class VehicleButton extends JButton{
               JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.PLAIN_MESSAGE); 
           switch (ok){
-            case 0:
+            case JOptionPane.OK_OPTION:
               loopNr = vehicleSettingPanel.getLoopNr();                         
               vehicleType = vehicleSettingPanel.getVehicleType();
               lineNr = vehicleSettingPanel.getLineNr();
@@ -567,9 +567,7 @@ public class VehicleButton extends JButton{
               setButtonText();
               setVehicleTypeImage(vehicleType);
               break;
-            case 2:
-              // do nothing
-              break;
+            default:
           }
         }
       }
@@ -580,7 +578,7 @@ public class VehicleButton extends JButton{
   // PRIVATE ATTRIBUTE
   private String name;
   private int loopNr;                           // CVN: 1
-  private VehicleType vehicleType;             // CVN: 2
+  private VehicleType vehicleType;              // CVN: 2
   private int lineNr;                           // CVN: 3
   private int vehServiceNr;                     // CVN: 4
   private int companyNr;                        // CVN: 5

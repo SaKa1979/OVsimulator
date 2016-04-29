@@ -8,7 +8,7 @@ import javax.swing.JComboBox;
 
 public class PortSettingPanel extends JPanel {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 6L;
 
   /**
    * Constructor
