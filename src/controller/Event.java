@@ -7,6 +7,6 @@ public interface Event {
    * @param a_obj Object to pass to receiving end.
    * @param a_arg TODO
    */
-  public void signal(Object a_obj, Object a_arg); 
+  public void signal(Object a_obj, Object a_arg);
 
 }// end of interface Event

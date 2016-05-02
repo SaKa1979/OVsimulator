@@ -3,26 +3,21 @@ package view;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JOptionPane;
-
 import java.awt.GridBagLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class ProtocolPanel extends JPanel {
 
@@ -39,8 +34,9 @@ public class ProtocolPanel extends JPanel {
     gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0};
     gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     setLayout(gridBagLayout);
-    vcuAddress = 0;
-    kar_sid = 0;
+    vcuAddress = "0";
+    karSid = "0";
+    karKey = "0";
 
     initialize();
     loadAllFieldValues();
@@ -60,72 +56,103 @@ public class ProtocolPanel extends JPanel {
   }
   public void setSelectedProto(Proto proto){
     selectedProto = proto;
+    
+    switch(selectedProto){
+      case KAR:
+        chckbxKAR.setSelected(true);
+        break;
+      case NONE:
+        break;
+      case SICS:
+        break;
+      case VECOM:
+        chckbxVecom.setSelected(true);
+        break;
+      default:
+        break;
+    }
   }
 
-  public int getKar_sid() {
-    return kar_sid;
-  }
-
-  public byte getVCU_address() {
-    return vcuAddress;
+  public String getKarSid() {
+    return karSid;
+  } 
+  public void setKarSid(String kar_sid) {
+    this.karSid = kar_sid;
+    karSidTF.setText(kar_sid);
   }
   
-  public NumericField getSidTF() {
-    return sidTF;
+  public String getVcuAddress() {
+    return vcuAddress;
+  }
+  public void setVcuAddress(String vcuAddress) {
+    this.vcuAddress = vcuAddress;
+    vcuAddressTF.setText(vcuAddress);
   }
 
-  public NumericField getVcuTF() {
-    return vcuTF;
+  public String getKarKey() {
+    return karKey;
   }
-
-  public JTextField getKeyTF() {
-    return keyTF;
+  public void setKarKey(String key) {
+    this.karKey = key;
+    karKeyTF.setText(key);
   }
 
   // PRIVATE METHODS
   private void initialize(){
-    fieldsList = new ArrayList<JTextField>();
     buttonGroup = new ButtonGroup();
 
     // KAR
-    JCheckBox karCB = new JCheckBox("KAR");
-    karCB.addItemListener(new ItemListener() {
+    chckbxKAR = new JCheckBox("KAR");
+    chckbxKAR.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
-          sidTF.setEnabled(true);
-          keyTF.setEnabled(true);
+          karSidTF.setEnabled(true);
+          karKeyTF.setEnabled(true);
           selectedProto = Proto.KAR;
+          karKeyTF.setBackground(Color.white);
+          karKeyTF.setForeground(Color.black);
         }
         else {
-          sidTF.setEnabled(false);
-          keyTF.setEnabled(false);
+          karSidTF.setEnabled(false);
+          karKeyTF.setEnabled(false);
+          karKeyTF.setBackground(Color.lightGray);
+          karKeyTF.setForeground(Color.darkGray);
         }
       }
     });
-    buttonGroup.add(karCB);
+    buttonGroup.add(chckbxKAR);
     GridBagConstraints gbc_chckbxKAR = new GridBagConstraints();
     gbc_chckbxKAR.insets = new Insets(0, 0, 5, 5);
     gbc_chckbxKAR.anchor = GridBagConstraints.NORTH;
     gbc_chckbxKAR.fill = GridBagConstraints.HORIZONTAL;
     gbc_chckbxKAR.gridx = 0;
     gbc_chckbxKAR.gridy = 0;
-    add(karCB, gbc_chckbxKAR);
+    add(chckbxKAR, gbc_chckbxKAR);
 
-    sidTF = new NumericField(4, NumericField.DECIMAL);
-    sidTF.setAllowNegative(false);
-    sidTF.setToolTipText("Identification number");
-    sidTF.setEnabled(false);
-    sidTF.setName(sidTF_name);
-    sidTF.setText("0000");
-    sidTF.addActionListener(textFieldListener);
+    karSidTF = new NumericField(4, NumericField.DECIMAL);
+    karSidTF.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusLost(FocusEvent e) {
+        karSid = karSidTF.getText();
+      }
+    });
+    karSidTF.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        karSid = karSidTF.getText();
+      }
+    });
+    karSidTF.setAllowNegative(false);
+    karSidTF.setToolTipText("Identification number");
+    karSidTF.setEnabled(false);
+    karSidTF.setName(sidTF_name);
+    karSidTF.setText("0000");
     GridBagConstraints gbc_sidTF = new GridBagConstraints();
     gbc_sidTF.insets = new Insets(0, 0, 5, 5);
     gbc_sidTF.anchor = GridBagConstraints.NORTH;
     gbc_sidTF.fill = GridBagConstraints.BOTH;
     gbc_sidTF.gridx = 1;
     gbc_sidTF.gridy = 0;
-    add(sidTF, gbc_sidTF);
-    fieldsList.add(sidTF);
+    add(karSidTF, gbc_sidTF);
     
     lblSystemIdentificationNumber = new JLabel("System Identification Number");
     GridBagConstraints gbc_lblSystemIdentificationNumber = new GridBagConstraints();
@@ -135,17 +162,29 @@ public class ProtocolPanel extends JPanel {
     gbc_lblSystemIdentificationNumber.gridy = 0;
     add(lblSystemIdentificationNumber, gbc_lblSystemIdentificationNumber);
     
-    keyTF = new NumericField();
-    keyTF.setEnabled(false);
-    keyTF.setToolTipText("Enter the secret key");
-    keyTF.setText("0");
+    karKeyTF = new JTextField();
+    karKeyTF.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusLost(FocusEvent e) {
+        karKey = karKeyTF.getText();
+      }
+    });
+    karKeyTF.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        karKey = karKeyTF.getText();
+      }
+    });
+    karKeyTF.setEnabled(false);
+    karKeyTF.setToolTipText("Enter the secret karKey");
+    karKeyTF.setText("0");
+    karKeyTF.setBackground(Color.lightGray);
+    karKeyTF.setForeground(Color.darkGray);
     GridBagConstraints gbc_keyTF = new GridBagConstraints();
     gbc_keyTF.insets = new Insets(0, 0, 5, 5);
     gbc_keyTF.fill = GridBagConstraints.HORIZONTAL;
     gbc_keyTF.gridx = 1;
     gbc_keyTF.gridy = 1;
-    add(keyTF, gbc_keyTF);
-    keyTF.setColumns(10);
+    add(karKeyTF, gbc_keyTF);
     
     lblKey = new JLabel("Key");
     lblKey.setHorizontalAlignment(SwingConstants.LEFT);
@@ -157,26 +196,36 @@ public class ProtocolPanel extends JPanel {
     add(lblKey, gbc_lblKey);
     
     // VECOM
-    vecomCB = new JCheckBox("VECOM");
-    vecomCB.addItemListener(new ItemListener() {
+    chckbxVecom = new JCheckBox("VECOM");
+    chckbxVecom.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           selectedProto = Proto.VECOM;
-          vcuTF.setEnabled(true);
+          vcuAddressTF.setEnabled(true);
         }
         else {
-          vcuTF.setEnabled(false);
+          vcuAddressTF.setEnabled(false);
         }
       }
     });
     
-    vcuTF = new NumericField(1, NumericField.DECIMAL);
-    vcuTF.setAllowNegative(false);
-    vcuTF.setToolTipText("VCU number 1-9");
-    vcuTF.setEnabled(false);
-    vcuTF.setName(vcuTF_name);
-    vcuTF.setText("1");
-    vcuTF.addActionListener(textFieldListener);
+    vcuAddressTF = new NumericField(1, NumericField.DECIMAL);
+    vcuAddressTF.addFocusListener(new FocusAdapter() {
+      @Override
+      public void focusLost(FocusEvent e) {
+        vcuAddress = vcuAddressTF.getText();
+      }
+    });
+    vcuAddressTF.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        vcuAddress = vcuAddressTF.getText();
+      }
+    });
+    vcuAddressTF.setAllowNegative(false);
+    vcuAddressTF.setToolTipText("VCU number 1-9");
+    vcuAddressTF.setEnabled(false);
+    vcuAddressTF.setName(vcuTF_name);
+    vcuAddressTF.setText("1");
     
     separator = new JSeparator();
     GridBagConstraints gbc_separator = new GridBagConstraints();
@@ -191,21 +240,20 @@ public class ProtocolPanel extends JPanel {
     gbc_vcuTF.fill = GridBagConstraints.BOTH;
     gbc_vcuTF.gridx = 1;
     gbc_vcuTF.gridy = 3;
-    add(vcuTF, gbc_vcuTF);
-    fieldsList.add(vcuTF);
+    add(vcuAddressTF, gbc_vcuTF);
     
-    buttonGroup.add(vecomCB);
+    buttonGroup.add(chckbxVecom);
     GridBagConstraints gbc_chckbxVecom = new GridBagConstraints();
     gbc_chckbxVecom.insets = new Insets(0, 0, 5, 5);
     gbc_chckbxVecom.anchor = GridBagConstraints.NORTH;
     gbc_chckbxVecom.fill = GridBagConstraints.HORIZONTAL;
     gbc_chckbxVecom.gridx = 0;
     gbc_chckbxVecom.gridy = 3;
-    add(vecomCB, gbc_chckbxVecom);
+    add(chckbxVecom, gbc_chckbxVecom);
 
     // SICS
-    sicsCB = new JCheckBox("SICS");
-    vecomCB.addItemListener(new ItemListener() {
+    chckbxSics = new JCheckBox("SICS");
+    chckbxVecom.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           selectedProto = Proto.SICS;
@@ -231,91 +279,47 @@ public class ProtocolPanel extends JPanel {
     gbc_separator_1.gridx = 0;
     gbc_separator_1.gridy = 4;
     add(separator_1, gbc_separator_1);
-    sicsCB.setEnabled(false); // TODO future
-    buttonGroup.add(sicsCB);
+    chckbxSics.setEnabled(false); // TODO future
+    buttonGroup.add(chckbxSics);
     GridBagConstraints gbc_chckbxSics = new GridBagConstraints();
     gbc_chckbxSics.insets = new Insets(0, 0, 0, 5);
     gbc_chckbxSics.anchor = GridBagConstraints.NORTH;
     gbc_chckbxSics.fill = GridBagConstraints.HORIZONTAL;
     gbc_chckbxSics.gridx = 0;
     gbc_chckbxSics.gridy = 5;
-    add(sicsCB, gbc_chckbxSics);
+    add(chckbxSics, gbc_chckbxSics);
 
   }
   /**
    * Loads the values entered in all the fields. 
    */
   private void loadAllFieldValues(){
-    for(JTextField tf : fieldsList){
-      readTextField(tf);
-    }
+    karSid = karSidTF.getText();
+    vcuAddress = vcuAddressTF.getText();
+    karKey = karKeyTF.getText();
   }
-
-  /**
-   * @brief Reads the value entered into the field and copies it to the same named attribute
-   *        The target attribute is decided by textfield name.
-   * @throws NumberFormatException
-   * @param tf JTextField
-   */
-  private void readTextField(JTextField tf){
-    int number = 0;
-    if (!tf.isEnabled()) 
-      return;
-    try{
-      number = Integer.parseInt(tf.getText());
-    }catch(NumberFormatException nfe){
-      JOptionPane.showMessageDialog(null, nfe.toString(), "Input error", JOptionPane.ERROR_MESSAGE);
-      number = 0;
-      tf.setText("0");
-    }
-    finally{
-      if (tf.getName().equals(sidTF_name))
-        kar_sid = number;
-      else if (tf.getName().equals(vcuTF_name))
-        number %= 15;
-      if (number >= 0){
-        byte numberHigh = (byte) ~(number << 4);
-        byte numberLow = (byte) number;
-        vcuAddress = (byte) (numberHigh + numberLow );
-      }
-    }
-  }
-
-  // LISTENERS
-  ActionListener textFieldListener = new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      JTextField tf = (JTextField)e.getSource();
-      readTextField(tf);
-    }
-  };
-
-  //INNER CLASSES
 
   // ENUMS
   public enum Proto {KAR, VECOM, SICS, NONE};
 
   // PRIVATE ATTRIBUTES
   private JCheckBox chckbxKAR;
-  private JCheckBox vecomCB;
-  private JCheckBox sicsCB;
+  private JCheckBox chckbxVecom;
+  private JCheckBox chckbxSics;
   private ButtonGroup buttonGroup;
-  private NumericField sidTF;
-  private NumericField keyTF;
-  private NumericField vcuTF;
-
-
-  private String sidTF_name = "sid";
-  private String vcuTF_name = "vcu_address";
-  private ArrayList<JTextField> fieldsList; // holds all textfields
-  private Proto selectedProto = Proto.NONE;
-  
-  private int kar_sid;
-  private byte vcuAddress;
   private JLabel lblSystemIdentificationNumber;
   private JLabel lblVcuNumber;
   private JLabel lblKey;
   private JSeparator separator;
   private JSeparator separator_1;
+  private NumericField karSidTF;
+  private JTextField karKeyTF;
+  private NumericField vcuAddressTF;
+  private String sidTF_name = "sid";
+  private String vcuTF_name = "vcuAddress";
+  private Proto selectedProto = Proto.NONE;
+  private String karSid;
+  private String vcuAddress;
+  private String karKey;
 
 } //end of class ProtocolPanel

@@ -1,7 +1,8 @@
 package controller;
 
 import java.awt.Color;
-import static model.Communicator.*;
+import java.util.ArrayList;
+
 import model.Communicator;
 import model.KarProtocol;
 import model.Persister;
@@ -23,7 +24,7 @@ public class SimControler implements Event {
     communicator.addSimController(this);
     communicator.setViewManager(viewManager);
     communicator.searchForPorts();
-    persister = new Persister();
+    persister = new Persister(this);
   }
 
   // PUBLIC METHOD
@@ -67,13 +68,13 @@ public class SimControler implements Event {
           protocol = new KarProtocol();
           protocol.addEventSubscriber(this);
           communicator.connect();
-          viewManager.writeToBottomProtoXtraInfo("SID :" + Integer.toString(pp.getKar_sid()), Color.BLACK);
+          viewManager.writeToBottomProtoXtraInfo("SID :" + pp.getKarSid(), Color.BLACK);
           break;
         case VECOM:
           protocol = new VecomProtocol();
           protocol.addEventSubscriber(this);
           communicator.connect();
-          viewManager.writeToBottomProtoXtraInfo("VCU address:" + convertDec2HexString(pp.getVCU_address()), Color.BLACK);
+          viewManager.writeToBottomProtoXtraInfo("VCU address:" + pp.getVcuAddress(), Color.BLACK);
           break;
         default:
           protocol = null;
@@ -104,6 +105,22 @@ public class SimControler implements Event {
         viewManager.writeToFeedback(0, "No protocol selected.", Color.RED, 8);
       }
     }
+  }
+
+  public void setPersistentObjects(ProtocolPanel protocolPanel, ArrayList<Object> a_list) {
+    protocolPanel.setSelectedProto((Proto)a_list.get(0));
+    protocolPanel.setKarSid((String) a_list.get(1));
+    protocolPanel.setVcuAddress((String) a_list.get(2));
+    protocolPanel.setKarKey((String) a_list.get(3));
+  } 
+
+  public ArrayList<Object> getPersistentObjects(ProtocolPanel a_protocolPanel) {
+    ArrayList<Object> list = new ArrayList<Object>();
+    list.add(a_protocolPanel.getSelectedProto());
+    list.add(a_protocolPanel.getKarSid());
+    list.add(a_protocolPanel.getVcuAddress());
+    list.add(a_protocolPanel.getKarKey());
+    return list;
   }
 
   // PRIVATE ATTRIBUTES

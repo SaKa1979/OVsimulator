@@ -14,7 +14,12 @@ public class VecomProtocol extends Protocol {
     overloop = (byte) 0xFF; // start with 'arrival at loop' 
     state = State.WAIT_FOR_POLL;
     viewManager = ViewManager.getInstance();
-    vcu_address = (byte) viewManager.getProtocolPanel().getVCU_address();
+    int number = Integer.parseInt(viewManager.getProtocolPanel().getVcuAddress());
+    if (number >= 0){
+      byte numberHigh = (byte) ~(number << 4);
+      byte numberLow = (byte) number;
+      vcuAddress = (byte) (numberHigh + numberLow );
+    }
 
   }
 
@@ -292,7 +297,7 @@ public class VecomProtocol extends Protocol {
       case BUILD_POLL:
         receivedMessage.add(b);
         if (b == ENQ){                                  // end of poll message. We either respond with eot or dataframe message
-          if (receivedMessage.get(1) == vcu_address){   // meant for us
+          if (receivedMessage.get(1) == vcuAddress){   // meant for us
             if (dataframe_set){                         // there is a dataframe ready to send
               signalSubscriber("Send: message\n");      // let the Simcontroler know
               dataframe_set = false;
@@ -310,7 +315,7 @@ public class VecomProtocol extends Protocol {
       case WAIT_FOR_REPLY:
         receivedMessage = new ArrayList<Byte>();
         receivedMessage.add(b);
-        if (b == vcu_address){
+        if (b == vcuAddress){
           state = State.BUILD_REPLY;
         }else {
           state = State.BUILD_EOT;
@@ -351,7 +356,7 @@ public class VecomProtocol extends Protocol {
     /**
      * ADDRESS
      */
-    header.add(vcu_address);
+    header.add(vcuAddress);
 
     /**
      * STX
@@ -430,7 +435,7 @@ public class VecomProtocol extends Protocol {
 
   // PRIVATE ATTRIBUTES
   int transmissionCounter;
-  byte vcu_address;
+  byte vcuAddress;
   byte overloop;
   State state;
   boolean dataframe_set;
@@ -446,5 +451,4 @@ public class VecomProtocol extends Protocol {
   private static final byte NAK = (byte)0x15;
   private static final byte P   = (byte)0x50;
   private static final byte NULL = (byte)0x00;
-  private static final byte OWN_ADDRESS = (byte) 0xF0;
 }

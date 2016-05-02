@@ -8,8 +8,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -22,8 +20,6 @@ import model.Communicator.ComTransmission;
 import model.KarProtocol;
 import model.Protocol;
 import model.VecomProtocol;
-import view.ProtocolPanel.Proto;
-
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.JScrollPane;
@@ -35,8 +31,6 @@ import java.awt.SystemColor;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.Serializable;
-
 import javax.swing.Timer;
 
 import javax.swing.JMenuItem;

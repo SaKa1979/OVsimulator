@@ -2,12 +2,6 @@ package view;
 
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
-
 import view.ProtocolPanel.Proto;
 import view.VehicleButton.Commands;
 import view.VehicleButton.Direction;
@@ -20,7 +14,6 @@ import view.VehicleButton.VehicleType;
 
 import javax.swing.JTextField;
 import javax.swing.InputVerifier;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -33,8 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-
 import javax.swing.JLabel;
 
 public class VehicleSettingPanel extends JPanel {
@@ -46,7 +37,6 @@ public class VehicleSettingPanel extends JPanel {
    * @param vehicle_button
    */
   public VehicleSettingPanel(VehicleButton a_vehicle_button) {
-    vehicle_button = a_vehicle_button;
     calendar = new GregorianCalendar();
     setBorder(new TitledBorder(null, "Vehicle Setting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagLayout gridBagLayout = new GridBagLayout();
@@ -1101,10 +1091,6 @@ public class VehicleSettingPanel extends JPanel {
     private int mod;
   }// end class
 
-
-
-  // PRIVATE ATTRIBUTES
-  private VehicleButton vehicle_button;
   private GregorianCalendar calendar;
 
   private NumericField loopNrTF;

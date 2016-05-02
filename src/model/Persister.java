@@ -6,12 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import controller.Event;
+import controller.SimControler;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
 import view.VehicleSimulation;
@@ -20,14 +20,21 @@ import view.ViewManager;
 
 public class Persister {
 
-  public Persister(){
+  public Persister(SimControler simControler){
     viewManager = ViewManager.getInstance();
+    vehicleSimulation = viewManager.getVehicleSimulation();
+    portSettingPanel = viewManager.getPortSettingPanel();
+    protocolPanel = viewManager.getProtocolPanel();
+    this.simControler = simControler;
   }
 
   // PUBLIC METHODS
   
   public void openFile(){
     JFileChooser fileChooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "ovs", "ovs");
+    fileChooser.setFileFilter(filter);
     int choice = fileChooser.showDialog(null, "Open file" );
     if ( choice == JFileChooser.APPROVE_OPTION ){
       this.file = fileChooser.getSelectedFile();
@@ -58,9 +65,17 @@ public class Persister {
 
   public void saveAsFile(){
     JFileChooser fileChooser = new JFileChooser();
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+        "ovs", "ovs");
+    fileChooser.setFileFilter(filter);
     int choice = fileChooser.showDialog(null, "Save as" );
     if ( choice == JFileChooser.APPROVE_OPTION ){
-      this.file = fileChooser.getSelectedFile();
+      String path = fileChooser.getSelectedFile().getPath();
+      
+      if (!path.endsWith(".ovs"))
+        path.concat(".ovs");
+        
+      file = new File(path);
       try {
         writeObjects(file);
       }
@@ -93,16 +108,10 @@ public class Persister {
 
   // PRIVATE METHODS
   public void writeObjects(File a_file) {
-    VehicleSimulation vehicleSimulation = viewManager.getVehicleSimulation();
-    PortSettingPanel portSettingPanel = viewManager.getPortSettingPanel();
-    ProtocolPanel protocolPanel = viewManager.getProtocolPanel();
-
     DebuggingObjectOutputStream  oos = null;
     try {
       oos = new DebuggingObjectOutputStream ( new FileOutputStream(a_file)); 
-//      oos.writeObject(vehicleSimulation);
-//      oos.writeObject(portSettingPanel);
-      oos.writeObject(protocolPanel);
+      oos.writeObject(simControler.getPersistentObjects(protocolPanel));
     }
     catch (IOException e) {
       throw new RuntimeException(
@@ -116,15 +125,15 @@ public class Persister {
       }
     }
   }
-
-
+  
   public void readObjects(File a_file){
     ObjectInputStream ois  = null;
     try {
       ois = new ObjectInputStream(new FileInputStream(a_file));    
-//      viewManager.setVehicleSimulation((VehicleSimulation)ois.readObject());
-//      viewManager.setPortSettingPanel((PortSettingPanel)ois.readObject());
-      viewManager.setProtocolPanel((ProtocolPanel)ois.readObject());
+      @SuppressWarnings("unchecked")
+      ArrayList<Object> list = (ArrayList<Object>) ois.readObject();
+      simControler.setPersistentObjects(protocolPanel, list);
+      simControler.signal(protocolPanel, null);
     } 
     catch (FileNotFoundException e) {
       // Er was nog geen bestand  
@@ -141,7 +150,11 @@ public class Persister {
   }
 
   // PRIVATE ATTRIBUTES
+  SimControler simControler;
   ViewManager viewManager;
+  VehicleSimulation vehicleSimulation;
+  PortSettingPanel portSettingPanel;
+  ProtocolPanel protocolPanel;
   File file;
 
 }// end of class
