@@ -198,25 +198,24 @@ public class VehicleSettingPanel extends JPanel {
     }
 
   }
-  //TODO return not the value but the textfield
-  
-  public int getLoopNr(){
-    return textFieldToInt(loopNrTF);
+ 
+  public String getLoopNr(){
+    return loopNrTF.getText();
   }
   public VehicleType getVehicleType(){
     return (VehicleType) vehicleTypeComBox.getSelectedItem();
   }
-  public int getLineNr(){
-    return textFieldToInt(lineNrTF);
+  public String getLineNr(){
+    return lineNrTF.getText();
   }
-  public int getVehServiceNr(){
-    return textFieldToInt(vehServiceNrTF);
+  public String getVehServiceNr(){
+    return vehServiceNrTF.getText();
   }
-  public int getCompanyNr(){
-    return textFieldToInt(companyNrTF);
+  public String getCompanyNr(){
+    return companyNrTF.getText();
   }
-  public int getVehicleId(){
-    return textFieldToInt(vehicleIdTF);
+  public String getVehicleId(){
+    return vehicleIdTF.getText();
   }
   public ManualControl getManualControl(){
     return (ManualControl) manualControlComBox.getSelectedItem();
@@ -224,8 +223,8 @@ public class VehicleSettingPanel extends JPanel {
   public Direction getDirection(){
     return (Direction) DirectionComBox.getSelectedItem();
   }
-  public int getSignalGroupNr(){
-    return textFieldToInt(signalgroupNrTF);
+  public String getSignalGroupNr(){
+    return signalgroupNrTF.getText();
   }
   public VehicleStatus getVehicleStatus(){
     return (VehicleStatus) vehicleStatusComBox.getSelectedItem();
@@ -236,83 +235,83 @@ public class VehicleSettingPanel extends JPanel {
   public PunctualityClass getPunctualityClass(){
     return (PunctualityClass) punctualityClassComBox.getSelectedItem();
   }
-  public int getPunctuality(){
-    return textFieldToInt(punctualityTF);
+  public String getPunctuality(){
+    return punctualityTF.getText();
   }
-  public int getVehicleLength(){
-    return textFieldToInt(vehicleLengthTF);
+  public String getVehicleLength(){
+    return vehicleLengthTF.getText();
   }
-  public int getVehicleSpeed(){
-    return textFieldToInt(vehicleSpeedTF);
+  public String getVehicleSpeed(){
+    return vehicleSpeedTF.getText();
   }
-  public int getDistanceToStop(){
-    return textFieldToInt(distanceToStopTF);
+  public String getDistanceToStop(){
+    return distanceToStopTF.getText();
   }
-  public int getTimeToStop(){
-    return textFieldToInt(timeToStopTF);
+  public String getTimeToStop(){
+    return timeToStopTF.getText();
   }
-  public int getJourneyNr(){
-    return textFieldToInt(journeyNrTF);
+  public String getJourneyNr(){
+    return journeyNrTF.getText();
   }
   public JourneyType getJourneyType(){
     return (JourneyType) journeyTypeComBox.getSelectedItem();
   }
-  public int getRoute(){
-    return textFieldToInt(routeTF);
+  public String getRoute(){
+    return routeTF.getText();
   }
   public Commands getCommands(){
     return (Commands) commandComBox.getSelectedItem();
   }
-  public int getActivation(){
-    return textFieldToInt(activationTF);
+  public String getActivation(){
+    return activationTF.getText();
   }
-  public int getLatDeg(){
-    return textFieldToInt(latDegTF);
+  public String getLatDeg(){
+    return latDegTF.getText();
   }
-  public int getLatMin(){
-    return textFieldToInt(latMinTF);
+  public String getLatMin(){
+    return latMinTF.getText();
   }
-  public int getLatSec(){
-    return textFieldToInt(latSecTF);
+  public String getLatSec(){
+    return latSecTF.getText();
   }
-  public int getLatSSec(){
-    return textFieldToInt(latSSecTF);
+  public String getLatSSec(){
+    return latSSecTF.getText();
   }
-  public int getLongDeg(){
-    return textFieldToInt(longDegTF);
+  public String getLongDeg(){
+    return longDegTF.getText();
   }
-  public int getLongMin(){
-    return textFieldToInt(longMinTF);
+  public String getLongMin(){
+    return longMinTF.getText();
   }
-  public int getLongSec(){
-    return textFieldToInt(longSecTF);
+  public String getLongSec(){
+    return longSecTF.getText();
   }
-  public int getLongSSec(){
-    return textFieldToInt(longSSecTF);
+  public String getLongSSec(){
+    return longSSecTF.getText();
   }
-  public int getYear(){
-    return textFieldToInt(yearTF);
+  public String getYear(){
+    return yearTF.getText();
   }
-  public int getMonth(){
-    return textFieldToInt(monthTF);
+  public String getMonth(){
+    return monthTF.getText();
   }
-  public int getDay(){
-    return textFieldToInt(dayTF);
+  public String getDay(){
+    return dayTF.getText();
   }
-  public int getHour(){
-    return textFieldToInt(hourTF);
+  public String getHour(){
+    return hourTF.getText();
   }
-  public int getMinute(){
-    return textFieldToInt(minuteTF);
+  public String getMinute(){
+    return minuteTF.getText();
   }
-  public int getSecond(){
-    return textFieldToInt(secondTF);
+  public String getSecond(){
+    return secondTF.getText();
   }
-  public int getReserve1(){
-    return textFieldToInt(reserve1TF);
+  public String getReserve1(){
+    return reserve1TF.getText();
   }
-  public int getReserve2(){
-    return textFieldToInt(reserve2TF);
+  public String getReserve2(){
+    return reserve2TF.getText();
   }
 
   // PRIVATE METHODS
@@ -1027,28 +1026,6 @@ public class VehicleSettingPanel extends JPanel {
     add(reserve2TF, gbc_reserve2TF);   
   } 
 
-
-  /**
-   * @brief  reads the value entered into the field and returns an positive int 
-   *         when the textfield is enabled
-   * @throws NumberFormatException
-   * @param  tf JTextField
-   * @return converted numeric value
-   */
-  private int textFieldToInt(JTextField tf){
-    int number = 0;
-    if (!tf.isEnabled()) 
-      return -1;
-    try{
-      number = Integer.parseInt(tf.getText());
-    }catch(NumberFormatException nfe){
-      JOptionPane.showMessageDialog(null, nfe.toString(), "Input error", JOptionPane.ERROR_MESSAGE);
-      number = 0;
-      tf.setText("0");
-    }
-    return number;
-  }
-
   //INNER CLASSES
 
   /**
@@ -1073,7 +1050,6 @@ public class VehicleSettingPanel extends JPanel {
         }
       } 
     }
-
     @Override
     public boolean verify(JComponent input) {
       int number;
@@ -1089,10 +1065,9 @@ public class VehicleSettingPanel extends JPanel {
     }
     
     private int mod;
-  }// end class
+  }// end class TimeVerifier
 
   private GregorianCalendar calendar;
-
   private NumericField loopNrTF;
   private JComboBox<VehicleType> vehicleTypeComBox;
   private NumericField lineNrTF;
@@ -1160,7 +1135,6 @@ public class VehicleSettingPanel extends JPanel {
   private JLabel lblTime;
   private JLabel lblReserve_1;
   private JLabel lblReserve_2;
-
 
 }// end of class
 

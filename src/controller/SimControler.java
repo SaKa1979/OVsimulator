@@ -21,7 +21,8 @@ public class SimControler implements Event {
    */
   public SimControler(){
     viewManager.addEventSubscriber(this);
-    communicator.addSimController(this);
+    viewManager.getVehicleSimulation().addEventSubscriber(this);
+    communicator.addEventSubscriber(this);
     communicator.setViewManager(viewManager);
     communicator.searchForPorts();
     persister = new Persister(this);
@@ -103,6 +104,10 @@ public class SimControler implements Event {
         }
       }else{
         viewManager.writeToFeedback(0, "No protocol selected.", Color.RED, 8);
+      }
+    }else if (a_obj instanceof Communicator){
+      if (protocol != null){
+        protocol.processData((byte)a_arg);
       }
     }
   }

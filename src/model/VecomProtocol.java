@@ -14,13 +14,12 @@ public class VecomProtocol extends Protocol {
     overloop = (byte) 0xFF; // start with 'arrival at loop' 
     state = State.WAIT_FOR_POLL;
     viewManager = ViewManager.getInstance();
-    int number = Integer.parseInt(viewManager.getProtocolPanel().getVcuAddress());
+    int number = Integer.parseUnsignedInt(viewManager.getProtocolPanel().getVcuAddress());
     if (number >= 0){
       byte numberHigh = (byte) ~(number << 4);
       byte numberLow = (byte) number;
       vcuAddress = (byte) (numberHigh + numberLow );
     }
-
   }
 
   @Override

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.TooManyListenersException;
 
+import controller.Event;
 import controller.SimControler;
 import gnu.io.*;
 import view.PortSettingPanel;
@@ -28,12 +29,16 @@ public class Communicator extends Observable implements SerialPortEventListener,
 
   // PUBLIC METHODS
 
-  public void addSimController(SimControler sC){
-    simControler = sC;
-  }
-
   public void setViewManager(ViewManager vm) {
     viewManager = vm;
+  }
+
+  /**
+   * @brief The subsriber gets a signal when a certain event takes place.
+   * @param a_subscriber
+   */
+  public void addEventSubscriber(Event a_subscriber){
+    subscriber  = a_subscriber;
   }
 
   public boolean isbConnected() {
@@ -205,7 +210,7 @@ public class Communicator extends Observable implements SerialPortEventListener,
 
       for(Byte b : data){
         output.write(b);
-        
+
         if (viewManager.isShowComData())
           viewManager.writeToFeedback(0, "0x" + convertDec2HexString(b) + "\n", new Color(0, 230, 0), 12); //green
       }
@@ -235,17 +240,9 @@ public class Communicator extends Observable implements SerialPortEventListener,
 
         if (singleData != NEW_LINE_ASCII)
         {
-          //hand over the received byte to the Protocol for further processing
-          Protocol p = simControler.getProtocol();
-          if (p != null){
-            if (viewManager.isShowComData())
-              viewManager.writeToFeedback(0, "0x" + convertDec2HexString(singleData) + "\n", new Color(230, 230, 0), 12); //yellow
-            p.processData(singleData);
-          }
-        }
-        else
-        {
-          //nothing
+          if (viewManager.isShowComData())
+            viewManager.writeToFeedback(0, "0x" + convertDec2HexString(singleData) + "\n", new Color(230, 230, 0), 12); //yellow
+          subscriber.signal(this, singleData);
         }
       }
       catch (Exception e)
@@ -307,6 +304,7 @@ public class Communicator extends Observable implements SerialPortEventListener,
   // PRIVATE ATTRIBUTE
 
   ViewManager viewManager = null;
+  Event subscriber;
   private SimControler simControler;
   //map the port names (String) to CommPortIdentifiers
   private HashMap<String, CommPortIdentifier> portMap = new HashMap<String, CommPortIdentifier>();

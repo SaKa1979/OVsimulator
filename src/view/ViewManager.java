@@ -371,10 +371,6 @@ public class ViewManager extends JFrame{
 
     // vehicle simulation
     vehicleSimulation = new VehicleSimulation();
-    // First create the VehicleButtons and connect the to a Listener
-    for (int i = 0; i < 20; i++){
-      vehicleSimulation.createAndAddVehicleButton(vehicleSimulationListener);
-    }
     vehicleSimulation.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_vehicleSimulation = new GridBagConstraints();
     gbc_vehicleSimulation.anchor = GridBagConstraints.LINE_START;
@@ -645,19 +641,6 @@ public class ViewManager extends JFrame{
   }
 
   // LISTENERS
-
-  /**
-   * @brief Action listener for handling the simulation of all vehicleButtons
-   *        Action is triggered by a VehicleButton
-   */
-  ActionListener vehicleSimulationListener = new ActionListener() {   
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      VehicleButton vb = (VehicleButton)e.getSource();
-      subscriber.signal(vb, null);
-    }
-  };
-  
   /**
    * @brief Action listener for a reaction to a rxtx led timeout
    * @author Sander

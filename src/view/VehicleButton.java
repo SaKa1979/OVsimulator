@@ -11,7 +11,7 @@ import java.awt.event.MouseEvent;
 
 /**
  * @brief A button representing a vehicle detection. 
- *        A mouse listener must be added from the class that is using this button. The RMB action should be handled in the calling class
+ *        A mouse listener must be added to the class that is using this button. The RMB action should be handled in the calling class
  *        The attribute settings are controlled by a VehicleSetting class which shall be triggered by the RMB
  * @author Sander Kamps
  */
@@ -525,44 +525,44 @@ public class VehicleButton extends JButton{
               JOptionPane.PLAIN_MESSAGE); 
           switch (ok){
             case JOptionPane.OK_OPTION:
-              loopNr = vehicleSettingPanel.getLoopNr();                         
+              loopNr = Integer.parseUnsignedInt(vehicleSettingPanel.getLoopNr());                         
               vehicleType = vehicleSettingPanel.getVehicleType();
-              lineNr = vehicleSettingPanel.getLineNr();
-              vehServiceNr = vehicleSettingPanel.getVehServiceNr();
-              companyNr = vehicleSettingPanel.getCompanyNr();
-              vehicleId = vehicleSettingPanel.getVehicleId();
-              signalGroupNr = vehicleSettingPanel.getSignalGroupNr();
+              lineNr = Integer.parseUnsignedInt(vehicleSettingPanel.getLineNr());
+              vehServiceNr = Integer.parseUnsignedInt(vehicleSettingPanel.getVehServiceNr());
+              companyNr = Integer.parseUnsignedInt(vehicleSettingPanel.getCompanyNr());
+              vehicleId = Integer.parseUnsignedInt(vehicleSettingPanel.getVehicleId());
+              signalGroupNr = Integer.parseUnsignedInt(vehicleSettingPanel.getSignalGroupNr());
               manualControl = vehicleSettingPanel.getManualControl();
               vehicleStatus = vehicleSettingPanel.getVehicleStatus();
               priorityClass = vehicleSettingPanel.getPriorityClass();
               punctualityClass = vehicleSettingPanel.getPunctualityClass();
-              punctuality = vehicleSettingPanel.getPunctuality();
-              vehicleLength = vehicleSettingPanel.getVehicleLength();
-              vehicleSpeed = vehicleSettingPanel.getVehicleSpeed();
-              distanceToStop = vehicleSettingPanel.getDistanceToStop();
-              timeToStop = vehicleSettingPanel.getTimeToStop();
-              journeyNr = vehicleSettingPanel.getJourneyNr();
+              punctuality = Integer.parseUnsignedInt(vehicleSettingPanel.getPunctuality());
+              vehicleLength = Integer.parseUnsignedInt(vehicleSettingPanel.getVehicleLength());
+              vehicleSpeed = Integer.parseUnsignedInt(vehicleSettingPanel.getVehicleSpeed());
+              distanceToStop = Integer.parseUnsignedInt(vehicleSettingPanel.getDistanceToStop());
+              timeToStop = Integer.parseUnsignedInt(vehicleSettingPanel.getTimeToStop());
+              journeyNr = Integer.parseUnsignedInt(vehicleSettingPanel.getJourneyNr());
               journeyType = vehicleSettingPanel.getJourneyType();
-              route = vehicleSettingPanel.getRoute();
+              route = Integer.parseUnsignedInt(vehicleSettingPanel.getRoute());
               direction = vehicleSettingPanel.getDirection();
               command = vehicleSettingPanel.getCommands();
-              activation = vehicleSettingPanel.getActivation();
-              latDeg = vehicleSettingPanel.getLatDeg();
-              latMin = vehicleSettingPanel.getLatMin();
-              latSec = vehicleSettingPanel.getLatSec();
-              latSSec = vehicleSettingPanel.getLatSSec();
-              longDeg = vehicleSettingPanel.getLongDeg();
-              longMin = vehicleSettingPanel.getLongMin();
-              longSec = vehicleSettingPanel.getLongSec();
-              longSSec = vehicleSettingPanel.getLongSSec();
-              year = vehicleSettingPanel.getYear();
-              month = vehicleSettingPanel.getMonth();
-              day = vehicleSettingPanel.getDay();
-              hour = vehicleSettingPanel.getHour();
-              minute = vehicleSettingPanel.getMinute();
-              second = vehicleSettingPanel.getSecond();
-              reserve1 = vehicleSettingPanel.getReserve1();
-              reserve2 = vehicleSettingPanel.getReserve2();
+              activation = Integer.parseUnsignedInt(vehicleSettingPanel.getActivation());
+              latDeg = Integer.parseUnsignedInt(vehicleSettingPanel.getLatDeg());
+              latMin = Integer.parseUnsignedInt(vehicleSettingPanel.getLatMin());
+              latSec = Integer.parseUnsignedInt(vehicleSettingPanel.getLatSec());
+              latSSec = Integer.parseUnsignedInt(vehicleSettingPanel.getLatSSec());
+              longDeg = Integer.parseUnsignedInt(vehicleSettingPanel.getLongDeg());
+              longMin = Integer.parseUnsignedInt(vehicleSettingPanel.getLongMin());
+              longSec = Integer.parseUnsignedInt(vehicleSettingPanel.getLongSec());
+              longSSec = Integer.parseUnsignedInt(vehicleSettingPanel.getLongSSec());
+              year = Integer.parseUnsignedInt(vehicleSettingPanel.getYear());
+              month = Integer.parseUnsignedInt(vehicleSettingPanel.getMonth());
+              day = Integer.parseUnsignedInt(vehicleSettingPanel.getDay());
+              hour = Integer.parseUnsignedInt(vehicleSettingPanel.getHour());
+              minute = Integer.parseUnsignedInt(vehicleSettingPanel.getMinute());
+              second = Integer.parseUnsignedInt(vehicleSettingPanel.getSecond());
+              reserve1 = Integer.parseUnsignedInt(vehicleSettingPanel.getReserve1());
+              reserve2 = Integer.parseUnsignedInt(vehicleSettingPanel.getReserve2());
               setEnabled(true);
               setButtonText();
               setVehicleTypeImage(vehicleType);
