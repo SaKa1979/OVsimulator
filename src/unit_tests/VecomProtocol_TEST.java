@@ -26,7 +26,7 @@ public class VecomProtocol_TEST {
   public void setUp() throws Exception {
     protocolPanel.setSelectedProto(Proto.VECOM);
     VehicleSettingPanel vehicleSettingPanel = vehicleButton.getVehicleSettingPanel();
-    vehicleSettingPanel.setProto();
+    vehicleSettingPanel.setProto(Proto.VECOM);
     
     // set up a default vehicle button configuration
     vehicleButton.setLoopNr(1);

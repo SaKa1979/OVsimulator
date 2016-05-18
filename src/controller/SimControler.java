@@ -13,6 +13,7 @@ import view.PortSettingPanel;
 import view.ProtocolPanel;
 import view.ProtocolPanel.Proto;
 import view.VehicleButton;
+import view.VehicleSimulation;
 
 public class SimControler implements Event {
 
@@ -98,7 +99,7 @@ public class SimControler implements Event {
         if (communicator.isbConnected()){
           if (a_arg instanceof String)
             viewManager.writeToFeedback(0, (String)a_arg, Color.BLACK, 12);
-          communicator.writeData(proto.getSendMessage());
+          communicator.writeData(proto.getSendMessage()); // Got byte(s) from protocol to be send to serial
         }else{
           viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 8);
         }
@@ -107,7 +108,7 @@ public class SimControler implements Event {
       }
     }else if (a_obj instanceof Communicator){
       if (protocol != null){
-        protocol.processData((byte)a_arg);
+        protocol.processData((byte)a_arg); // Got byte from serial to be send to protocol
       }
     }
   }
@@ -127,7 +128,17 @@ public class SimControler implements Event {
     list.add(a_protocolPanel.getKarKey());
     return list;
   }
+  
+  public void setPersistentObjects(VehicleSimulation a_vehicleSimulation, ArrayList<Object> a_list) {
 
+  } 
+  
+  public ArrayList<Object> getPersistentObjects(VehicleSimulation a_vehicleSimulation) {
+    ArrayList<Object> list = new ArrayList<Object>();
+
+    return list;
+  }
+  
   // PRIVATE ATTRIBUTES
   ViewManager viewManager = ViewManager.getInstance();
   Communicator communicator = new Communicator();

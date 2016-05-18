@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+
 import view.ProtocolPanel.Proto;
 import view.VehicleButton.Commands;
 import view.VehicleButton.Direction;
@@ -49,9 +50,8 @@ public class VehicleSettingPanel extends JPanel {
   }
 
   // PUBLIC METHODS
-  public void setProto() {
-    Proto proto = ViewManager.getInstance().getProtocolPanel().getSelectedProto();
-    switch(proto){
+  public void setProto(Proto a_proto) {
+    switch(a_proto){
       case KAR:
         setBorder(new TitledBorder(null, "Vehicle Setting for KAR", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         loopNrTF.setEnabled(true);
@@ -198,120 +198,275 @@ public class VehicleSettingPanel extends JPanel {
     }
 
   }
- 
+
   public String getLoopNr(){
     return loopNrTF.getText();
   }
+  public void setLoopNrTF(String a_loopNR) {
+    loopNrTF.setText(a_loopNR);
+  }
+
   public VehicleType getVehicleType(){
     return (VehicleType) vehicleTypeComBox.getSelectedItem();
   }
+  public void setVehicleTypeComBox(VehicleType a_vehicleType) { 
+    this.vehicleTypeComBox.setSelectedItem(a_vehicleType);
+  }
+
   public String getLineNr(){
     return lineNrTF.getText();
   }
+  public void setLineNrTF(String a_lineNr) {
+    lineNrTF.setText(a_lineNr);
+  }
+
   public String getVehServiceNr(){
     return vehServiceNrTF.getText();
   }
+  public void setVehServiceNrTF(String a_vehServiceNr) {
+    vehServiceNrTF.setText(a_vehServiceNr);
+  }
+
   public String getCompanyNr(){
     return companyNrTF.getText();
   }
+  public void setCompanyNrTF(String a_companyNr) {
+    companyNrTF.setText(a_companyNr);
+  }
+
   public String getVehicleId(){
     return vehicleIdTF.getText();
   }
+  public void setVehicleIdTF(String a_vehicleId) {
+    vehicleIdTF.setText(a_vehicleId);;
+  }
+
   public ManualControl getManualControl(){
     return (ManualControl) manualControlComBox.getSelectedItem();
   }
+  public void setManualControlComBox(
+      ManualControl a_manualControl) {
+    manualControlComBox.setSelectedItem(a_manualControl);
+  }
+
   public Direction getDirection(){
     return (Direction) DirectionComBox.getSelectedItem();
   }
+  public void setDirectionComBox(Direction a_direction) {
+    DirectionComBox.setSelectedItem(a_direction);  
+  }
+
   public String getSignalGroupNr(){
     return signalgroupNrTF.getText();
   }
+  public void setSignalGroupNr(String a_signalgroupNr){
+    signalgroupNrTF.setText(a_signalgroupNr);
+  }
+
   public VehicleStatus getVehicleStatus(){
     return (VehicleStatus) vehicleStatusComBox.getSelectedItem();
   }
+  public void setVehicleStatusComBox(
+      VehicleStatus a_vehicleStatus) {
+    vehicleStatusComBox.setSelectedItem(a_vehicleStatus);
+  }
+
   public PriorityClass getPriorityClass(){
     return (PriorityClass) priorityClassComBox.getSelectedItem();
   }
+  public void setPriorityClassComBox(
+      PriorityClass a_priorityClass) {
+    priorityClassComBox.setSelectedItem(a_priorityClass);
+  }
+
   public PunctualityClass getPunctualityClass(){
     return (PunctualityClass) punctualityClassComBox.getSelectedItem();
   }
+  public void setPunctualityClassComBox(
+      PunctualityClass a_punctualityClass) {
+    punctualityClassComBox.setSelectedItem(a_punctualityClass);
+  }
+
   public String getPunctuality(){
     return punctualityTF.getText();
   }
+  public void setPunctualityTF(String a_punctuality) {
+    punctualityTF.setText(a_punctuality);
+  }
+
   public String getVehicleLength(){
     return vehicleLengthTF.getText();
   }
+  public void setVehicleLengthTF(String a_vehicleLength) {
+    vehicleLengthTF.setText(a_vehicleLength);
+  }
+
   public String getVehicleSpeed(){
     return vehicleSpeedTF.getText();
   }
+  public void setVehicleSpeedTF(String a_vehicleSpeed) {
+    vehicleSpeedTF.setText(a_vehicleSpeed);
+  }
+
   public String getDistanceToStop(){
     return distanceToStopTF.getText();
   }
+  public void setDistanceToStopTF(String a_distanceToStop) {
+    distanceToStopTF.setText(a_distanceToStop);
+  }
+
   public String getTimeToStop(){
     return timeToStopTF.getText();
   }
+  public void setTimeToStopTF(String a_timeToStop) {
+    timeToStopTF.setText(a_timeToStop);
+  }
+
   public String getJourneyNr(){
     return journeyNrTF.getText();
   }
+  public void setJourneyNrTF(String a_journeyNr) {
+    journeyNrTF.setText(a_journeyNr);
+  }
+
   public JourneyType getJourneyType(){
     return (JourneyType) journeyTypeComBox.getSelectedItem();
   }
+  public void setJourneyTypeComBox(JourneyType a_journeyType) {
+    journeyTypeComBox.setSelectedItem(a_journeyType);
+  }
+
   public String getRoute(){
     return routeTF.getText();
   }
+  public void setRouteTF(String a_routeTF) {
+    routeTF.setText(a_routeTF);
+  }
+
   public Commands getCommands(){
     return (Commands) commandComBox.getSelectedItem();
   }
+  public void setCommandComBox(Commands a_command) {
+    commandComBox.setSelectedItem(a_command);
+  }
+
   public String getActivation(){
     return activationTF.getText();
   }
+  public void setActivationTF(String a_activation) {
+    activationTF.setText(a_activation);
+  }
+
   public String getLatDeg(){
     return latDegTF.getText();
   }
+  public void setLatDegTF(String a_latDeg) {
+    latDegTF.setText(a_latDeg);
+  }
+
   public String getLatMin(){
     return latMinTF.getText();
   }
+  public void setLatMinTF(String a_latMin) {
+    latMinTF.setText(a_latMin);
+  }
+
   public String getLatSec(){
     return latSecTF.getText();
   }
+  public void setLatSecTF(String a_latSec) {
+    latSecTF.setText(a_latSec);
+  }
+
   public String getLatSSec(){
     return latSSecTF.getText();
   }
+  public void setLatSSecTF(String a_latSSec) {
+    latSSecTF.setText(a_latSSec);
+  }
+
   public String getLongDeg(){
     return longDegTF.getText();
   }
+  public void setLongDegTF(String a_longDeg) {
+    longDegTF.setText(a_longDeg);
+  }
+
   public String getLongMin(){
     return longMinTF.getText();
   }
+  public void setLongMinTF(String a_longMin) {
+    longMinTF.setText(a_longMin);
+  }
+
   public String getLongSec(){
     return longSecTF.getText();
   }
+  public void setLongSecTF(String a_longSec) {
+    longSecTF.setText(a_longSec);
+  }
+
   public String getLongSSec(){
     return longSSecTF.getText();
   }
+  public void setLongSSecTF(String a_longSSec) {
+    longSSecTF.setText(a_longSSec);
+  }
+
   public String getYear(){
     return yearTF.getText();
   }
+  public void setYearTF(String a_year) {
+    yearTF.setText(a_year);
+  }
+
   public String getMonth(){
     return monthTF.getText();
   }
+  public void setMonthTF(String a_month) {
+    monthTF.setText(a_month);
+  }
+
   public String getDay(){
     return dayTF.getText();
   }
+  public void setDayTF(String a_day) {
+    dayTF.setText(a_day);
+  }
+
   public String getHour(){
     return hourTF.getText();
   }
+  public void setHourTF(String a_hour) {
+    hourTF.setText(a_hour);
+  }
+
   public String getMinute(){
     return minuteTF.getText();
   }
+  public void setMinuteTF(String a_minute) {
+    minuteTF.setText(a_minute);
+  }
+
   public String getSecond(){
     return secondTF.getText();
   }
+  public void setSecondTF(String a_second) {
+    secondTF.setText(a_second);
+  }
+
   public String getReserve1(){
     return reserve1TF.getText();
   }
+  public void setReserve1TF(String a_reserve1) {
+    reserve1TF.setText(a_reserve1);
+  }
+
   public String getReserve2(){
     return reserve2TF.getText();
+  }
+  public void setReserve2TF(String a_reserve2) {
+    reserve2TF.setText(a_reserve2);
   }
 
   // PRIVATE METHODS
@@ -1063,7 +1218,7 @@ public class VehicleSettingPanel extends JPanel {
         return true;
       }
     }
-    
+
     private int mod;
   }// end class TimeVerifier
 

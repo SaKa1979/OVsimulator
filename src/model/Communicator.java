@@ -10,7 +10,6 @@ import java.util.Observable;
 import java.util.TooManyListenersException;
 
 import controller.Event;
-import controller.SimControler;
 import gnu.io.*;
 import view.PortSettingPanel;
 import view.ViewManager;
@@ -305,7 +304,6 @@ public class Communicator extends Observable implements SerialPortEventListener,
 
   ViewManager viewManager = null;
   Event subscriber;
-  private SimControler simControler;
   //map the port names (String) to CommPortIdentifiers
   private HashMap<String, CommPortIdentifier> portMap = new HashMap<String, CommPortIdentifier>();
   //this is the object that contains the opened port

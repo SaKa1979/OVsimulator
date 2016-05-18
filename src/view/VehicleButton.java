@@ -24,12 +24,14 @@ public class VehicleButton extends JButton{
    */
   public VehicleButton(){
     super();
+    vehicleSettingPanel = new VehicleSettingPanel(this);
     setToolTipText("LMB is action.\r\nRMB is settings");
     initialize();
   }
   public VehicleButton(String a_name) {
     super(a_name);
     name = a_name;
+    vehicleSettingPanel = new VehicleSettingPanel(this);
     initialize();
   }
 
@@ -37,7 +39,7 @@ public class VehicleButton extends JButton{
   // PUBLIC METHODS
   public void setButtonText(){
     setText("L" + loopNr + " FC" + signalGroupNr);
-    setFont(new Font("Verdana", Font.PLAIN, 8));
+    setFont(new Font("MonoSpace", Font.PLAIN, 8));
   } 
 
   public String getName() {
@@ -46,7 +48,279 @@ public class VehicleButton extends JButton{
   public void setName(String name) {
     this.name = name;
   }
-
+  
+  public VehicleSettingPanel getVehicleSettingPanel() {
+    return vehicleSettingPanel;
+  }
+  
+    public int getLoopNr() {
+    return loopNr;
+  }
+  public void setLoopNr(int a_loopNR) {
+    loopNr = a_loopNR;
+    vehicleSettingPanel.setLoopNrTF(Integer.toString(a_loopNR));
+  }
+  public VehicleType getVehicleType() {
+    return vehicleType;
+  }
+  public void setVehicleType(VehicleType a_vehicleType) {
+    vehicleType = a_vehicleType;
+    vehicleSettingPanel.setVehicleTypeComBox(a_vehicleType);
+    setVehicleTypeImage(a_vehicleType);
+  }
+  public int getLineNr() {
+    return lineNr;
+  }
+  public void setLineNr(int a_lineNr) {
+    lineNr = a_lineNr;
+    vehicleSettingPanel.setLineNrTF(Integer.toString(a_lineNr));
+  }
+  public int getVehServiceNr() {
+    return vehServiceNr;
+  }
+  public void setVehServiceNr(int a_vehServiceNr) {
+    vehServiceNr = a_vehServiceNr;
+    vehicleSettingPanel.setVehServiceNrTF(Integer.toString(a_vehServiceNr));
+  }
+  public int getCompanyNr() {
+    return companyNr;
+  }
+  public void setCompanyNr(int a_companyNr) {
+    companyNr = a_companyNr;
+    vehicleSettingPanel.setCompanyNrTF(Integer.toString(a_companyNr));
+  }
+  public int getVehicleId() {
+    return vehicleId;
+  }
+  public void setVehicleId(int a_vehicleId) {
+    vehicleId = a_vehicleId;
+    vehicleSettingPanel.setVehicleIdTF(Integer.toString(a_vehicleId));
+  }
+  public int getSignalGroupNr() {
+    return signalGroupNr;
+  }
+  public void setSignalGroupNr(int a_signalGroupNr) {
+    signalGroupNr = a_signalGroupNr;
+    vehicleSettingPanel.setSignalGroupNr(Integer.toString(a_signalGroupNr));
+  }
+  public ManualControl getManualControl() {
+    return manualControl;
+  }
+  public void setManualControl(ManualControl a_manualControl) {
+    manualControl = a_manualControl;
+    vehicleSettingPanel.setManualControlComBox(a_manualControl);
+  }
+  public VehicleStatus getVehicleStatus() {
+    return vehicleStatus;
+  }
+  public void setVehicleStatus(VehicleStatus a_vehicleStatus) {
+    vehicleStatus = a_vehicleStatus;
+    vehicleSettingPanel.setVehicleStatusComBox(a_vehicleStatus);
+  }
+  public PriorityClass getPriorityClass() {
+    return priorityClass;
+  }
+  public void setPriorityClass(PriorityClass a_priorityClass) {
+    priorityClass = a_priorityClass;
+    vehicleSettingPanel.setPriorityClassComBox(a_priorityClass);
+  }
+  public PunctualityClass getPunctualityClass() {
+    return punctualityClass;
+  }
+  public void setPunctualityClass(PunctualityClass a_punctualityClass) {
+    punctualityClass = a_punctualityClass;
+    vehicleSettingPanel.setPunctualityClassComBox(a_punctualityClass);
+  }
+  public int getPunctuality() {
+    return punctuality;
+  }
+  public void setPunctuality(int a_punctuality) {
+    punctuality = a_punctuality;
+    vehicleSettingPanel.setPunctualityTF(Integer.toString(a_punctuality));
+  }
+  public int getVehicleLength() {
+    return vehicleLength;
+  }
+  public void setVehicleLength(int a_vehicleLength) {
+    vehicleLength = a_vehicleLength;
+    vehicleSettingPanel.setVehicleLengthTF(Integer.toString(a_vehicleLength));
+  }
+  public int getVehicleSpeed() {
+    return vehicleSpeed;
+  }
+  public void setVehicleSpeed(int a_vehicleSpeed) {
+    vehicleSpeed = a_vehicleSpeed;
+    vehicleSettingPanel.setVehicleSpeedTF(Integer.toString(a_vehicleSpeed));
+  }
+  public int getDistanceToStop() {
+    return distanceToStop;
+  }
+  public void setDistanceToStop(int a_distanceToStop) {
+    distanceToStop = a_distanceToStop;
+    vehicleSettingPanel.setDistanceToStopTF(Integer.toString(a_distanceToStop));
+  }
+  public int getTimeToStop() {
+    return timeToStop;
+  }
+  public void setTimeToStop(int a_timeToStop) {
+    timeToStop = a_timeToStop;
+    vehicleSettingPanel.setTimeToStopTF(Integer.toString(a_timeToStop));
+  }
+  public int getJourneyNr() {
+    return journeyNr;
+  }
+  public void setJourneyNr(int a_journeyNr) {
+    journeyNr = a_journeyNr;
+    vehicleSettingPanel.setJourneyNrTF(Integer.toString(a_journeyNr));
+  }
+  public JourneyType getJourneyType() {
+    return journeyType;
+  }
+  public void setJourneyType(JourneyType a_journeyType) {
+    journeyType = a_journeyType;
+    vehicleSettingPanel.setJourneyTypeComBox(a_journeyType);
+  }
+  public int getRoute() {
+    return route;
+  }
+  public void setRoute(int a_routeTF) {
+    route = a_routeTF;
+    vehicleSettingPanel.setRouteTF(Integer.toString(a_routeTF));
+  }
+  public Direction getDirection() {
+    return direction;
+  }
+  public void setDirection(Direction a_direction) {
+    direction = a_direction;
+    vehicleSettingPanel.setDirectionComBox(a_direction);
+  }
+  public Commands getCommand() {
+    return command;
+  }
+  public void setCommand(Commands a_command) {
+    command = a_command;
+    vehicleSettingPanel.setCommandComBox(a_command);
+  }
+  public int getActivation() {
+    return activation;
+  }
+  public void setActivation(int a_activation) {
+    activation = a_activation;
+    vehicleSettingPanel.setActivationTF(Integer.toString(a_activation));
+  }
+  public int getLatDeg() {
+    return latDeg;
+  }
+  public void setLatDeg(int a_latDeg) {
+    latDeg = a_latDeg;
+    vehicleSettingPanel.setLatDegTF(Integer.toString(a_latDeg));
+  }
+  public int getLatMin() {
+    return latMin;
+  }
+  public void setLatMin(int a_latMin) {
+    latMin = a_latMin;
+    vehicleSettingPanel.setLatMinTF(Integer.toString(a_latMin));
+  }
+  public int getLatSec() {
+    return latSec;
+  }
+  public void setLatSec(int a_latSec) {
+    latSec = a_latSec;
+    vehicleSettingPanel.setLatSecTF(Integer.toString(a_latSec));
+  }
+  public int getLatSSec() {
+    return latSSec;
+  }
+  public void setLatSSec(int a_latSSec) {
+    latSSec = a_latSSec;
+    vehicleSettingPanel.setLatSSecTF(Integer.toString(a_latSSec));
+  }
+  public int getLongDeg() {
+    return longDeg;
+  }
+  public void setLongDeg(int a_longDeg) {
+    longDeg = a_longDeg;
+    vehicleSettingPanel.setLongDegTF(Integer.toString(a_longDeg));
+  }
+  public int getLongMin() {
+    return longMin;
+  }
+  public void setLongMin(int a_longMin) {
+    longMin = a_longMin;
+    vehicleSettingPanel.setLongMinTF(Integer.toString(a_longMin));
+  }
+  public int getLongSec() {
+    return longSec;
+  }
+  public void setLongSec(int a_longSec) {
+    longSec = a_longSec;
+    vehicleSettingPanel.setLongSecTF(Integer.toString(a_longSec));
+  }
+  public int getLongSSec() {
+    return longSSec;
+  }
+  public void setLongSSec(int a_longSSec) {
+    longSSec = a_longSSec;
+    vehicleSettingPanel.setLongSSecTF(Integer.toString(a_longSSec));
+  }
+  public int getYear() {
+    return year;
+  }
+  public void setYear(int a_year) {
+    year = a_year;
+    vehicleSettingPanel.setYearTF(Integer.toString(a_year));
+  }
+  public int getMonth() {
+    return month;
+  }
+  public void setMonth(int a_month) {
+    month = a_month;
+    vehicleSettingPanel.setMonthTF(Integer.toString(a_month));
+  }
+  public int getDay() {
+    return day;
+  }
+  public void setDay(int a_day) {
+    day = a_day;
+    vehicleSettingPanel.setDayTF(Integer.toString(a_day));
+  }
+  public int getHour() {
+    return hour;
+  }
+  public void setHour(int a_hour) {
+    hour = a_hour;
+    vehicleSettingPanel.setHourTF(Integer.toString(a_hour));
+  }
+  public int getMinute() {
+    return minute;
+  }
+  public void setMinute(int a_minute) {
+    minute = a_minute;
+    vehicleSettingPanel.setMinuteTF(Integer.toString(a_minute));
+  }
+  public int getSecond() {
+    return second;
+  }
+  public void setSecond(int a_second) {
+    second = a_second;
+    vehicleSettingPanel.setSecondTF(Integer.toString(a_second));
+  }
+  public int getReserve1() {
+    return reserve1;
+  }
+  public void setReserve1(int a_reserve1) {
+    reserve1 = a_reserve1;
+    vehicleSettingPanel.setReserve1TF(Integer.toString(a_reserve1));
+  }
+  public int getReserve2() {
+    return reserve2;
+  }
+  public void setReserve2(int a_reserve2) {
+    reserve2 = a_reserve2;
+    vehicleSettingPanel.setReserve2TF(Integer.toString(a_reserve2));
+  }
+  // PRIVATE METHODS
   private void setVehicleTypeImage(VehicleType vt){
     switch (vt){
     case BUS_CITY:
@@ -75,248 +349,6 @@ public class VehicleButton extends JButton{
     }
   }
   
-  public int getLoopNr() {
-    return loopNr;
-  }
-  public VehicleType getVehicleType() {
-    return vehicleType;
-  }
-  public int getLineNr() {
-    return lineNr;
-  }
-  public int getVehServiceNr() {
-    return vehServiceNr;
-  }
-  public int getCompanyNr() {
-    return companyNr;
-  }
-  public int getVehicleId() {
-    return vehicleId;
-  }
-  public int getSignalGroupNr() {
-    return signalGroupNr;
-  }
-  public ManualControl getManualControl() {
-    return manualControl;
-  }
-  public VehicleStatus getVehicleStatus() {
-    return vehicleStatus;
-  }
-  public PriorityClass getPriorityClass() {
-    return priorityClass;
-  }
-  public PunctualityClass getPunctualityClass() {
-    return punctualityClass;
-  }
-  public int getPunctuality() {
-    return punctuality;
-  }
-  public int getVehicleLength() {
-    return vehicleLength;
-  }
-  public int getVehicleSpeed() {
-    return vehicleSpeed;
-  }
-  public int getDistanceToStop() {
-    return distanceToStop;
-  }
-  public int getTimeToStop() {
-    return timeToStop;
-  }
-  public int getJourneyNr() {
-    return journeyNr;
-  }
-  public JourneyType getJourneyType() {
-    return journeyType;
-  }
-  public int getRoute() {
-    return route;
-  }
-  public Direction getDirection() {
-    return direction;
-  }
-  public Commands getCommand() {
-    return command;
-  }
-  public int getActivation() {
-    return activation;
-  }
-  public int getLatDeg() {
-    return latDeg;
-  }
-  public int getLatMin() {
-    return latMin;
-  }
-  public int getLatSec() {
-    return latSec;
-  }
-  public int getLatSSec() {
-    return latSSec;
-  }
-  public int getLongDeg() {
-    return longDeg;
-  }
-  public int getLongMin() {
-    return longMin;
-  }
-  public int getLongSec() {
-    return longSec;
-  }
-  public int getLongSSec() {
-    return longSSec;
-  }
-  public int getYear() {
-    return year;
-  }
-  public int getMonth() {
-    return month;
-  }
-  public int getDay() {
-    return day;
-  }
-  public int getHour() {
-    return hour;
-  }
-  public int getMinute() {
-    return minute;
-  }
-  public int getSecond() {
-    return second;
-  }
-  public int getReserve1() {
-    return reserve1;
-  }
-  public int getReserve2() {
-    return reserve2;
-  }
-  public VehicleSettingPanel getVehicleSettingPanel() {
-    return vehicleSettingPanel;
-  }
-  public ImageFactory getImagefactory() {
-    return imagefactory;
-  }
-
-  public void setLoopNr(int loopNr) {
-    this.loopNr = loopNr;
-  }
-  public void setVehicleType(VehicleType vehicleType) {
-    this.vehicleType = vehicleType;
-  }
-  public void setLineNr(int lineNr) {
-    this.lineNr = lineNr;
-  }
-  public void setVehServiceNr(int vehServiceNr) {
-    this.vehServiceNr = vehServiceNr;
-  }
-  public void setCompanyNr(int companyNr) {
-    this.companyNr = companyNr;
-  }
-  public void setVehicleId(int vehicleId) {
-    this.vehicleId = vehicleId;
-  }
-  public void setSignalGroupNr(int signalGroupNr) {
-    this.signalGroupNr = signalGroupNr;
-  }
-  public void setManualControl(ManualControl manualControl) {
-    this.manualControl = manualControl;
-  }
-  public void setVehicleStatus(VehicleStatus vehicleStatus) {
-    this.vehicleStatus = vehicleStatus;
-  }
-  public void setPriorityClass(PriorityClass priorityClass) {
-    this.priorityClass = priorityClass;
-  }
-  public void setPunctualityClass(PunctualityClass punctualityClass) {
-    this.punctualityClass = punctualityClass;
-  }
-  public void setPunctuality(int punctuality) {
-    this.punctuality = punctuality;
-  }
-  public void setVehicleLength(int vehicleLength) {
-    this.vehicleLength = vehicleLength;
-  }
-  public void setVehicleSpeed(int vehicleSpeed) {
-    this.vehicleSpeed = vehicleSpeed;
-  }
-  public void setDistanceToStop(int distanceToStop) {
-    this.distanceToStop = distanceToStop;
-  }
-  public void setTimeToStop(int timeToStop) {
-    this.timeToStop = timeToStop;
-  }
-  public void setJourneyNr(int journeyNr) {
-    this.journeyNr = journeyNr;
-  }
-  public void setJourneyType(JourneyType journeyType) {
-    this.journeyType = journeyType;
-  }
-  public void setRoute(int route) {
-    this.route = route;
-  }
-  public void setDirection(Direction direction) {
-    this.direction = direction;
-  }
-  public void setCommand(Commands command) {
-    this.command = command;
-  }
-  public void setActivation(int activation) {
-    this.activation = activation;
-  }
-  public void setLatDeg(int latDeg) {
-    this.latDeg = latDeg;
-  }
-  public void setLatMin(int latMin) {
-    this.latMin = latMin;
-  }
-  public void setLatSec(int latSec) {
-    this.latSec = latSec;
-  }
-  public void setLatSSec(int latSSec) {
-    this.latSSec = latSSec;
-  }
-  public void setLongDeg(int longDeg) {
-    this.longDeg = longDeg;
-  }
-  public void setLongMin(int longMin) {
-    this.longMin = longMin;
-  }
-  public void setLongSec(int longSec) {
-    this.longSec = longSec;
-  }
-  public void setLongSSec(int longSSec) {
-    this.longSSec = longSSec;
-  }
-  public void setYear(int year) {
-    this.year = year;
-  }
-  public void setMonth(int month) {
-    this.month = month;
-  }
-  public void setDay(int day) {
-    this.day = day;
-  }
-  public void setHour(int hour) {
-    this.hour = hour;
-  }
-  public void setMinute(int minute) {
-    this.minute = minute;
-  }
-  public void setSecond(int second) {
-    this.second = second;
-  }
-  public void setReserve1(int reserve1) {
-    this.reserve1 = reserve1;
-  }
-  public void setReserve2(int reserve2) {
-    this.reserve2 = reserve2;
-  }
-  public void setVehicleSettingPanel(VehicleSettingPanel vehicleSettingPanel) {
-    this.vehicleSettingPanel = vehicleSettingPanel;
-  }
-  public void setImagefactory(ImageFactory imagefactory) {
-    this.imagefactory = imagefactory;
-  }
-
   // ENUMS
 
   public enum ManualControl {
@@ -517,7 +549,7 @@ public class VehicleButton extends JButton{
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()){
-          vehicleSettingPanel.setProto();
+          vehicleSettingPanel.setProto(ViewManager.getInstance().getProtocolPanel().getSelectedProto());
           int ok = JOptionPane.showConfirmDialog(null,
               vehicleSettingPanel,
               "Vehicle Setting",
@@ -572,7 +604,6 @@ public class VehicleButton extends JButton{
         }
       }
     });
-    vehicleSettingPanel = new VehicleSettingPanel(this);
   }
   
   // PRIVATE ATTRIBUTE
