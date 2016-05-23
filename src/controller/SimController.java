@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import model.Communicator;
@@ -15,12 +16,12 @@ import view.ProtocolPanel.Proto;
 import view.VehicleButton;
 import view.VehicleSimulation;
 
-public class SimControler implements Event {
+public class SimController implements Event {
 
   /**
    * Constructor
    */
-  public SimControler(){
+  public SimController(){
     viewManager.addEventSubscriber(this);
     viewManager.getVehicleSimulation().addEventSubscriber(this);
     communicator.addEventSubscriber(this);
@@ -117,11 +118,11 @@ public class SimControler implements Event {
     protocolPanel.setSelectedProto((Proto)a_list.get(0));
     protocolPanel.setKarSid((String) a_list.get(1));
     protocolPanel.setVcuAddress((String) a_list.get(2));
-    protocolPanel.setKarKey((String) a_list.get(3));
+    protocolPanel.setKarKey((byte[]) a_list.get(3));
   } 
 
-  public ArrayList<Object> getPersistentObjects(ProtocolPanel a_protocolPanel) {
-    ArrayList<Object> list = new ArrayList<Object>();
+  public ArrayList<Serializable> getPersistentObjects(ProtocolPanel a_protocolPanel) {
+    ArrayList<Serializable> list = new ArrayList<Serializable>();
     list.add(a_protocolPanel.getSelectedProto());
     list.add(a_protocolPanel.getKarSid());
     list.add(a_protocolPanel.getVcuAddress());

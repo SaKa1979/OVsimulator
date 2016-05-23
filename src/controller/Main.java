@@ -12,7 +12,7 @@ public class Main {
       public void run() {
         try {
           @SuppressWarnings("unused")
-          SimControler simulator = new SimControler();
+          SimController simulator = new SimController();
         }
         catch (Exception e) {
           e.printStackTrace();

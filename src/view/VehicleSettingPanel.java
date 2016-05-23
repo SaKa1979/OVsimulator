@@ -1,33 +1,39 @@
 package view;
 
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.swing.InputVerifier;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+import lombok.Getter;
+import model.CVNAttribute;
+import model.CVNField;
+import model.CVNMessage;
 import view.ProtocolPanel.Proto;
 import view.VehicleButton.Commands;
 import view.VehicleButton.Direction;
-import view.VehicleButton.ManualControl;
 import view.VehicleButton.JourneyType;
+import view.VehicleButton.ManualControl;
 import view.VehicleButton.PriorityClass;
 import view.VehicleButton.PunctualityClass;
 import view.VehicleButton.VehicleStatus;
 import view.VehicleButton.VehicleType;
-
-import javax.swing.JTextField;
-import javax.swing.InputVerifier;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JOptionPane;
-
-import java.awt.GridBagLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import javax.swing.JLabel;
 
 public class VehicleSettingPanel extends JPanel {
 
@@ -41,7 +47,7 @@ public class VehicleSettingPanel extends JPanel {
     calendar = new GregorianCalendar();
     setBorder(new TitledBorder(null, "Vehicle Setting", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagLayout gridBagLayout = new GridBagLayout();
-    gridBagLayout.columnWidths = new int[] {50, 100, 50, 25, 25, 25, 25};
+    gridBagLayout.columnWidths = new int[] {25, 50, 100, 50, 25, 25, 25, 25, 25};
     gridBagLayout.rowHeights = new int[] {};
     gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     gridBagLayout.rowWeights = new double[]{0.0, 0.0};
@@ -468,154 +474,139 @@ public class VehicleSettingPanel extends JPanel {
   public void setReserve2TF(String a_reserve2) {
     reserve2TF.setText(a_reserve2);
   }
-
+  
+  private GridBagConstraints createDefaultGridBagConstraints(JComponent component, int row, int column) {
+	  	GridBagConstraints gbc = new GridBagConstraints();
+	  	gbc.insets = new Insets(0, 0, 5, 5);
+	  	gbc.gridx = column;
+	  	gbc.gridy = row;
+	  	return gbc;
+  }
+  
+  private GridBagConstraints createLabelGridBagConstraints(JComponent component, int row, int column) {
+	  	GridBagConstraints gbc = createDefaultGridBagConstraints(component, row, column);
+	  	gbc.anchor = GridBagConstraints.WEST;
+	  	add(component, gbc);
+	  	return gbc;
+  }
+  
+  private GridBagConstraints createCheckBoxGridBagConstraints(JComponent component, int row, int column) {
+	  	GridBagConstraints gbc = createDefaultGridBagConstraints(component, row, column);
+	  	gbc.anchor = GridBagConstraints.EAST;
+	  	add(component, gbc);
+	  	return gbc;
+}
+  
+  private GridBagConstraints createInputFieldGridBagConstraints(JComponent component, int row, int column) {
+	  	GridBagConstraints gbc = createDefaultGridBagConstraints(component, row, column);
+	  	gbc.anchor = GridBagConstraints.NORTH;
+	  	gbc.fill = GridBagConstraints.BOTH;
+	  	add(component, gbc);
+	  	return gbc;
+  }
+  
+  private JComponent createInputField(CVNField field) {
+	  NumericField tf= new NumericField(3, NumericField.NUMERIC);
+	  tf.setAllowNegative(field.getRange().getMinimum() < 0);
+	  tf.setNumber(0);
+	  tf.setToolTipText(field.getFieldName() + "[" + field.getRange().toString() + "]");
+	  return tf;	
+  }
+  
   // PRIVATE METHODS
   private void initialize(){
+	attributeUsedCheckBoxes = new ArrayList<>();
 
+	CVNMessage message = new CVNMessage();
+	CVNAttribute[] attributes = message.getAttributes();
+	int row = 0, column = 0;
+	for (int cvnNumber = 0; cvnNumber < attributes.length; cvnNumber++) {
+		JCheckBox cb = new JCheckBox();
+		cb.setToolTipText("Disable CVN: " + (cvnNumber + 1) + "?");
+		
+		column = cvnNumber < 13 ? 0 : 3;
+//		row = cvnNumber % 14;
+		createCheckBoxGridBagConstraints(cb, row % 14, column);
+		attributeUsedCheckBoxes.add(cb);
+		
+//		JComponent label = new JLabel(attributes[cvnNumber].getCvnField().get(0).getFieldName() + " (" + attributes[cvnNumber].getCvnNumber() + ")");
+//		createLabelGridBagConstraints(label, row, column + 1);
+//		
+//		JComponent inputField = createInputField(attributes[cvnNumber].getCvnField().get(0));
+//		createInputFieldGridBagConstraints(inputField, row, column + 2);
+		
+		if (cvnNumber == 6 || cvnNumber == 17 || cvnNumber == 20 || cvnNumber == 21) 
+			row++;
+		row++;
+	}
+	
     // CVN: 1 loop number
     lblLoop = new JLabel("Loop nr (1)");
-    GridBagConstraints gbc_lblLoop = new GridBagConstraints();
-    gbc_lblLoop.insets = new Insets(0, 0, 5, 5);
-    gbc_lblLoop.anchor = GridBagConstraints.EAST;
-    gbc_lblLoop.gridx = 0;
-    gbc_lblLoop.gridy = 0;
-    add(lblLoop, gbc_lblLoop);
+    createLabelGridBagConstraints(lblLoop, 0, 1);
     loopNrTF = new NumericField(3, NumericField.DECIMAL);
     loopNrTF.setAllowNegative(false);
     loopNrTF.setText("0");
     loopNrTF.setToolTipText("Loop 0-127");
-    GridBagConstraints gbc_loopNrTF = new GridBagConstraints();
-    gbc_loopNrTF.insets = new Insets(0, 0, 5, 5);
-    gbc_loopNrTF.anchor = GridBagConstraints.NORTH;
-    gbc_loopNrTF.fill = GridBagConstraints.BOTH;
-    gbc_loopNrTF.gridx = 1;
-    gbc_loopNrTF.gridy = 0;
-    add(loopNrTF, gbc_loopNrTF);
+    createInputFieldGridBagConstraints(loopNrTF, 0, 2);
 
     // CVN: 2 vehicle type
     lblVehtype = new JLabel("Veh. Type (2)");
-    GridBagConstraints gbc_lblVehtype = new GridBagConstraints();
-    gbc_lblVehtype.insets = new Insets(0, 0, 5, 5);
-    gbc_lblVehtype.anchor = GridBagConstraints.EAST;
-    gbc_lblVehtype.gridx = 0;
-    gbc_lblVehtype.gridy = 1;
-    add(lblVehtype, gbc_lblVehtype);
+    createLabelGridBagConstraints(lblVehtype, 1, 1);
     vehicleTypeComBox = new JComboBox<VehicleType>(VehicleType.values());
     vehicleTypeComBox.setSelectedIndex(0);
-    GridBagConstraints gbc_vehicleTypeComBox = new GridBagConstraints();
-    gbc_vehicleTypeComBox.insets = new Insets(0, 0, 5, 5);
-    gbc_vehicleTypeComBox.anchor = GridBagConstraints.NORTH;
-    gbc_vehicleTypeComBox.fill = GridBagConstraints.BOTH;
-    gbc_vehicleTypeComBox.gridx = 1;
-    gbc_vehicleTypeComBox.gridy = 1;
-    add(vehicleTypeComBox, gbc_vehicleTypeComBox);
+    createInputFieldGridBagConstraints(vehicleTypeComBox, 1, 2);
 
     // CVN: 3 line number
     lblLine = new JLabel("Line nr (3)");
-    GridBagConstraints gbc_lblLine = new GridBagConstraints();
-    gbc_lblLine.insets = new Insets(0, 0, 5, 5);
-    gbc_lblLine.anchor = GridBagConstraints.EAST;
-    gbc_lblLine.gridx = 0;
-    gbc_lblLine.gridy = 2;
-    add(lblLine, gbc_lblLine);
+    createLabelGridBagConstraints(lblLine, 2, 1);
     lineNrTF = new NumericField(4, NumericField.DECIMAL);
     lineNrTF.setAllowNegative(false);
     lineNrTF.setText("0");
     lineNrTF.setToolTipText("Line number 0-9999");
-    GridBagConstraints gbc_lineNrTF = new GridBagConstraints();
-    gbc_lineNrTF.insets = new Insets(0, 0, 5, 5);
-    gbc_lineNrTF.anchor = GridBagConstraints.NORTH;
-    gbc_lineNrTF.fill = GridBagConstraints.BOTH;
-    gbc_lineNrTF.gridx = 1;
-    gbc_lineNrTF.gridy = 2;
-    add(lineNrTF, gbc_lineNrTF);
+    createInputFieldGridBagConstraints(lineNrTF, 2, 2);
 
     // CVN: 4 vehicle service number
     lblService = new JLabel("Service nr (4)");
-    GridBagConstraints gbc_lblService = new GridBagConstraints();
-    gbc_lblService.insets = new Insets(0, 0, 5, 5);
-    gbc_lblService.anchor = GridBagConstraints.EAST;
-    gbc_lblService.gridx = 0;
-    gbc_lblService.gridy = 3;
-    add(lblService, gbc_lblService);
+    createLabelGridBagConstraints(lblService, 3, 1);
     vehServiceNrTF = new NumericField(4, NumericField.DECIMAL);
     vehServiceNrTF.setAllowNegative(false);
     vehServiceNrTF.setText("0");
     vehServiceNrTF.setToolTipText("Vehicle servie number. Also known as Block number 0-9999");
-    GridBagConstraints gbc_vehServiceNrTF = new GridBagConstraints();
-    gbc_vehServiceNrTF.insets = new Insets(0, 0, 5, 5);
-    gbc_vehServiceNrTF.anchor = GridBagConstraints.NORTH;
-    gbc_vehServiceNrTF.fill = GridBagConstraints.BOTH;
-    gbc_vehServiceNrTF.gridx = 1;
-    gbc_vehServiceNrTF.gridy = 3;
-    add(vehServiceNrTF, gbc_vehServiceNrTF);
+    createInputFieldGridBagConstraints(vehServiceNrTF, 3, 2);
 
     // CVN: 5 company number
     lblCompany = new JLabel("Company nr (5)");
-    GridBagConstraints gbc_lblCompany = new GridBagConstraints();
-    gbc_lblCompany.insets = new Insets(0, 0, 5, 5);
-    gbc_lblCompany.anchor = GridBagConstraints.EAST;
-    gbc_lblCompany.gridx = 0;
-    gbc_lblCompany.gridy = 4;
-    add(lblCompany, gbc_lblCompany);
+    createLabelGridBagConstraints(lblCompany, 4, 1);
     companyNrTF = new NumericField(3, NumericField.DECIMAL);
     companyNrTF.setAllowNegative(false);
     companyNrTF.setText("0");
     companyNrTF.setToolTipText("Company number 0-255");
-    GridBagConstraints gbc_companyNrTF = new GridBagConstraints();
-    gbc_companyNrTF.insets = new Insets(0, 0, 5, 5);
-    gbc_companyNrTF.anchor = GridBagConstraints.NORTH;
-    gbc_companyNrTF.fill = GridBagConstraints.BOTH;
-    gbc_companyNrTF.gridx = 1;
-    gbc_companyNrTF.gridy = 4;
-    add(companyNrTF, gbc_companyNrTF);            
+    createInputFieldGridBagConstraints(companyNrTF, 4, 2);
 
     // CVN: 6 vehicle ID
     lblVehId = new JLabel("Veh. id (6)");
-    GridBagConstraints gbc_lblVehId = new GridBagConstraints();
-    gbc_lblVehId.insets = new Insets(0, 0, 5, 5);
-    gbc_lblVehId.anchor = GridBagConstraints.EAST;
-    gbc_lblVehId.gridx = 0;
-    gbc_lblVehId.gridy = 5;
-    add(lblVehId, gbc_lblVehId);
+    createLabelGridBagConstraints(lblVehId, 5, 1);
     vehicleIdTF = new NumericField(5, NumericField.DECIMAL);
     vehicleIdTF.setAllowNegative(false);
     vehicleIdTF.setText("0");
     vehicleIdTF.setToolTipText("Vehicle ID 0-32767");
-    GridBagConstraints gbc_vehicleIdTF = new GridBagConstraints();
-    gbc_vehicleIdTF.insets = new Insets(0, 0, 5, 5);
-    gbc_vehicleIdTF.anchor = GridBagConstraints.NORTH;
-    gbc_vehicleIdTF.fill = GridBagConstraints.BOTH;
-    gbc_vehicleIdTF.gridx = 1;
-    gbc_vehicleIdTF.gridy = 5;
-    add(vehicleIdTF, gbc_vehicleIdTF);
+    createInputFieldGridBagConstraints(vehicleIdTF, 5, 2);
 
     // CVN: 7 signal group KAR
     lblSignalGroup = new JLabel("SignalGroup (7)");
-    GridBagConstraints gbc_lblSignalgroup = new GridBagConstraints();
-    gbc_lblSignalgroup.insets = new Insets(0, 0, 5, 5);
-    gbc_lblSignalgroup.anchor = GridBagConstraints.EAST;
-    gbc_lblSignalgroup.gridx = 0;
-    gbc_lblSignalgroup.gridy = 6;
-    add(lblSignalGroup, gbc_lblSignalgroup);
+    createLabelGridBagConstraints(lblSignalGroup, 6, 1);
     signalgroupNrTF = new NumericField(3, NumericField.DECIMAL);
     signalgroupNrTF.setAllowNegative(false);
     signalgroupNrTF.setText("0");
     signalgroupNrTF.setToolTipText("Direction for KAR 0-255");
-    GridBagConstraints gbc_signalGroupNrTF = new GridBagConstraints();
-    gbc_signalGroupNrTF.insets = new Insets(0, 0, 5, 5);
-    gbc_signalGroupNrTF.anchor = GridBagConstraints.NORTH;
-    gbc_signalGroupNrTF.fill = GridBagConstraints.BOTH;
-    gbc_signalGroupNrTF.gridx = 1;
-    gbc_signalGroupNrTF.gridy = 6;
-    add(signalgroupNrTF, gbc_signalGroupNrTF);
+    createInputFieldGridBagConstraints(signalgroupNrTF, 6, 2);
 
     // CVN: 7 manual control VECOM
     lblManualControl = new JLabel("Manual control(7)");
     GridBagConstraints gbc_lblManualControl = new GridBagConstraints();
     gbc_lblManualControl.insets = new Insets(0, 0, 5, 5);
     gbc_lblManualControl.anchor = GridBagConstraints.EAST;
-    gbc_lblManualControl.gridx = 0;
+    gbc_lblManualControl.gridx = 1;
     gbc_lblManualControl.gridy = 7;
     add(lblManualControl, gbc_lblManualControl);
     manualControlComBox = new JComboBox<ManualControl>(ManualControl.values());
@@ -625,7 +616,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_ManualControlComBox.insets = new Insets(0, 0, 5, 5);
     gbc_ManualControlComBox.anchor = GridBagConstraints.NORTH;
     gbc_ManualControlComBox.fill = GridBagConstraints.BOTH;
-    gbc_ManualControlComBox.gridx = 1;
+    gbc_ManualControlComBox.gridx = 2;
     gbc_ManualControlComBox.gridy = 7;
     add(manualControlComBox, gbc_ManualControlComBox);
 
@@ -634,7 +625,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblVehStatus = new GridBagConstraints();
     gbc_lblVehStatus.insets = new Insets(0, 0, 5, 5);
     gbc_lblVehStatus.anchor = GridBagConstraints.EAST;
-    gbc_lblVehStatus.gridx = 0;
+    gbc_lblVehStatus.gridx = 1;
     gbc_lblVehStatus.gridy = 8;
     add(lblVehStatus, gbc_lblVehStatus);
     vehicleStatusComBox = new JComboBox<VehicleStatus>(VehicleStatus.values());
@@ -643,7 +634,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_vehicleStatusComBox.insets = new Insets(0, 0, 5, 5);
     gbc_vehicleStatusComBox.anchor = GridBagConstraints.NORTH;
     gbc_vehicleStatusComBox.fill = GridBagConstraints.BOTH;
-    gbc_vehicleStatusComBox.gridx = 1;
+    gbc_vehicleStatusComBox.gridx = 2;
     gbc_vehicleStatusComBox.gridy = 8;
     add(vehicleStatusComBox, gbc_vehicleStatusComBox);
 
@@ -652,7 +643,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblPrioClass = new GridBagConstraints();
     gbc_lblPrioClass.insets = new Insets(0, 0, 5, 5);
     gbc_lblPrioClass.anchor = GridBagConstraints.EAST;
-    gbc_lblPrioClass.gridx = 0;
+    gbc_lblPrioClass.gridx = 1;
     gbc_lblPrioClass.gridy = 9;
     add(lblPrioClass, gbc_lblPrioClass);
     priorityClassComBox = new JComboBox<PriorityClass>(PriorityClass.values());
@@ -661,7 +652,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_priorityClassComBox.insets = new Insets(0, 0, 5, 5);
     gbc_priorityClassComBox.anchor = GridBagConstraints.NORTH;
     gbc_priorityClassComBox.fill = GridBagConstraints.BOTH;
-    gbc_priorityClassComBox.gridx = 1;
+    gbc_priorityClassComBox.gridx = 2;
     gbc_priorityClassComBox.gridy = 9;
     add(priorityClassComBox, gbc_priorityClassComBox);
 
@@ -670,7 +661,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblPunctClass = new GridBagConstraints();
     gbc_lblPunctClass.insets = new Insets(0, 0, 5, 5);
     gbc_lblPunctClass.anchor = GridBagConstraints.EAST;
-    gbc_lblPunctClass.gridx = 0;
+    gbc_lblPunctClass.gridx = 1;
     gbc_lblPunctClass.gridy = 10;
     add(lblPunctClass, gbc_lblPunctClass);
     punctualityClassComBox = new JComboBox<PunctualityClass>(PunctualityClass.values());
@@ -679,7 +670,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_punctualityClassComBox.insets = new Insets(0, 0, 5, 5);
     gbc_punctualityClassComBox.anchor = GridBagConstraints.NORTH;
     gbc_punctualityClassComBox.fill = GridBagConstraints.BOTH;
-    gbc_punctualityClassComBox.gridx = 1;
+    gbc_punctualityClassComBox.gridx = 2;
     gbc_punctualityClassComBox.gridy = 10;
     add(punctualityClassComBox, gbc_punctualityClassComBox);
 
@@ -688,7 +679,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblPunctuality = new GridBagConstraints();
     gbc_lblPunctuality.insets = new Insets(0, 0, 5, 5);
     gbc_lblPunctuality.anchor = GridBagConstraints.EAST;
-    gbc_lblPunctuality.gridx = 0;
+    gbc_lblPunctuality.gridx = 1;
     gbc_lblPunctuality.gridy = 11;
     add(lblPunctuality, gbc_lblPunctuality);
     punctualityTF = new NumericField(2, NumericField.DECIMAL);
@@ -699,7 +690,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_punctualityTF.insets = new Insets(0, 0, 5, 5);
     gbc_punctualityTF.anchor = GridBagConstraints.NORTH;
     gbc_punctualityTF.fill = GridBagConstraints.BOTH;
-    gbc_punctualityTF.gridx = 1;
+    gbc_punctualityTF.gridx = 2;
     gbc_punctualityTF.gridy = 11;
     add(punctualityTF, gbc_punctualityTF);    
 
@@ -708,7 +699,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblVehLength = new GridBagConstraints();
     gbc_lblVehLength.insets = new Insets(0, 0, 5, 5);
     gbc_lblVehLength.anchor = GridBagConstraints.EAST;
-    gbc_lblVehLength.gridx = 0;
+    gbc_lblVehLength.gridx = 1;
     gbc_lblVehLength.gridy = 12;
     add(lblVehLength, gbc_lblVehLength);
     vehicleLengthTF = new NumericField(3, NumericField.DECIMAL);
@@ -719,7 +710,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_vehicleLengthTF.insets = new Insets(0, 0, 5, 5);
     gbc_vehicleLengthTF.anchor = GridBagConstraints.NORTH;
     gbc_vehicleLengthTF.fill = GridBagConstraints.BOTH;
-    gbc_vehicleLengthTF.gridx = 1;
+    gbc_vehicleLengthTF.gridx = 2;
     gbc_vehicleLengthTF.gridy = 12;
     add(vehicleLengthTF, gbc_vehicleLengthTF);
 
@@ -728,7 +719,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblVehSpeed = new GridBagConstraints();
     gbc_lblVehSpeed.insets = new Insets(0, 0, 5, 5);
     gbc_lblVehSpeed.anchor = GridBagConstraints.EAST;
-    gbc_lblVehSpeed.gridx = 0;
+    gbc_lblVehSpeed.gridx = 1;
     gbc_lblVehSpeed.gridy = 13;
     add(lblVehSpeed, gbc_lblVehSpeed);
     vehicleSpeedTF = new NumericField(2, NumericField.DECIMAL);
@@ -739,7 +730,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_vehicleSpeedTF.insets = new Insets(0, 0, 5, 5);
     gbc_vehicleSpeedTF.anchor = GridBagConstraints.NORTH;
     gbc_vehicleSpeedTF.fill = GridBagConstraints.BOTH;
-    gbc_vehicleSpeedTF.gridx = 1;
+    gbc_vehicleSpeedTF.gridx = 2;
     gbc_vehicleSpeedTF.gridy = 13;
     add(vehicleSpeedTF, gbc_vehicleSpeedTF);
 
@@ -748,7 +739,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblDistToStop = new GridBagConstraints();
     gbc_lblDistToStop.insets = new Insets(0, 0, 5, 5);
     gbc_lblDistToStop.anchor = GridBagConstraints.EAST;
-    gbc_lblDistToStop.gridx = 2;
+    gbc_lblDistToStop.gridx = 4;
     gbc_lblDistToStop.gridy = 0;
     add(lblDistToStop, gbc_lblDistToStop);
     distanceToStopTF = new NumericField(4, NumericField.DECIMAL);
@@ -760,7 +751,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_distanceToStopTF.insets = new Insets(0, 0, 5, 5);
     gbc_distanceToStopTF.anchor = GridBagConstraints.NORTH;
     gbc_distanceToStopTF.fill = GridBagConstraints.BOTH;
-    gbc_distanceToStopTF.gridx = 3;
+    gbc_distanceToStopTF.gridx = 5;
     gbc_distanceToStopTF.gridy = 0;
     add(distanceToStopTF, gbc_distanceToStopTF);    
 
@@ -769,7 +760,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblTimeToStop = new GridBagConstraints();
     gbc_lblTimeToStop.insets = new Insets(0, 0, 5, 5);
     gbc_lblTimeToStop.anchor = GridBagConstraints.EAST;
-    gbc_lblTimeToStop.gridx = 2;
+    gbc_lblTimeToStop.gridx = 4;
     gbc_lblTimeToStop.gridy = 1;
     add(lblTimeToStop, gbc_lblTimeToStop);
     timeToStopTF = new NumericField(3, NumericField.DECIMAL);
@@ -781,7 +772,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_timeToStopTF.insets = new Insets(0, 0, 5, 5);
     gbc_timeToStopTF.anchor = GridBagConstraints.NORTH;
     gbc_timeToStopTF.fill = GridBagConstraints.BOTH;
-    gbc_timeToStopTF.gridx = 3;
+    gbc_timeToStopTF.gridx = 5;
     gbc_timeToStopTF.gridy = 1;
     add(timeToStopTF, gbc_timeToStopTF);
 
@@ -790,7 +781,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblJourneyNr = new GridBagConstraints();
     gbc_lblJourneyNr.insets = new Insets(0, 0, 5, 5);
     gbc_lblJourneyNr.anchor = GridBagConstraints.EAST;
-    gbc_lblJourneyNr.gridx = 2;
+    gbc_lblJourneyNr.gridx = 4;
     gbc_lblJourneyNr.gridy = 2;
     add(lblJourneyNr, gbc_lblJourneyNr);
     journeyNrTF = new NumericField(4, NumericField.DECIMAL);
@@ -802,7 +793,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_journeyNrTF.insets = new Insets(0, 0, 5, 5);
     gbc_journeyNrTF.anchor = GridBagConstraints.NORTH;
     gbc_journeyNrTF.fill = GridBagConstraints.BOTH;
-    gbc_journeyNrTF.gridx = 3;
+    gbc_journeyNrTF.gridx = 5;
     gbc_journeyNrTF.gridy = 2;
     add(journeyNrTF, gbc_journeyNrTF); 
 
@@ -811,7 +802,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblJourneyType = new GridBagConstraints();
     gbc_lblJourneyType.insets = new Insets(0, 0, 5, 5);
     gbc_lblJourneyType.anchor = GridBagConstraints.EAST;
-    gbc_lblJourneyType.gridx = 2;
+    gbc_lblJourneyType.gridx = 4;
     gbc_lblJourneyType.gridy = 3;
     add(lblJourneyType, gbc_lblJourneyType);
     journeyTypeComBox = new JComboBox<JourneyType>(JourneyType.values());
@@ -821,7 +812,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_journeyTypeComBox.insets = new Insets(0, 0, 5, 5);
     gbc_journeyTypeComBox.anchor = GridBagConstraints.NORTH;
     gbc_journeyTypeComBox.fill = GridBagConstraints.BOTH;
-    gbc_journeyTypeComBox.gridx = 3;
+    gbc_journeyTypeComBox.gridx = 5;
     gbc_journeyTypeComBox.gridy = 3;
     add(journeyTypeComBox, gbc_journeyTypeComBox);
 
@@ -830,7 +821,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblRoute = new GridBagConstraints();
     gbc_lblRoute.insets = new Insets(0, 0, 5, 5);
     gbc_lblRoute.anchor = GridBagConstraints.EAST;
-    gbc_lblRoute.gridx = 2;
+    gbc_lblRoute.gridx = 4;
     gbc_lblRoute.gridy = 4;
     add(lblRoute, gbc_lblRoute);
     routeTF = new NumericField(2, NumericField.DECIMAL);
@@ -842,7 +833,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_routeTF.insets = new Insets(0, 0, 5, 5);
     gbc_routeTF.anchor = GridBagConstraints.NORTH;
     gbc_routeTF.fill = GridBagConstraints.BOTH;
-    gbc_routeTF.gridx = 3;
+    gbc_routeTF.gridx = 5;
     gbc_routeTF.gridy = 4;
     add(routeTF, gbc_routeTF);
 
@@ -851,7 +842,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblDirection = new GridBagConstraints();
     gbc_lblDirection.insets = new Insets(0, 0, 5, 5);
     gbc_lblDirection.anchor = GridBagConstraints.EAST;
-    gbc_lblDirection.gridx = 2;
+    gbc_lblDirection.gridx = 4;
     gbc_lblDirection.gridy = 5;
     add(lblDirection, gbc_lblDirection);
     DirectionComBox = new JComboBox<Direction>(Direction.values());
@@ -862,7 +853,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_DirectionComBox.insets = new Insets(0, 0, 5, 5);
     gbc_DirectionComBox.anchor = GridBagConstraints.NORTH;
     gbc_DirectionComBox.fill = GridBagConstraints.BOTH;
-    gbc_DirectionComBox.gridx = 3;
+    gbc_DirectionComBox.gridx = 5;
     gbc_DirectionComBox.gridy = 5;
     add(DirectionComBox, gbc_DirectionComBox);
 
@@ -871,7 +862,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblCommand = new GridBagConstraints();
     gbc_lblCommand.insets = new Insets(0, 0, 5, 5);
     gbc_lblCommand.anchor = GridBagConstraints.EAST;
-    gbc_lblCommand.gridx = 2;
+    gbc_lblCommand.gridx = 4;
     gbc_lblCommand.gridy = 6;
     add(lblCommand, gbc_lblCommand);
     commandComBox = new JComboBox<Commands>(Commands.values());
@@ -882,7 +873,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_commandComBox.insets = new Insets(0, 0, 5, 5);
     gbc_commandComBox.anchor = GridBagConstraints.NORTH;
     gbc_commandComBox.fill = GridBagConstraints.BOTH;
-    gbc_commandComBox.gridx = 3;
+    gbc_commandComBox.gridx = 5;
     gbc_commandComBox.gridy = 6;
     add(commandComBox, gbc_commandComBox);
 
@@ -891,7 +882,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblActivation = new GridBagConstraints();
     gbc_lblActivation.insets = new Insets(0, 0, 5, 5);
     gbc_lblActivation.anchor = GridBagConstraints.EAST;
-    gbc_lblActivation.gridx = 2;
+    gbc_lblActivation.gridx = 4;
     gbc_lblActivation.gridy = 7;
     add(lblActivation, gbc_lblActivation);
     activationTF = new NumericField(5, NumericField.DECIMAL);
@@ -903,7 +894,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_activationTF.insets = new Insets(0, 0, 5, 5);
     gbc_activationTF.anchor = GridBagConstraints.NORTH;
     gbc_activationTF.fill = GridBagConstraints.BOTH;
-    gbc_activationTF.gridx = 3;
+    gbc_activationTF.gridx = 5;
     gbc_activationTF.gridy = 7;
     add(activationTF, gbc_activationTF);
 
@@ -912,7 +903,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblLatitude = new GridBagConstraints();
     gbc_lblLatitude.insets = new Insets(0, 0, 5, 5);
     gbc_lblLatitude.anchor = GridBagConstraints.EAST;
-    gbc_lblLatitude.gridx = 2;
+    gbc_lblLatitude.gridx = 4;
     gbc_lblLatitude.gridy = 8;
     add(lblLatitude, gbc_lblLatitude);
     latDegTF = new NumericField(2, NumericField.DECIMAL);
@@ -925,7 +916,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latDegTF.insets = new Insets(0, 0, 5, 5);
     gbc_latDegTF.anchor = GridBagConstraints.NORTH;
     gbc_latDegTF.fill = GridBagConstraints.BOTH;
-    gbc_latDegTF.gridx = 3;
+    gbc_latDegTF.gridx = 5;
     gbc_latDegTF.gridy = 8;
     add(latDegTF, gbc_latDegTF);
 
@@ -940,7 +931,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latMinTF.insets = new Insets(0, 0, 5, 5);
     gbc_latMinTF.anchor = GridBagConstraints.NORTH;
     gbc_latMinTF.fill = GridBagConstraints.BOTH;
-    gbc_latMinTF.gridx = 4;
+    gbc_latMinTF.gridx = 6;
     gbc_latMinTF.gridy = 8;
     add(latMinTF, gbc_latMinTF);
 
@@ -955,7 +946,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latSecTF.insets = new Insets(0, 0, 5, 5);
     gbc_latSecTF.anchor = GridBagConstraints.NORTH;
     gbc_latSecTF.fill = GridBagConstraints.BOTH;
-    gbc_latSecTF.gridx = 5;
+    gbc_latSecTF.gridx = 7;
     gbc_latSecTF.gridy = 8;
     add(latSecTF, gbc_latSecTF);
 
@@ -968,7 +959,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_latSSecTF.insets = new Insets(0, 0, 5, 5);
     gbc_latSSecTF.anchor = GridBagConstraints.NORTH;
     gbc_latSSecTF.fill = GridBagConstraints.BOTH;
-    gbc_latSSecTF.gridx = 6;
+    gbc_latSSecTF.gridx = 8;
     gbc_latSSecTF.gridy = 8;
     add(latSSecTF, gbc_latSSecTF);
 
@@ -977,7 +968,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblLongitude = new GridBagConstraints();
     gbc_lblLongitude.insets = new Insets(0, 0, 5, 5);
     gbc_lblLongitude.anchor = GridBagConstraints.EAST;
-    gbc_lblLongitude.gridx = 2;
+    gbc_lblLongitude.gridx = 4;
     gbc_lblLongitude.gridy = 9;
     add(lblLongitude, gbc_lblLongitude);
     longDegTF = new NumericField(3, NumericField.DECIMAL);
@@ -990,7 +981,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longDegTF.insets = new Insets(0, 0, 5, 5);
     gbc_longDegTF.anchor = GridBagConstraints.NORTH;
     gbc_longDegTF.fill = GridBagConstraints.BOTH;
-    gbc_longDegTF.gridx = 3;
+    gbc_longDegTF.gridx = 5;
     gbc_longDegTF.gridy = 9;
     add(longDegTF, gbc_longDegTF);
 
@@ -1005,7 +996,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longMinTF.insets = new Insets(0, 0, 5, 5);
     gbc_longMinTF.anchor = GridBagConstraints.NORTH;
     gbc_longMinTF.fill = GridBagConstraints.BOTH;
-    gbc_longMinTF.gridx = 4;
+    gbc_longMinTF.gridx = 6;
     gbc_longMinTF.gridy = 9;
     add(longMinTF, gbc_longMinTF);
 
@@ -1020,7 +1011,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longSecTF.insets = new Insets(0, 0, 5, 5);
     gbc_longSecTF.anchor = GridBagConstraints.NORTH;
     gbc_longSecTF.fill = GridBagConstraints.BOTH;
-    gbc_longSecTF.gridx = 5;
+    gbc_longSecTF.gridx = 7;
     gbc_longSecTF.gridy = 9;
     add(longSecTF, gbc_longSecTF);
 
@@ -1033,7 +1024,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_longSSecTF.insets = new Insets(0, 0, 5, 5);
     gbc_longSSecTF.anchor = GridBagConstraints.NORTH;
     gbc_longSSecTF.fill = GridBagConstraints.BOTH;
-    gbc_longSSecTF.gridx = 6;
+    gbc_longSSecTF.gridx = 8;
     gbc_longSSecTF.gridy = 9;
     add(longSSecTF, gbc_longSSecTF);
 
@@ -1042,7 +1033,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblDate = new GridBagConstraints();
     gbc_lblDate.insets = new Insets(0, 0, 5, 5);
     gbc_lblDate.anchor = GridBagConstraints.EAST;
-    gbc_lblDate.gridx = 2;
+    gbc_lblDate.gridx = 4;
     gbc_lblDate.gridy = 10;
     add(lblDate, gbc_lblDate);
     yearTF = new NumericField(4, NumericField.DECIMAL);
@@ -1054,7 +1045,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_yearTF.insets = new Insets(0, 0, 5, 5);
     gbc_yearTF.anchor = GridBagConstraints.NORTH;
     gbc_yearTF.fill = GridBagConstraints.BOTH;
-    gbc_yearTF.gridx = 3;
+    gbc_yearTF.gridx = 5;
     gbc_yearTF.gridy = 10;
     add(yearTF, gbc_yearTF);
 
@@ -1069,7 +1060,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_monthTF.insets = new Insets(0, 0, 5, 5);
     gbc_monthTF.anchor = GridBagConstraints.NORTH;
     gbc_monthTF.fill = GridBagConstraints.BOTH;
-    gbc_monthTF.gridx = 5;
+    gbc_monthTF.gridx = 7;
     gbc_monthTF.gridy = 10;
     add(monthTF, gbc_monthTF);
 
@@ -1084,7 +1075,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_dayTF.insets = new Insets(0, 0, 5, 5);
     gbc_dayTF.anchor = GridBagConstraints.NORTH;
     gbc_dayTF.fill = GridBagConstraints.BOTH;
-    gbc_dayTF.gridx = 6;
+    gbc_dayTF.gridx = 8;
     gbc_dayTF.gridy = 10;
     add(dayTF, gbc_dayTF);
 
@@ -1093,7 +1084,7 @@ public class VehicleSettingPanel extends JPanel {
     GridBagConstraints gbc_lblTime = new GridBagConstraints();
     gbc_lblTime.insets = new Insets(0, 0, 5, 5);
     gbc_lblTime.anchor = GridBagConstraints.EAST;
-    gbc_lblTime.gridx = 2;
+    gbc_lblTime.gridx = 4;
     gbc_lblTime.gridy = 11;
     add(lblTime, gbc_lblTime);
     hourTF = new NumericField(2, NumericField.DECIMAL);
@@ -1106,7 +1097,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_hourTF.insets = new Insets(0, 0, 5, 5);
     gbc_hourTF.anchor = GridBagConstraints.NORTH;
     gbc_hourTF.fill = GridBagConstraints.BOTH;
-    gbc_hourTF.gridx = 3;
+    gbc_hourTF.gridx = 5;
     gbc_hourTF.gridy = 11;
     add(hourTF, gbc_hourTF);
 
@@ -1121,7 +1112,7 @@ public class VehicleSettingPanel extends JPanel {
     gbc_minuteTF.insets = new Insets(0, 0, 5, 5);
     gbc_minuteTF.anchor = GridBagConstraints.NORTH;
     gbc_minuteTF.fill = GridBagConstraints.BOTH;
-    gbc_minuteTF.gridx = 4;
+    gbc_minuteTF.gridx = 6;
     gbc_minuteTF.gridy = 11;
     add(minuteTF, gbc_minuteTF);
 
@@ -1136,54 +1127,53 @@ public class VehicleSettingPanel extends JPanel {
     gbc_secondTF.insets = new Insets(0, 0, 5, 5);
     gbc_secondTF.anchor = GridBagConstraints.NORTH;
     gbc_secondTF.fill = GridBagConstraints.BOTH;
-    gbc_secondTF.gridx = 5;
+    gbc_secondTF.gridx = 7;
     gbc_secondTF.gridy = 11;
     add(secondTF, gbc_secondTF);
 
     // CVN: 23 reserve1
-    lblReserve_1 = new JLabel("Reserve 1");
+    lblReserve_1 = new JLabel("Reserve 1 (23)");
     GridBagConstraints gbc_lblReserve_1 = new GridBagConstraints();
     gbc_lblReserve_1.insets = new Insets(0, 0, 5, 5);
     gbc_lblReserve_1.anchor = GridBagConstraints.EAST;
-    gbc_lblReserve_1.gridx = 2;
+    gbc_lblReserve_1.gridx = 4;
     gbc_lblReserve_1.gridy = 12;
     add(lblReserve_1, gbc_lblReserve_1);
     reserve1TF = new JTextField();
     reserve1TF.setText("0");
-    reserve1TF.setToolTipText("Whatever one");
+    reserve1TF.setToolTipText("Reserved");
     GridBagConstraints gbc_reserve1TF = new GridBagConstraints();
     gbc_reserve1TF.gridwidth = 4;
     gbc_reserve1TF.insets = new Insets(0, 0, 5, 5);
     gbc_reserve1TF.anchor = GridBagConstraints.NORTH;
     gbc_reserve1TF.fill = GridBagConstraints.BOTH;
-    gbc_reserve1TF.gridx = 3;
+    gbc_reserve1TF.gridx = 5;
     gbc_reserve1TF.gridy = 12;
     add(reserve1TF, gbc_reserve1TF);
 
     // CVN: 24 reserve2
-    lblReserve_2 = new JLabel("Reserve 2");
+    lblReserve_2 = new JLabel("Reserve 2 (24)");
     GridBagConstraints gbc_lblReserve_2 = new GridBagConstraints();
     gbc_lblReserve_2.insets = new Insets(0, 0, 5, 5);
     gbc_lblReserve_2.anchor = GridBagConstraints.EAST;
-    gbc_lblReserve_2.gridx = 2;
+    gbc_lblReserve_2.gridx = 4;
     gbc_lblReserve_2.gridy = 13;
     add(lblReserve_2, gbc_lblReserve_2);
     reserve2TF = new JTextField();
     reserve2TF.setText("0");
-    reserve2TF.setToolTipText("Whatever two");
+    reserve2TF.setToolTipText("Reserved");
     GridBagConstraints gbc_reserve2TF = new GridBagConstraints();
     gbc_reserve2TF.gridwidth = 4;
     gbc_reserve2TF.insets = new Insets(0, 0, 5, 5);
     gbc_reserve2TF.anchor = GridBagConstraints.NORTH;
     gbc_reserve2TF.fill = GridBagConstraints.BOTH;
-    gbc_reserve2TF.gridx = 3;
+    gbc_reserve2TF.gridx = 5;
     gbc_reserve2TF.gridy = 13;
     add(reserve2TF, gbc_reserve2TF);   
   } 
 
   //INNER CLASSES
-
-  /**
+/**
    * @brief     Corrects time related input
    * @author    Sander Kamps
    */
@@ -1223,6 +1213,7 @@ public class VehicleSettingPanel extends JPanel {
   }// end class TimeVerifier
 
   private GregorianCalendar calendar;
+  @Getter private List<JCheckBox> attributeUsedCheckBoxes;
   private NumericField loopNrTF;
   private JComboBox<VehicleType> vehicleTypeComBox;
   private NumericField lineNrTF;

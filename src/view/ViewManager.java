@@ -131,7 +131,7 @@ public class ViewManager extends JFrame{
   public void writeVehicleButtonSetting(VehicleButton a_vb, Protocol a_proto){
     String string = "";
     int fontSize = 12;
-    if (a_proto instanceof VecomProtocol){
+//    if (a_proto instanceof VecomProtocol){
       string = StringUtils.leftPad("\n", 80, '-');
       writeToFeedback(0, string, Color.BLACK,fontSize);
       
@@ -179,9 +179,9 @@ public class ViewManager extends JFrame{
       string = StringUtils.leftPad("\n", 80, '-');
       writeToFeedback(0, string, Color.BLACK,fontSize);
       
-    }else if (a_proto instanceof KarProtocol){
-      //TODO implement and get the settings right from the settings panels textfields
-    }
+//    }else if (a_proto instanceof KarProtocol){
+//      //TODO implement and get the settings right from the settings panels textfields
+//    }
 
   }
 

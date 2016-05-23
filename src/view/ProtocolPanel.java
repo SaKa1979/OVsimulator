@@ -4,6 +4,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+
 import java.awt.GridBagLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -12,8 +14,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
 import java.awt.event.FocusAdapter;
@@ -36,7 +43,7 @@ public class ProtocolPanel extends JPanel {
     setLayout(gridBagLayout);
     vcuAddress = "0";
     karSid = "0";
-    karKey = "0";
+    karKey = new byte[0];
 
     initialize();
     loadAllFieldValues();
@@ -89,12 +96,12 @@ public class ProtocolPanel extends JPanel {
     vcuAddressTF.setText(vcuAddress);
   }
 
-  public String getKarKey() {
+  public byte[] getKarKey() {
     return karKey;
   }
-  public void setKarKey(String key) {
+  public void setKarKey(byte[] key) {
     this.karKey = key;
-    karKeyTF.setText(key);
+    karKeyFile.setText("Key lenght: " + key.length);
   }
 
   // PRIVATE METHODS
@@ -107,16 +114,16 @@ public class ProtocolPanel extends JPanel {
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           karSidTF.setEnabled(true);
-          karKeyTF.setEnabled(true);
+          karKeyFile.setEnabled(true);
           selectedProto = Proto.KAR;
-          karKeyTF.setBackground(Color.white);
-          karKeyTF.setForeground(Color.black);
+          karKeyFile.setBackground(Color.white);
+          karKeyFile.setForeground(Color.black);
         }
         else {
           karSidTF.setEnabled(false);
-          karKeyTF.setEnabled(false);
-          karKeyTF.setBackground(Color.lightGray);
-          karKeyTF.setForeground(Color.darkGray);
+          karKeyFile.setEnabled(false);
+          karKeyFile.setBackground(Color.lightGray);
+          karKeyFile.setForeground(Color.darkGray);
         }
       }
     });
@@ -161,30 +168,33 @@ public class ProtocolPanel extends JPanel {
     gbc_lblSystemIdentificationNumber.gridx = 2;
     gbc_lblSystemIdentificationNumber.gridy = 0;
     add(lblSystemIdentificationNumber, gbc_lblSystemIdentificationNumber);
-    
-    karKeyTF = new JTextField();
-    karKeyTF.addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusLost(FocusEvent e) {
-        karKey = karKeyTF.getText();
-      }
-    });
-    karKeyTF.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        karKey = karKeyTF.getText();
-      }
-    });
-    karKeyTF.setEnabled(false);
-    karKeyTF.setToolTipText("Enter the secret karKey");
-    karKeyTF.setText("0");
-    karKeyTF.setBackground(Color.lightGray);
-    karKeyTF.setForeground(Color.darkGray);
+
+	karKeyFile = new JButton();
+	karKeyFile.setText("Open Secret Key file");
+	karKeyFile.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fileChooser = new JFileChooser();
+			int choice = fileChooser.showDialog(null, "Open secret key file");
+			if (choice == JFileChooser.APPROVE_OPTION) {
+				try {
+					setKarKey(Files.readAllBytes(Paths.get(fileChooser.getSelectedFile().getAbsolutePath())));
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, e1, "File read Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	});
+    karKeyFile.setEnabled(false);
+    karKeyFile.setToolTipText("Enter the secret karKey");
+//    karKeyFile.setText("0");
+    karKeyFile.setBackground(Color.lightGray);
+    karKeyFile.setForeground(Color.darkGray);
     GridBagConstraints gbc_keyTF = new GridBagConstraints();
     gbc_keyTF.insets = new Insets(0, 0, 5, 5);
     gbc_keyTF.fill = GridBagConstraints.HORIZONTAL;
     gbc_keyTF.gridx = 1;
     gbc_keyTF.gridy = 1;
-    add(karKeyTF, gbc_keyTF);
+    add(karKeyFile, gbc_keyTF);
     
     lblKey = new JLabel("Key");
     lblKey.setHorizontalAlignment(SwingConstants.LEFT);
@@ -296,7 +306,7 @@ public class ProtocolPanel extends JPanel {
   private void loadAllFieldValues(){
     karSid = karSidTF.getText();
     vcuAddress = vcuAddressTF.getText();
-    karKey = karKeyTF.getText();
+//    karKey = karKeyTF.getText();
   }
 
   // ENUMS
@@ -313,13 +323,13 @@ public class ProtocolPanel extends JPanel {
   private JSeparator separator;
   private JSeparator separator_1;
   private NumericField karSidTF;
-  private JTextField karKeyTF;
+  private JButton karKeyFile;
   private NumericField vcuAddressTF;
   private String sidTF_name = "sid";
   private String vcuTF_name = "vcuAddress";
   private Proto selectedProto = Proto.NONE;
   private String karSid;
   private String vcuAddress;
-  private String karKey;
+  private byte[] karKey;
 
 } //end of class ProtocolPanel

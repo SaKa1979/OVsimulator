@@ -6,12 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import controller.SimControler;
+import controller.SimController;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
 import view.VehicleSimulation;
@@ -20,7 +22,7 @@ import view.ViewManager;
 
 public class Persister {
 
-  public Persister(SimControler simControler){
+  public Persister(SimController simControler){
     viewManager = ViewManager.getInstance();
     vehicleSimulation = viewManager.getVehicleSimulation();
     portSettingPanel = viewManager.getPortSettingPanel();
@@ -148,9 +150,9 @@ public class Persister {
       }
     }      
   }
-
+  
   // PRIVATE ATTRIBUTES
-  SimControler simControler;
+  SimController simControler;
   ViewManager viewManager;
   VehicleSimulation vehicleSimulation;
   PortSettingPanel portSettingPanel;
