@@ -10,13 +10,19 @@ import java.util.Observable;
 import java.util.TooManyListenersException;
 
 import controller.Event;
-import gnu.io.*;
+import gnu.io.CommPort;
+import gnu.io.CommPortIdentifier;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
+import gnu.io.UnsupportedCommOperationException;
 import view.PortSettingPanel;
-import view.ViewManager;
 import view.PortSettingPanel.DataBit;
 import view.PortSettingPanel.Flow;
 import view.PortSettingPanel.Parity;
 import view.PortSettingPanel.StopBit;
+import view.ViewManager;
 
 public class Communicator extends Observable implements SerialPortEventListener, Runnable {
 
@@ -91,7 +97,7 @@ public class Communicator extends Observable implements SerialPortEventListener,
     StopBit stopBits = portSettingPanel.getStopBits();  
     Flow flow = portSettingPanel.getFlow();
     String selectedPort = portSettingPanel.getComPort();
-    selectedPortIdentifier = (CommPortIdentifier)portMap.get(selectedPort);
+    selectedPortIdentifier = portMap.get(selectedPort);
 
     CommPort commPort = null;
 

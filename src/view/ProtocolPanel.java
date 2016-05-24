@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -111,7 +110,8 @@ public class ProtocolPanel extends JPanel {
     // KAR
     chckbxKAR = new JCheckBox("KAR");
     chckbxKAR.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
+      @Override
+	public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           karSidTF.setEnabled(true);
           karKeyFile.setEnabled(true);
@@ -144,7 +144,8 @@ public class ProtocolPanel extends JPanel {
       }
     });
     karSidTF.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         karSid = karSidTF.getText();
       }
     });
@@ -172,6 +173,7 @@ public class ProtocolPanel extends JPanel {
 	karKeyFile = new JButton();
 	karKeyFile.setText("Open Secret Key file");
 	karKeyFile.addActionListener(new ActionListener() {
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fileChooser = new JFileChooser();
 			int choice = fileChooser.showDialog(null, "Open secret key file");
@@ -208,7 +210,8 @@ public class ProtocolPanel extends JPanel {
     // VECOM
     chckbxVecom = new JCheckBox("VECOM");
     chckbxVecom.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
+      @Override
+	public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           selectedProto = Proto.VECOM;
           vcuAddressTF.setEnabled(true);
@@ -227,7 +230,8 @@ public class ProtocolPanel extends JPanel {
       }
     });
     vcuAddressTF.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         vcuAddress = vcuAddressTF.getText();
       }
     });
@@ -264,7 +268,8 @@ public class ProtocolPanel extends JPanel {
     // SICS
     chckbxSics = new JCheckBox("SICS");
     chckbxVecom.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
+      @Override
+	public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           selectedProto = Proto.SICS;
         }

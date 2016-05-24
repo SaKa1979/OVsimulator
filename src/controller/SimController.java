@@ -9,12 +9,12 @@ import model.KarProtocol;
 import model.Persister;
 import model.Protocol;
 import model.VecomProtocol;
-import view.ViewManager;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
 import view.ProtocolPanel.Proto;
 import view.VehicleButton;
 import view.VehicleSimulation;
+import view.ViewManager;
 
 public class SimController implements Event {
 
@@ -46,7 +46,8 @@ public class SimController implements Event {
    *                     by the Protocol when a message needs to be passed to the Communicator
    *                     by the Protocol when a message needs to be passed to the ViewManager
    */
-  public void signal(Object a_obj, Object a_arg){
+  @Override
+public void signal(Object a_obj, Object a_arg){
     if(a_obj instanceof ViewManager){
       String arg = (String)a_arg;
       if(arg.equals("openEvent")){
@@ -86,7 +87,7 @@ public class SimController implements Event {
       VehicleButton vb = (VehicleButton)a_obj;
       if (protocol != null){
         if (communicator.isbConnected()){
-          protocol.createSerialMessage(vb);
+          protocol.createSerialMessage(vb.getKarMessage()); // TODO
           viewManager.writeVehicleButtonSetting(vb, protocol);
         }else{
           viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 10);

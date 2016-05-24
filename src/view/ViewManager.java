@@ -1,12 +1,33 @@
 package view;
 
-import javax.swing.JFrame;
-import java.awt.GridBagLayout;
-import javax.swing.JPanel;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -17,31 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import controller.Event;
 import images.ImageFactory;
 import model.Communicator.ComTransmission;
-import model.KarProtocol;
 import model.Protocol;
-import model.VecomProtocol;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.UIManager;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import java.awt.SystemColor;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import javax.swing.Timer;
-
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-
-import java.awt.event.ActionEvent;
-import javax.swing.JLabel;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
 
 /**
  * @author Sander
@@ -135,50 +132,50 @@ public class ViewManager extends JFrame{
       string = StringUtils.leftPad("\n", 80, '-');
       writeToFeedback(0, string, Color.BLACK,fontSize);
       
-      string = StringUtils.rightPad("Loop nr (1)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(Integer.toString(a_vb.getLoopNr()), OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad("Vehicle type (2)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(a_vb.getVehicleType().name(), OFFSET);
-      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
-      
-      string = StringUtils.rightPad("Line nr (3)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(Integer.toString(a_vb.getLineNr()), OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad("Service nr (4)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(Integer.toString(a_vb.getVehServiceNr()), OFFSET);   
-      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
-      
-      string = StringUtils.rightPad("Veh. id (6)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(Integer.toString(a_vb.getVehicleId()), OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad("Manual control(7)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(a_vb.getManualControl().name(), OFFSET);
-      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
-      
-      string = StringUtils.rightPad("Punct. Class (10)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(a_vb.getPunctualityClass().name(), OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad("Journey Type (17)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(a_vb.getJourneyType().name(), OFFSET);
-      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
-      
-      string = StringUtils.rightPad("Direction(18)", OFFSET);
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      string = StringUtils.rightPad(a_vb.getDirection().name(), OFFSET);
-      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
-      
-      string = StringUtils.leftPad("\n", 80, '-');
-      writeToFeedback(0, string, Color.BLACK,fontSize);
-      
+//      string = StringUtils.rightPad("Loop nr (1)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(Integer.toString(a_vb.getLoopNr()), OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad("Vehicle type (2)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(a_vb.getVehicleType().name(), OFFSET);
+//      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
+//      
+//      string = StringUtils.rightPad("Line nr (3)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(Integer.toString(a_vb.getLineNr()), OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad("Service nr (4)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(Integer.toString(a_vb.getVehServiceNr()), OFFSET);   
+//      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
+//      
+//      string = StringUtils.rightPad("Veh. id (6)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(Integer.toString(a_vb.getVehicleId()), OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad("Manual control(7)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(a_vb.getManualControl().name(), OFFSET);
+//      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
+//      
+//      string = StringUtils.rightPad("Punct. Class (10)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(a_vb.getPunctualityClass().name(), OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad("Journey Type (17)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(a_vb.getJourneyType().name(), OFFSET);
+//      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
+//      
+//      string = StringUtils.rightPad("Direction(18)", OFFSET);
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      string = StringUtils.rightPad(a_vb.getDirection().name(), OFFSET);
+//      writeToFeedback(0, string + "\n", Color.BLACK,fontSize);
+//      
+//      string = StringUtils.leftPad("\n", 80, '-');
+//      writeToFeedback(0, string, Color.BLACK,fontSize);
+//      
 //    }else if (a_proto instanceof KarProtocol){
 //      //TODO implement and get the settings right from the settings panels textfields
 //    }
@@ -346,9 +343,10 @@ public class ViewManager extends JFrame{
     this.setTitle("OV simulator");
     this.setIconImage(imagefactory.getImageIcon("swarcoLogo").getImage());
     this.setBounds(25, 25, 685, 490);
-    this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     this.addWindowListener(new java.awt.event.WindowAdapter() {
-      public void windowClosing(java.awt.event.WindowEvent e) {
+      @Override
+	public void windowClosing(java.awt.event.WindowEvent e) {
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure want to exit?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         switch(choice){
           case JOptionPane.YES_OPTION:
@@ -469,7 +467,8 @@ public class ViewManager extends JFrame{
 
     btnClearFeedback = new JButton("Clear screen");
     btnClearFeedback.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         clearFeedback();
       }
     });
@@ -502,7 +501,8 @@ public class ViewManager extends JFrame{
 
     cbShowCommunication = new JCheckBox("Show protocol");
     cbShowCommunication.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
+      @Override
+	public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED){
           showComData = true;
         }
@@ -569,7 +569,8 @@ public class ViewManager extends JFrame{
 
     mntmOpen = new JMenuItem("Open");
     mntmOpen.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         subscriber.signal(ViewManager.getInstance(), "openEvent");
       }
     });
@@ -577,7 +578,8 @@ public class ViewManager extends JFrame{
 
     mntmSave = new JMenuItem("Save");
     mntmSave.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         subscriber.signal(ViewManager.getInstance(), "saveEvent");
       }
     });
@@ -585,7 +587,8 @@ public class ViewManager extends JFrame{
 
     mntmSaveAs = new JMenuItem("Save as");
     mntmSaveAs.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         subscriber.signal(ViewManager.getInstance(), "saveAsEvent");
       }
     });
@@ -597,7 +600,8 @@ public class ViewManager extends JFrame{
     portSettingPanel = new PortSettingPanel();
     mntmPortSettings = new JMenuItem("Port settings");
     mntmPortSettings.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         int ok = JOptionPane.showConfirmDialog(null,
             portSettingPanel,
             "Port Setting",
@@ -618,7 +622,8 @@ public class ViewManager extends JFrame{
     protocolPanel = new ProtocolPanel();
     mnProtocol = new JMenuItem("Protocol");
     mnProtocol.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
+      @Override
+	public void actionPerformed(ActionEvent e) {
         int ok = JOptionPane.showConfirmDialog(null,
             protocolPanel,
             "Protocol Setting",
@@ -652,7 +657,8 @@ public class ViewManager extends JFrame{
       this.label = label;
     };
 
-    public void actionPerformed(ActionEvent e) {
+    @Override
+	public void actionPerformed(ActionEvent e) {
       label.setIcon(imagefactory.getImageIcon("ledGray"));
       timer_RX_TO.stop();
     }
@@ -665,7 +671,8 @@ public class ViewManager extends JFrame{
       this.label = label;
     };
 
-    public void actionPerformed(ActionEvent e) {
+    @Override
+	public void actionPerformed(ActionEvent e) {
       label.setIcon(imagefactory.getImageIcon("ledGray"));
       timer_TX_TO.stop();
     }

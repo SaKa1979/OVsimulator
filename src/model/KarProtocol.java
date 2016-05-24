@@ -18,7 +18,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import view.VehicleButton;
+import model.KarAttribute.KAR;
 import view.ViewManager;
 
 public class KarProtocol extends Protocol {
@@ -40,7 +40,7 @@ public class KarProtocol extends Protocol {
 	}
 
 	@Override
-	public ArrayList<Byte> createSerialMessage(VehicleButton vb) {
+	public ArrayList<Byte> createSerialMessage(KarMessage message) {
 		ArrayList<Byte> dataFrame = new ArrayList<Byte>();
 
 		dataFrame.add(SOH);
@@ -53,7 +53,7 @@ public class KarProtocol extends Protocol {
 //		sequenceNumber++;
 		dataFrame.add(sequenceNumber);
 		
-		List<Byte> data = createMessageData(vb);
+		List<Byte> data = createMessageData(message);
 		dataFrame.add((byte) data.size());
 
 		// crc1
@@ -66,146 +66,80 @@ public class KarProtocol extends Protocol {
 		// crc2
 		short crc2 = calculateCRC(data);
 		dataFrame.addAll(short2bytesLSB(crc2));
-
+		
+		// escape all SYN characters
+		for (int i = 0; i < dataFrame.size(); i++) {
+			if (dataFrame.get(i) == SYN) {
+				dataFrame.add(i, SYN);
+				i++;
+			}
+		}
+		
 		// insert message start
 		dataFrame.add(0, SYN);
 		
 		sendMessage = dataFrame;
 		
-		String message = DatatypeConverter.printHexBinary(ArrayUtils.toPrimitive(dataFrame.toArray(new Byte[dataFrame.size()])));
-		System.out.println("Dataframe: " + message);
+		String dataFrameMessage = DatatypeConverter.printHexBinary(ArrayUtils.toPrimitive(dataFrame.toArray(new Byte[dataFrame.size()])));
+		System.out.println("Dataframe: " + dataFrameMessage);
 		
 		signalSubscriber("Sending KAR message\n");
 
 		return dataFrame;
 	}
 
-	private List<Byte> createMessageData(VehicleButton vb) {
+	private List<Byte> createMessageData(KarMessage message) {
 		List<Byte> dataFrame = new ArrayList<Byte>();
-		List<Byte> attributeData = new ArrayList<Byte>();
+		List<Byte> attributeDataFrame = new ArrayList<Byte>();
 
 		byte messageType = 1;
 		dataFrame.add(messageType);
 
-		// TODO
-		int usedAttributes = vb.getUsedAttributes();
+		int usedAttributes = 0;
+		List<KarAttribute> attributes = message.getKarAttributes();
+		for (int i = 0; i < attributes.size(); i++) {
+			if (attributes.get(i).isEnabled()) {
+				usedAttributes |= 1 << i;
+			}
+		}
 		dataFrame.add((byte) (usedAttributes & 0xFF));
 		dataFrame.add((byte) ((usedAttributes >> 8) & 0xFF));
 		dataFrame.add((byte) ((usedAttributes >> 16) & 0xFF));
 		
 		boolean keyExists = viewManager.getProtocolPanel().getKarKey().length > 0;
-		boolean reserveAttributesUsed = (usedAttributes & (1 << 22)) != 0 && (usedAttributes & (1 << 23)) != 0;
+		boolean reserveAttributesUsed = message.getAttribute(KAR.RESERVE1).isEnabled() && 
+				message.getAttribute(KAR.RESERVE2).isEnabled();
 		boolean messageContainsKey = keyExists && reserveAttributesUsed;
 		
-		for (int a = 0; a < 24; a++) {
-			if ((usedAttributes & (1 << a)) == 0) {
-				continue;
-			}
-			switch (a) {
-			case 0:
-				attributeData.add((byte) vb.getLoopNr());
-				break;
-			case 1:
-				attributeData.add((byte) vb.getVehicleType().getNr());
-				break;
-			case 2:
-				attributeData.addAll(short2bytesLSB((short) vb.getLineNr()));
-				break;
-			case 3:
-				attributeData.addAll(short2bytesLSB((short) vb.getVehServiceNr()));
-				break;
-			case 4:
-				attributeData.add((byte) vb.getCompanyNr());
-				break;
-			case 5:
-				attributeData.addAll(short2bytesLSB((short) vb.getVehicleId()));
-				break;
-			case 6:
-				attributeData.add((byte) vb.getDirection().getNr());
-				break;
-			case 7:
-				attributeData.add((byte) vb.getVehicleStatus().getNr());
-				break;
-			case 8:
-				attributeData.add((byte) vb.getPriorityClass().getNr());
-				break;
-			case 9:
-				attributeData.add((byte) vb.getPunctualityClass().getNr());
-				break;
-			case 10:
-				attributeData.addAll(short2bytesLSB((short) vb.getPunctuality()));
-				break;
-			case 11:
-				attributeData.add((byte) vb.getVehicleLength());
-				break;
-			case 12:
-				attributeData.add((byte) vb.getVehicleSpeed());
-				break;
-			case 13:
-				attributeData.addAll(short2bytesLSB((short) vb.getDistanceToStop()));
-				break;
-			case 14:
-				attributeData.add((byte) vb.getTimeToStop());
-				break;
-			case 15:
-				attributeData.addAll(short2bytesLSB((short) vb.getJourneyNr()));
-				break;
-			case 16:
-				attributeData.add((byte) vb.getJourneyType().getNr());
-				break;
-			case 17:
-				attributeData.add((byte) vb.getRoute());
-				break;
-			case 18:
-				attributeData.add((byte) vb.getCommand().getNr());
-				break;
-			case 19:
-				attributeData.addAll(short2bytesLSB((short) vb.getActivation()));
-				break;
-			case 20:
-				attributeData.add((byte) vb.getLatDeg());
-				attributeData.add((byte) vb.getLatMin());
-				attributeData.add((byte) vb.getLatSec());
-				attributeData.add((byte) vb.getLatSSec());
-				attributeData.add((byte) vb.getLongDeg());
-				attributeData.add((byte) vb.getLongMin());
-				attributeData.add((byte) vb.getLongSec());
-				attributeData.add((byte) vb.getLongSSec());
-				break;
-			case 21:
-				attributeData.addAll(short2bytesLSB((short) vb.getYear()));
-				attributeData.add((byte) vb.getMonth());
-				attributeData.add((byte) vb.getDay());
-				attributeData.add((byte) vb.getHour());
-				attributeData.add((byte) vb.getMinute());
-				attributeData.add((byte) vb.getSecond());
-			case 22:
-				if (!messageContainsKey) {
-					attributeData.addAll(short2bytesLSB((short) vb.getReserve1()));
-				}
-				break;
-			case 23:
-				if (!messageContainsKey) {
-					attributeData.addAll(short2bytesLSB((short) vb.getReserve2()));
-				}
-				break;
-			default:
-				break;
-			}
+		for (KarAttribute attribute : message.getKarAttributes()) {
+			addAttributeToDataFrame(attributeDataFrame, attribute);
 		}
 		
 		if (messageContainsKey) {
-			List<Byte> signature = generateHmacSignature(attributeData);
+			List<Byte> signature = generateHmacSignature(attributeDataFrame);
 			// Reserve 1
-			attributeData.add(signature.get(3));
-			attributeData.add(signature.get(2));
+			attributeDataFrame.add(signature.get(3));
+			attributeDataFrame.add(signature.get(2));
 			
 			// Reserve 2
-			attributeData.add(signature.get(1));
-			attributeData.add(signature.get(0));
+			attributeDataFrame.add(signature.get(1));
+			attributeDataFrame.add(signature.get(0));
 		}
-		dataFrame.addAll(attributeData);
+		dataFrame.addAll(attributeDataFrame);
 		return dataFrame;
+	}
+
+	private void addAttributeToDataFrame(List<Byte> dataFrame, KarAttribute attribute) {
+		if (attribute.isEnabled()) {
+			for (KarField field : attribute.getKarFields()) {
+				int value = field.getValue();
+				if (field.getSizeInBytes() == 1) {
+					dataFrame.add((byte) value);
+				} else if (field.getSizeInBytes() == 2) {
+					dataFrame.addAll(short2bytesLSB((short) value));
+				}
+			}
+		}
 	}
 
 	List<Byte> short2bytesLSB(short number) {
@@ -291,7 +225,6 @@ public class KarProtocol extends Protocol {
 
 	@Override
 	public void processData(Byte b) {
-		// TODO Auto-generated method stub
 
 	}
 }

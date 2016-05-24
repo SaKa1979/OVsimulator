@@ -56,7 +56,8 @@ public class NumericField extends JTextField {
         return maxLength;
     }
 
-    public void setEnabled(boolean enable) {
+    @Override
+	public void setEnabled(boolean enable) {
         super.setEnabled(enable);
 
         if (enable) {
@@ -68,7 +69,8 @@ public class NumericField extends JTextField {
         }
     }
 
-    public void setEditable(boolean enable) {
+    @Override
+	public void setEditable(boolean enable) {
         super.setEditable(enable);
 
         if (enable) {
@@ -166,7 +168,8 @@ public class NumericField extends JTextField {
         return allowNegative;
     }
 
-    public void setDocument(Document document) {
+    @Override
+	public void setDocument(Document document) {
     }
 
     class JNumberFieldFilter extends PlainDocument {
@@ -176,7 +179,8 @@ public class NumericField extends JTextField {
             super();
         }
 
-        public void insertString(int offset, String str, AttributeSet attr)
+        @Override
+		public void insertString(int offset, String str, AttributeSet attr)
                 throws BadLocationException {
             String text = getText(0, offset) + str
                     + getText(offset, (getLength() - offset));

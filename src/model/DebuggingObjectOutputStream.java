@@ -42,7 +42,8 @@ public class DebuggingObjectOutputStream
    * Abuse {@code replaceObject()} as a hook to
    * maintain our stack.
    */
-  protected Object replaceObject(Object o) {
+  @Override
+protected Object replaceObject(Object o) {
     // ObjectOutputStream writes serialization
     // exceptions to the stream. Ignore
     // everything after that so we don't lose

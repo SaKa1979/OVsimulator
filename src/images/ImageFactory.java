@@ -1,9 +1,10 @@
 package images;
 
 import java.net.URL;
+
 import javax.swing.ImageIcon;
 
-import view.VehicleButton.VehicleType;
+import model.CVNAttribute.VehicleType;
 
 /**
  * @author Sander
@@ -39,36 +40,42 @@ public class ImageFactory {
     URL link = this.getClass().getResource(filename); 
     return new ImageIcon(link, description);
   }
-  
-  public ImageIcon getImageIcon(String name)
-  {
-    if (name.equals(VehicleType.BUS_CITY.getName()))
-      return busImage;
-    else if (name.equals(VehicleType.TRAM_CITY.getName()))
-      return tramImage;
-    else if (name.equals(VehicleType.TAXI.getName()))
-      return taxiImage;
-    else if (name.equals(VehicleType.AMBULANCE.getName()))
-      return ambulanceImage;
-    else if (name.equals(VehicleType.BRANDWEER.getName()))
-      return brandweerImage;
-    else if (name.equals(VehicleType.POLITIE.getName()))
-      return politieImage;
-    else if (name.equals(VehicleType.UNKNOWN.getName()))
-      return unknownImage;
-    else if (name.equals("ledRed"))
-        return ledRedImage;
-    else if (name.equals("ledGreen"))
-        return ledGreenImage;
-    else if (name.equals("ledGray"))
-      return ledGrayImage;
-    else if (name.equals("ledYellow"))
-      return ledYellowImage;
-    else if (name.equals("swarcoLogo"))
-        return swarcoLogoImage;
-    else 
-      return brokenImage;
-  }
+
+	public ImageIcon getImageIcon(VehicleType vt) {
+		switch (vt) {
+		case BUS:
+			return busImage;
+		case TRAM:
+			return tramImage;
+		case POLICE:
+			return politieImage;
+		case BRANDWEER:
+			return brandweerImage;
+		case AMBULANCE:
+			return ambulanceImage;
+		case CVV:
+			return unknownImage;
+		case TAXI:
+			return taxiImage;
+		default:
+			return brokenImage;
+		}
+	}
+
+	public ImageIcon getImageIcon(String name) {
+		if (name.equals("ledRed"))
+			return ledRedImage;
+		else if (name.equals("ledGreen"))
+			return ledGreenImage;
+		else if (name.equals("ledGray"))
+			return ledGrayImage;
+		else if (name.equals("ledYellow"))
+			return ledYellowImage;
+		else if (name.equals("swarcoLogo"))
+			return swarcoLogoImage;
+		else
+			return brokenImage;
+	}
     
   // Attributes
   private ImageIcon unknownImage;
