@@ -112,6 +112,12 @@ public class KarProtocol extends Protocol {
 		boolean messageContainsKey = keyExists && reserveAttributesUsed;
 		
 		for (KarAttribute attribute : message.getKarAttributes()) {
+			// Don't add the reserve attributes if the message should contain a signature.
+			if (messageContainsKey) {
+				if (attribute.getId() == KAR.RESERVE1 || attribute.getId() == KAR.RESERVE2) {
+					continue;
+				}
+			}
 			addAttributeToDataFrame(attributeDataFrame, attribute);
 		}
 		
