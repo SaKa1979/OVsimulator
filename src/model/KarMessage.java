@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +18,41 @@ import model.CVNAttribute.VehicleStatus;
 import model.CVNAttribute.VehicleType;
 import model.KarAttribute.KAR;
 
-public class KarMessage {
+public class KarMessage implements Serializable{
+	private static final long serialVersionUID = -2330790358385718884L;
+	
 	@Getter private List<KarAttribute> karAttributes;
 	
 	public KarMessage() {
 		fillKARAttributes();
 	}
 	
-	public void fillKARAttributes() {
+	public int getValue(KAR id) {
+		return getValue(id, 0);
+	}
+	
+	public int getValue(KAR id, int fieldIndex) {
+		return getAttribute(id).getKarFields().get(fieldIndex).getValue();
+	}
+	
+	public String getName(KAR key) {
+		return getName(key, 0);
+	}
+	
+	public String getName(KAR id, int fieldIndex) {
+		return getAttribute(id).getKarFields().get(fieldIndex).getFieldName();
+	}
+	
+	public KarAttribute getAttribute(KAR id) {
+		for (KarAttribute attribute : karAttributes) {
+			if (attribute.getId() == id) {
+				return attribute;
+			}
+		}
+		return null;
+	}
+	
+	private void fillKARAttributes() {
 		karAttributes = new ArrayList<>();
 		
 		KAR number = KAR.LOOP_NR;
@@ -140,7 +168,7 @@ public class KarMessage {
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.JOURNEY_TYPE;
-		fieldName = "Journey nr";
+		fieldName = "Journey type";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
 		encoding = createJourneyTypeEncoding();
@@ -204,14 +232,6 @@ public class KarMessage {
 		range = Range.between(0, 32767);
 		encoding = HashBiMap.create();
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
-	}
-	
-	public String getName(KAR key) {
-		return karAttributes.get(key.getValue()).getKarFields().get(0).getFieldName();
-	}
-	
-	public KarAttribute getAttribute(KAR key) {
-		return karAttributes.get(key.getValue());
 	}
 	
 	private BiMap<Integer, String> createVehicleTypeEncoding() {

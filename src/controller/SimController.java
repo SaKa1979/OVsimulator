@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import model.Communicator;
+import model.KarAttribute.KAR;
+import model.KarMessage;
 import model.KarProtocol;
 import model.Persister;
 import model.Protocol;
@@ -83,6 +85,10 @@ public void signal(Object a_obj, Object a_arg){
         default:
           protocol = null;
       }
+    }else if (a_obj instanceof VehicleSimulation){
+    	VehicleSimulation vs = (VehicleSimulation) a_obj;
+//    	System.out.println(viewManager.getVehicleSimulation().getVbList().get(0).getKarMessage().getValue(KAR.VEH_TYPE));
+//    	viewManager.getVehicleSimulation().getVbList().get(0).getVehicleSettingPanel().invalidate();
     }else if (a_obj instanceof VehicleButton){
       VehicleButton vb = (VehicleButton)a_obj;
       if (protocol != null){
@@ -115,32 +121,32 @@ public void signal(Object a_obj, Object a_arg){
     }
   }
 
-  public void setPersistentObjects(ProtocolPanel protocolPanel, ArrayList<Object> a_list) {
+  public void setPersistentObjects(ProtocolPanel protocolPanel, VehicleSimulation a_vehicleSimulation, ArrayList<Object> a_list) {
     protocolPanel.setSelectedProto((Proto)a_list.get(0));
     protocolPanel.setKarSid((String) a_list.get(1));
     protocolPanel.setVcuAddress((String) a_list.get(2));
     protocolPanel.setKarKey((byte[]) a_list.get(3));
+    
+	for (int i = 4; i < a_list.size(); i++) {
+		a_vehicleSimulation.getVbList().get(i - 4).updateKarMessage((KarMessage) a_list.get(i));
+	}
   } 
 
-  public ArrayList<Serializable> getPersistentObjects(ProtocolPanel a_protocolPanel) {
+  public ArrayList<Serializable> getPersistentObjects(ProtocolPanel a_protocolPanel, VehicleSimulation a_vehicleSimulation) {
     ArrayList<Serializable> list = new ArrayList<Serializable>();
     list.add(a_protocolPanel.getSelectedProto());
     list.add(a_protocolPanel.getKarSid());
     list.add(a_protocolPanel.getVcuAddress());
     list.add(a_protocolPanel.getKarKey());
-    return list;
+    
+	for (VehicleButton vb : a_vehicleSimulation.getVbList()) {
+		if (vb.getKarMessage() != null) {
+			list.add(vb.getKarMessage());
+		}
+	}
+	return list;
   }
-  
-  public void setPersistentObjects(VehicleSimulation a_vehicleSimulation, ArrayList<Object> a_list) {
 
-  } 
-  
-  public ArrayList<Object> getPersistentObjects(VehicleSimulation a_vehicleSimulation) {
-    ArrayList<Object> list = new ArrayList<Object>();
-
-    return list;
-  }
-  
   // PRIVATE ATTRIBUTES
   ViewManager viewManager = ViewManager.getInstance();
   Communicator communicator = new Communicator();

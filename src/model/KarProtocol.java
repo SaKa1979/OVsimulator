@@ -83,7 +83,7 @@ public class KarProtocol extends Protocol {
 		String dataFrameMessage = DatatypeConverter.printHexBinary(ArrayUtils.toPrimitive(dataFrame.toArray(new Byte[dataFrame.size()])));
 		System.out.println("Dataframe: " + dataFrameMessage);
 		
-		signalSubscriber("Sending KAR message\n");
+		signalSubscriber("Sending KAR message: " + dataFrameMessage + "\n");
 
 		return dataFrame;
 	}

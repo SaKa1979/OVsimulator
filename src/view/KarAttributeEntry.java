@@ -33,6 +33,47 @@ public class KarAttributeEntry extends JPanel {
 	}
 
 	private void createEntry() {
+		createCheckBox();
+
+		panel = new JPanel();
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 150, 150 };
+		panel.setLayout(gridBagLayout);
+		
+		List<KarField> karFields = karAttribute.getKarFields();
+		for (int i = 0; i < karFields.size(); i++) {
+			KarField karField = karFields.get(i);
+			
+			createLabel(i, karField);
+
+			createInputComponent(i, karField);
+		}
+		this.add(panel);
+		enablePanel(karAttribute.isEnabled());
+	}
+
+	public void createInputComponent(int i, KarField karField) {
+		BiMap<Integer, String> encoding = karField.getEncoding();
+		if (encoding.size() > 0) {
+			JComboBox<String> inputField = new JComboBox<>(encoding.values().toArray(new String[encoding.size()]));
+			inputField.setSelectedItem(encoding.get(karField.getValue()));
+			addComboBoxListener(karField, inputField);
+			createInputFieldGridBagConstraints(panel, inputField, i, 1);
+		} else {
+			NumericField inputField = createInputField(karField);
+			inputField.setText("" + karField.getValue());
+			addNumericFieldListener(karField, inputField);
+			createInputFieldGridBagConstraints(panel, inputField, i, 1);
+		}
+	}
+
+	public void createLabel(int i, KarField karField) {
+		String fieldName = karField.getFieldName() + " (" + karAttribute.getId().getValue() + ")";
+		JComponent label = new JLabel(fieldName);
+		createLabelGridBagConstraints(panel, label, i, 0);
+	}
+
+	public void createCheckBox() {
 		JCheckBox checkbox = new JCheckBox();
 		checkbox.setToolTipText("Disable CVN: " + karAttribute.getId() + "?");
 		checkbox.setSelected(karAttribute.isEnabled());
@@ -45,33 +86,6 @@ public class KarAttributeEntry extends JPanel {
 			}
 		});
 		this.add(checkbox);
-
-		panel = new JPanel();
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 150, 150 };
-		panel.setLayout(gridBagLayout);
-		
-		List<KarField> karFields = karAttribute.getKarFields();
-		for (int i = 0; i < karFields.size(); i++) {
-			KarField karField = karFields.get(i);
-			String fieldName = karField.getFieldName() + " (" + karAttribute.getId().getValue() + ")";
-
-			JComponent label = new JLabel(fieldName);
-			createLabelGridBagConstraints(panel, label, i, 0);
-
-			BiMap<Integer, String> encoding = karField.getEncoding();
-			if (encoding.size() > 0) {
-				JComboBox<String> inputField = new JComboBox<>(encoding.values().toArray(new String[encoding.size()]));
-				addComboBoxListener(karField, inputField);
-				createInputFieldGridBagConstraints(panel, inputField, i, 1);
-			} else {
-				NumericField inputField = createInputField(karField);
-				addNumericFieldListener(karField, inputField);
-				createInputFieldGridBagConstraints(panel, inputField, i, 1);
-			}
-		}
-		this.add(panel);
-		enablePanel(false);
 	}
 
 	private void addComboBoxListener(KarField karField, JComboBox<String> inputField) {

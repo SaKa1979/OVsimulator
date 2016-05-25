@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public class KarAttribute {
+public class KarAttribute implements Serializable{
 	
+	private static final long serialVersionUID = 2643942916709961309L;
+
 	@AllArgsConstructor
 	public enum KAR {
 		LOOP_NR (0), 

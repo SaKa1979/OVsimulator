@@ -3,7 +3,6 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -36,6 +35,7 @@ public class VehicleSettingPanel extends JPanel {
   }
 
   // PUBLIC METHODS
+  
   public void setProto(Proto a_proto) {
     switch(a_proto){
       case KAR:
@@ -51,13 +51,11 @@ public class VehicleSettingPanel extends JPanel {
         break;
     }
   }
-  
-  // PRIVATE METHODS
-  	private void initialize(){
-  		karAttributeEntries = new ArrayList<>();
-		karMessage = new KarMessage();
-		int row = 0;
 
+	public void updateSettingsPanel(KarMessage karMessage) {
+		this.karMessage = karMessage;
+		
+		int row = 0;
 		// Define two columns
 		JPanel columnEntries = new JPanel();
 		JPanel columnEntries2 = new JPanel();
@@ -66,7 +64,6 @@ public class VehicleSettingPanel extends JPanel {
 
 		for (KarAttribute attribute : karMessage.getKarAttributes()) {
 			KarAttributeEntry attributeEntry = new KarAttributeEntry(attribute);
-			karAttributeEntries.add(attributeEntry);
 
 			if (row < 15) {
 				columnEntries.add(attributeEntry);
@@ -78,6 +75,12 @@ public class VehicleSettingPanel extends JPanel {
 		}
 		this.add(columnEntries, BorderLayout.WEST);
 		this.add(columnEntries2, BorderLayout.EAST);
+	} 
+  
+  // PRIVATE METHODS
+  	private void initialize(){
+		karMessage = new KarMessage();
+		updateSettingsPanel(karMessage);
 
 //    // CVN: 1 loop number
 //    lblLoop = new JLabel("Loop nr (1)");
@@ -709,7 +712,7 @@ public class VehicleSettingPanel extends JPanel {
 //    gbc_reserve2TF.gridx = 5;
 //    gbc_reserve2TF.gridy = 13;
 //    add(reserve2TF, gbc_reserve2TF);   
-  } 
+  }
 
   //INNER CLASSES
 /**

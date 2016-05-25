@@ -1,5 +1,7 @@
 package model;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.Range;
 
 import com.google.common.collect.BiMap;
@@ -9,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-public class KarField {
+public class KarField implements Serializable{
+	private static final long serialVersionUID = 5648904267893701445L;
+	
 	@Getter private final String fieldName;
 	@Getter private final int sizeInBytes;
 	@Getter private final Range<Integer> range;

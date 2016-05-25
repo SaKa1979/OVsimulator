@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -45,7 +46,22 @@ public class VehicleButton extends JButton {
 
 	// PUBLIC METHODS
 
+	public void updateKarMessage(KarMessage karMessage) {
+		//TODO why do 2 object keep track of the same karMessage
+		this.karMessage = karMessage;
+		vehicleSettingPanel.updateSettingsPanel(karMessage);
+		setEnabled(true);
+		setButtonText();
+		setVehicleTypeImage(karMessage.getValue(KAR.VEH_TYPE));
+	}
+
 	// PRIVATE METHODS
+
+	private void setButtonText() {
+		setText("L" + karMessage.getValue(KAR.LOOP_NR) + " FC" + karMessage.getValue(KAR.DIRECTION));
+		setFont(new Font("MonoSpace", Font.PLAIN, 8));
+	}
+
 	private void setVehicleTypeImage(int vt) {
 		switch (vt) {
 		case 1:
@@ -90,11 +106,7 @@ public class VehicleButton extends JButton {
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 					switch (ok) {
 					case JOptionPane.OK_OPTION:
-						karMessage = vehicleSettingPanel.getKarMessage();
-
-						setEnabled(true);
-						// setButtonText();
-						setVehicleTypeImage(karMessage.getAttribute(KAR.VEH_TYPE).getKarFields().get(0).getValue());
+						updateKarMessage(vehicleSettingPanel.getKarMessage());
 						break;
 					default:
 					}

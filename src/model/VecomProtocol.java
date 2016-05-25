@@ -26,7 +26,6 @@ public class VecomProtocol extends Protocol {
     ArrayList<Byte> dataFrame = new ArrayList<Byte>();
 
     transmissionCounter += 1;
-
     /** 
      * Byte 0 default 0x29
      */

@@ -1,15 +1,16 @@
 package view;
 
-import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
-
-import controller.Event;
-
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+
+import controller.Event;
+import lombok.Getter;
 
 public class VehicleSimulation extends JPanel {
 
@@ -65,6 +66,6 @@ public class VehicleSimulation extends JPanel {
 
   // PRIVATE ATTRIBUTES
   private Event subscriber;
-  private ArrayList<VehicleButton> vbList;
+  @Getter private ArrayList<VehicleButton> vbList;
 
 }// end class VehicleSimulation

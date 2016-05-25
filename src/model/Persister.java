@@ -111,7 +111,7 @@ public class Persister {
     DebuggingObjectOutputStream  oos = null;
     try {
       oos = new DebuggingObjectOutputStream ( new FileOutputStream(a_file)); 
-      oos.writeObject(simControler.getPersistentObjects(protocolPanel));
+      oos.writeObject(simControler.getPersistentObjects(protocolPanel, vehicleSimulation));
     }
     catch (IOException e) {
       throw new RuntimeException(
@@ -132,19 +132,23 @@ public class Persister {
       ois = new ObjectInputStream(new FileInputStream(a_file));    
       @SuppressWarnings("unchecked")
       ArrayList<Object> list = (ArrayList<Object>) ois.readObject();
-      simControler.setPersistentObjects(protocolPanel, list);
+      simControler.setPersistentObjects(protocolPanel, vehicleSimulation, list);
       simControler.signal(protocolPanel, null);
+//      simControler.signal(vehicleSimulation, null);
     } 
     catch (FileNotFoundException e) {
-      // Er was nog geen bestand  
+    	// Er was nog geen bestand  
+    	System.out.println(e.getStackTrace());
     } 
     catch (Exception e) {
-
+    	System.out.println(e.getStackTrace());
     }
     finally {
       if (ois != null) {
         try {ois.close();}
-        catch (IOException ioe) {}
+        catch (IOException ioe) {
+        	System.out.println(ioe.getStackTrace());
+        }
       }
     }      
   }
