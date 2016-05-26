@@ -1,7 +1,9 @@
-package model;
+package model.vecom;
 
 import java.util.ArrayList;
 
+import model.Protocol;
+import model.kar.KarMessage;
 import view.ViewManager;
 
 

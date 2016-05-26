@@ -19,8 +19,8 @@ import javax.swing.event.DocumentListener;
 import com.google.common.collect.BiMap;
 
 import lombok.Getter;
-import model.KarAttribute;
-import model.KarField;
+import model.kar.KarAttribute;
+import model.kar.KarField;
 
 public class KarAttributeEntry extends JPanel {
 	private static final long serialVersionUID = -3441900928638288607L;

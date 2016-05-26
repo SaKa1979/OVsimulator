@@ -15,8 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 import lombok.Getter;
-import model.KarAttribute;
-import model.KarMessage;
+import model.kar.KarAttribute;
+import model.kar.KarMessage;
 import view.ProtocolPanel.Proto;
 
 public class VehicleSettingPanel extends JPanel {

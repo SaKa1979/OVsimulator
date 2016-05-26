@@ -1,4 +1,4 @@
-package model;
+package model.kar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,15 +10,17 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import lombok.Getter;
+import model.AttributeID;
 import model.CVNAttribute.Commands;
 import model.CVNAttribute.JourneyType;
 import model.CVNAttribute.PriorityClass;
 import model.CVNAttribute.PunctualityClass;
 import model.CVNAttribute.VehicleStatus;
 import model.CVNAttribute.VehicleType;
-import model.KarAttribute.KAR;
+import model.ProtocolMessage;
+import model.kar.KarAttribute.KAR;
 
-public class KarMessage implements Serializable{
+public class KarMessage implements ProtocolMessage, Serializable {
 	private static final long serialVersionUID = -2330790358385718884L;
 	
 	@Getter private List<KarAttribute> karAttributes;
@@ -27,8 +29,8 @@ public class KarMessage implements Serializable{
 		fillKARAttributes();
 	}
 	
-	public int getValue(KAR id) {
-		return getValue(id, 0);
+	public int getValue(AttributeID id) {
+		return getValue((KAR) id, 0);
 	}
 	
 	public int getValue(KAR id, int fieldIndex) {
@@ -281,4 +283,5 @@ public class KarMessage implements Serializable{
 		}
 		return encoding;
 	}
+
 }

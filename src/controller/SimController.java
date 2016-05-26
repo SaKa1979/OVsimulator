@@ -5,12 +5,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import model.Communicator;
-import model.KarAttribute.KAR;
-import model.KarMessage;
-import model.KarProtocol;
 import model.Persister;
 import model.Protocol;
-import model.VecomProtocol;
+import model.kar.KarMessage;
+import model.kar.KarProtocol;
+import model.kar.KarAttribute.KAR;
+import model.vecom.VecomProtocol;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
 import view.ProtocolPanel.Proto;

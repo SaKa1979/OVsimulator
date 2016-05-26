@@ -1,4 +1,4 @@
-package model;
+package model.kar;
 
 import java.io.Serializable;
 

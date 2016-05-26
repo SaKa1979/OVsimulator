@@ -1,4 +1,4 @@
-package model;
+package model.kar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,7 +18,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import model.KarAttribute.KAR;
+import model.Protocol;
+import model.kar.KarAttribute.KAR;
 import view.ViewManager;
 
 public class KarProtocol extends Protocol {

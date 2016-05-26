@@ -1,4 +1,4 @@
-package model;
+package model.kar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,14 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import model.AttributeID;
 
 @RequiredArgsConstructor
-public class KarAttribute implements Serializable{
-	
+public class KarAttribute implements Serializable {
 	private static final long serialVersionUID = 2643942916709961309L;
 
 	@AllArgsConstructor
-	public enum KAR {
+	public enum KAR implements AttributeID {
 		LOOP_NR (0), 
 		VEH_TYPE (1), 
 		LINE_NR (2), 

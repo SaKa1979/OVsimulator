@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import model.VecomProtocol;
+import model.vecom.VecomProtocol;
 import view.ProtocolPanel;
 import view.ProtocolPanel.Proto;
 import view.VehicleButton;

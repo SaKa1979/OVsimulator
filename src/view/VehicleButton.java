@@ -13,8 +13,8 @@ import images.ImageFactory;
 import lombok.Getter;
 import lombok.Setter;
 import model.CVNAttribute.VehicleType;
-import model.KarAttribute.KAR;
-import model.KarMessage;
+import model.kar.KarMessage;
+import model.kar.KarAttribute.KAR;
 
 /**
  * @brief A button representing a vehicle detection. A mouse listener must be
