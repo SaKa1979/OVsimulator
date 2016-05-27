@@ -4,7 +4,8 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import model.CVNAttribute.VehicleType;
+import model.Encodings.KarVehicleType;
+import model.Encodings.VecomVehicleType;
 
 /**
  * @author Sander
@@ -41,7 +42,7 @@ public class ImageFactory {
     return new ImageIcon(link, description);
   }
 
-	public ImageIcon getImageIcon(VehicleType vt) {
+	public ImageIcon getKarImageIcon(KarVehicleType vt) {
 		switch (vt) {
 		case BUS:
 			return busImage;
@@ -57,6 +58,29 @@ public class ImageFactory {
 			return unknownImage;
 		case TAXI:
 			return taxiImage;
+		default:
+			return brokenImage;
+		}
+	}
+	
+	public ImageIcon getVecomImageIcon(VecomVehicleType vt) {
+		switch (vt) {
+		case POLICE:
+			return politieImage;
+		case FIRE_BRIGADE:
+			return brandweerImage;
+		case AMBULANCE:
+			return ambulanceImage;
+		case TAXI:
+			return taxiImage;
+		case CITY_TRAM:
+			return tramImage;
+		case CITY_BUS:
+			return busImage;
+		case REGIONAL_TRAM:
+			return tramImage;
+		case REGIONAL_BUS:
+			return busImage;
 		default:
 			return brokenImage;
 		}

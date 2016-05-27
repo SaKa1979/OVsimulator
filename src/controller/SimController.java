@@ -1,21 +1,16 @@
 package controller;
 
 import java.awt.Color;
-import java.io.Serializable;
-import java.util.ArrayList;
 
 import model.Communicator;
 import model.Persister;
 import model.Protocol;
-import model.kar.KarMessage;
 import model.kar.KarProtocol;
-import model.kar.KarAttribute.KAR;
 import model.vecom.VecomProtocol;
 import view.PortSettingPanel;
 import view.ProtocolPanel;
 import view.ProtocolPanel.Proto;
 import view.VehicleButton;
-import view.VehicleSimulation;
 import view.ViewManager;
 
 public class SimController implements Event {
@@ -25,7 +20,8 @@ public class SimController implements Event {
    */
   public SimController(){
     viewManager.addEventSubscriber(this);
-    viewManager.getVehicleSimulation().addEventSubscriber(this);
+    viewManager.getVehicleSimulation().getProtocolCard(Proto.KAR).addEventSubscriber(this);
+    viewManager.getVehicleSimulation().getProtocolCard(Proto.VECOM).addEventSubscriber(this);
     communicator.addEventSubscriber(this);
     communicator.setViewManager(viewManager);
     communicator.searchForPorts();
@@ -85,15 +81,11 @@ public void signal(Object a_obj, Object a_arg){
         default:
           protocol = null;
       }
-    }else if (a_obj instanceof VehicleSimulation){
-    	VehicleSimulation vs = (VehicleSimulation) a_obj;
-//    	System.out.println(viewManager.getVehicleSimulation().getVbList().get(0).getKarMessage().getValue(KAR.VEH_TYPE));
-//    	viewManager.getVehicleSimulation().getVbList().get(0).getVehicleSettingPanel().invalidate();
-    }else if (a_obj instanceof VehicleButton){
+    } else if (a_obj instanceof VehicleButton){
       VehicleButton vb = (VehicleButton)a_obj;
       if (protocol != null){
         if (communicator.isbConnected()){
-          protocol.createSerialMessage(vb.getKarMessage()); // TODO
+          protocol.createSerialMessage(vb.getProtocolMessage());
           viewManager.writeVehicleButtonSetting(vb, protocol);
         }else{
           viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 10);
@@ -101,7 +93,7 @@ public void signal(Object a_obj, Object a_arg){
       }else{
         viewManager.writeToFeedback(0, "No protocol selected.", Color.RED, 8);
       }
-    }else if (a_obj instanceof Protocol){
+    } else if (a_obj instanceof Protocol){
       Protocol proto = (Protocol)a_obj;
       if (protocol != null){
         if (communicator.isbConnected()){
@@ -114,37 +106,11 @@ public void signal(Object a_obj, Object a_arg){
       }else{
         viewManager.writeToFeedback(0, "No protocol selected.", Color.RED, 8);
       }
-    }else if (a_obj instanceof Communicator){
+    } else if (a_obj instanceof Communicator){
       if (protocol != null){
         protocol.processData((byte)a_arg); // Got byte from serial to be send to protocol
       }
     }
-  }
-
-  public void setPersistentObjects(ProtocolPanel protocolPanel, VehicleSimulation a_vehicleSimulation, ArrayList<Object> a_list) {
-    protocolPanel.setSelectedProto((Proto)a_list.get(0));
-    protocolPanel.setKarSid((String) a_list.get(1));
-    protocolPanel.setVcuAddress((String) a_list.get(2));
-    protocolPanel.setKarKey((byte[]) a_list.get(3));
-    
-	for (int i = 4; i < a_list.size(); i++) {
-		a_vehicleSimulation.getVbList().get(i - 4).updateKarMessage((KarMessage) a_list.get(i));
-	}
-  } 
-
-  public ArrayList<Serializable> getPersistentObjects(ProtocolPanel a_protocolPanel, VehicleSimulation a_vehicleSimulation) {
-    ArrayList<Serializable> list = new ArrayList<Serializable>();
-    list.add(a_protocolPanel.getSelectedProto());
-    list.add(a_protocolPanel.getKarSid());
-    list.add(a_protocolPanel.getVcuAddress());
-    list.add(a_protocolPanel.getKarKey());
-    
-	for (VehicleButton vb : a_vehicleSimulation.getVbList()) {
-		if (vb.getKarMessage() != null) {
-			list.add(vb.getKarMessage());
-		}
-	}
-	return list;
   }
 
   // PRIVATE ATTRIBUTES

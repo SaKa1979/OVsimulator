@@ -1,11 +1,12 @@
 package model.vecom;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import model.Protocol;
-import model.kar.KarMessage;
+import model.ProtocolMessage;
+import model.vecom.VecomAttribute.VECOM;
 import view.ViewManager;
-
 
 public class VecomProtocol extends Protocol {
 
@@ -24,7 +25,8 @@ public class VecomProtocol extends Protocol {
   }
 
   @Override
-  public ArrayList<Byte> createSerialMessage(KarMessage vb) {
+  public ArrayList<Byte> createSerialMessage(ProtocolMessage protocolMessage) {
+	  VecomMessage vecomMessage = (VecomMessage) protocolMessage;
     ArrayList<Byte> dataFrame = new ArrayList<Byte>();
 
     transmissionCounter += 1;
@@ -41,7 +43,6 @@ public class VecomProtocol extends Protocol {
     /** 
      * Byte 2 vehicleType 
      */
-//    {
 //      switch (vb.getVehicleType()){
 //        case POLITIE:
 //          dataFrame.add((byte)0x10); // Police
@@ -69,7 +70,7 @@ public class VecomProtocol extends Protocol {
 //          break;
 //        default:
 //      }
-//    }
+    dataFrame.add((byte) vecomMessage.getAttribute(VECOM.VEH_TYPE).getValue());
 //
 //    /**
 //     * Byte 3 LineNumber lo
@@ -78,7 +79,7 @@ public class VecomProtocol extends Protocol {
 //    {
 //      dataFrame.add((byte)(vb.getLineNr() % 256));
 //    }
-//
+//    
 //    /**
 //     * Byte 4 LineNumber hi (4 MSB) | VehServiceNr lo (4 LSB)
 //     * -lineNumber 0- 16383
@@ -111,7 +112,15 @@ public class VecomProtocol extends Protocol {
 //    {
 //      dataFrame.add((byte)(vb.getVehServiceNr() / 4));
 //    }
-//
+    
+    int lineNr = vecomMessage.getAttribute(VECOM.LINE_NR).getValue();
+    int vehSrvNr = vecomMessage.getAttribute(VECOM.SERVICE_NR).getValue();
+	List<Byte> bytes = new ArrayList<>();
+	bytes.add((byte) (lineNr & 0xFF));
+	bytes.add((byte) (((lineNr >> 8) & 0x0F) | ((vehSrvNr & 0x0F) << 4)));
+	bytes.add((byte) ((vehSrvNr >> 4) & 0xFF));
+    dataFrame.addAll(bytes);
+    
 //    /**
 //     * Byte 6 journeyType aka cat (b7b6) | punctualityClass aka pun (b5b4)
 //     * -category
@@ -157,23 +166,31 @@ public class VecomProtocol extends Protocol {
 //      }
 //      dataFrame.add(temp_byte);
 //    }
+    int category = vecomMessage.getAttribute(VECOM.CATEGORY).getValue();
+    int punctuality = vecomMessage.getAttribute(VECOM.PUNCTUALITY).getValue();
+//    int inteli = vecomMessage.getAttribute(VECOM.INTELI).getValue();
+//    int bcd = vecomMessage.getAttribute(VECOM.BCD).getValue();
+    byte toAdd = (byte) ((punctuality & 0x3) << 4 );
+    toAdd |= (byte) ((category & 0x3) << 6 ); 
+    dataFrame.add(toAdd);
+    
+
+    /**Byte 7 staff number lo
+     * -staffNr 0 - 16777215 !NOT USED IN CVN!
+     */
+    dataFrame.add((byte)0);
+
+    /**
+     * Byte 8 staff number mo
+     * -staffNr 0 - 16777215 !NOT USED IN CVN!
+     */
+    dataFrame.add((byte)0);
 //
-//    /**Byte 7 staff number lo
-//     * -staffNr 0 - 16777215 !NOT USED IN CVN!
-//     */
-//    dataFrame.add((byte)0);
-//
-//    /**
-//     * Byte 8 staff number mo
-//     * -staffNr 0 - 16777215 !NOT USED IN CVN!
-//     */
-//    dataFrame.add((byte)0);
-//
-//    /**
-//     * Byte 9 staff number ho
-//     * -staffNr 0 - 16777215 !NOT USED IN CVN!
-//     */
-//    dataFrame.add((byte)0);
+    /**
+     * Byte 9 staff number ho
+     * -staffNr 0 - 16777215 !NOT USED IN CVN!
+     */
+    dataFrame.add((byte)0);
 //
 //    /**
 //     * Byte 10 vehicleId aka fleetnumber lo
@@ -198,6 +215,13 @@ public class VecomProtocol extends Protocol {
 //
 //      dataFrame.add((byte)temp_byte);    
 //    }
+    int fleetNr = vecomMessage.getAttribute(VECOM.STAFF_NR).getValue();
+	bytes = new ArrayList<>();
+	bytes.add((byte) (fleetNr & 0xFF));
+	bytes.add((byte) ((fleetNr >> 8) & 0xFF));
+	bytes.add((byte) (((fleetNr >> 16) & 0x0F) | ((transmissionCounter & 0x0F) << 4)));
+    dataFrame.addAll(bytes);
+    
 //
 //    /**
 //     * Byte 13 unknown (b7b6b5) | koppelbit (b4) | manual (4 lsb)
@@ -231,6 +255,9 @@ public class VecomProtocol extends Protocol {
 //          break;
 //      }
 //    }
+	int manual = vecomMessage.getAttribute(VECOM.MANUAL_CONTROL).getValue();
+	dataFrame.add((byte) (manual & 0x0F));
+    
 //    /**
 //     * Byte 14 over loop (b7)| direction (b6b5) | not used (b4) | loop number (4 lsb)
 //     * overloop : 0 = arrival at loop, 1 = departure at loop
@@ -264,6 +291,14 @@ public class VecomProtocol extends Protocol {
 //
 //      dataFrame.add(temp_byte);
 //    }
+	int loopNr = vecomMessage.getAttribute(VECOM.LOOP_NR).getValue();
+    int direction = vecomMessage.getAttribute(VECOM.DIRECTION).getValue();
+    int overLoop = vecomMessage.getAttribute(VECOM.OVER_LOOP).getValue();
+    toAdd = (byte) (loopNr & 0x0F); 
+    toAdd |= (byte) ((direction & 0x3) << 5 );
+    toAdd |= (byte) ((overLoop & 0x1) << 7 );
+    dataFrame.add(toAdd);
+    
 
     ArrayList<Byte> header = addHeader();
     ArrayList<Byte> dle = addDLE(dataFrame);

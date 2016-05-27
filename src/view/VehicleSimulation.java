@@ -1,71 +1,47 @@
 package view;
 
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.awt.CardLayout;
 
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
-import controller.Event;
-import lombok.Getter;
+import view.ProtocolPanel.Proto;
 
 public class VehicleSimulation extends JPanel {
+	private static final long serialVersionUID = 2L;
 
-  private static final long serialVersionUID = 2L;
+	/**
+	 * Create the panel.
+	 */
+	public VehicleSimulation() {
+		JPanel unknownCard = new JPanel();
+		karCard = new ProtocolCard(Proto.KAR);
+		vecomCard = new ProtocolCard(Proto.VECOM);
+		
+		setLayout(new CardLayout());
+		add(unknownCard, Proto.UNKNOWN.getName());
+		add(karCard, Proto.KAR.getName());
+		add(vecomCard, Proto.VECOM.getName());
+	}
+	
+	public ProtocolCard getProtocolCard(Proto proto) {
+		if (proto == Proto.KAR) {
+			return karCard;
+		} else if (proto == Proto.VECOM) {
+			return vecomCard;
+		}
+		return null;
+	}
 
-  /**
-   * Create the panel.
-   */
-  public VehicleSimulation() {
-    setBorder(new LineBorder(new Color(0, 0, 0)));
-    setLayout(new GridLayout(10, 2, 2, 2));
-    setToolTipText("Press the left mouse button to sent public transport message to the ITC.\r\nPress the right mouse button to configure this button.");
-    vbList = new ArrayList<>();
-    createButton();
-  }
+	// PUBLIC METHOD
+	public void setCurrentProtocolCard(Proto proto) {
+		CardLayout cl = (CardLayout) getLayout();
+		cl.show(this, proto.getName());
+	}
 
-  // PUBLIC METHOD
-  /**
-   * @brief The subsriber gets a signal when a certain event takes place.
-   * @param a_subscriber
-   */
-  public void addEventSubscriber(Event a_subscriber){
-    subscriber  = a_subscriber;
-  }
-  
+	// PRIVATE METHODS
 
-  public ActionListener getVehicleSimulationListener() {
-    return vehicleSimulationListener;
-  }
-  public void setVehicleSimulationListener(
-      ActionListener vehicleSimulationListener) {
-    this.vehicleSimulationListener = vehicleSimulationListener;
-  }
-
-  //PRIVATE METHODS
-  private void createButton(){
-    for (int i = 0; i < 20; i++){
-      VehicleButton btnVeh = new VehicleButton();
-      btnVeh.addActionListener(vehicleSimulationListener);
-      add(btnVeh);
-      vbList.add(btnVeh);
-    }
-  }
-  
-  // LISTENERS
-  ActionListener vehicleSimulationListener = new ActionListener() {   
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      VehicleButton vb = (VehicleButton)e.getSource();
-      subscriber.signal(vb, null);
-    }
-  };
-
-  // PRIVATE ATTRIBUTES
-  private Event subscriber;
-  @Getter private ArrayList<VehicleButton> vbList;
+	// PRIVATE ATTRIBUTES
+	private ProtocolCard karCard;
+	private ProtocolCard vecomCard;
 
 }// end class VehicleSimulation

@@ -11,12 +11,13 @@ import com.google.common.collect.HashBiMap;
 
 import lombok.Getter;
 import model.AttributeID;
-import model.CVNAttribute.Commands;
-import model.CVNAttribute.JourneyType;
-import model.CVNAttribute.PriorityClass;
-import model.CVNAttribute.PunctualityClass;
-import model.CVNAttribute.VehicleStatus;
-import model.CVNAttribute.VehicleType;
+import model.Encodings;
+import model.Encodings.Command;
+import model.Encodings.JourneyType;
+import model.Encodings.KarPunctualityClass;
+import model.Encodings.KarVehicleType;
+import model.Encodings.PriorityClass;
+import model.Encodings.VehicleStatus;
 import model.ProtocolMessage;
 import model.kar.KarAttribute.KAR;
 
@@ -29,8 +30,18 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		fillKARAttributes();
 	}
 	
+	@Override
 	public int getValue(AttributeID id) {
 		return getValue((KAR) id, 0);
+	}
+
+	public KarAttribute getAttribute(AttributeID id) {
+		for (KarAttribute attribute : karAttributes) {
+			if (attribute.getId() == id) {
+				return attribute;
+			}
+		}
+		return null;
 	}
 	
 	public int getValue(KAR id, int fieldIndex) {
@@ -45,15 +56,6 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		return getAttribute(id).getKarFields().get(fieldIndex).getFieldName();
 	}
 	
-	public KarAttribute getAttribute(KAR id) {
-		for (KarAttribute attribute : karAttributes) {
-			if (attribute.getId() == id) {
-				return attribute;
-			}
-		}
-		return null;
-	}
-	
 	private void fillKARAttributes() {
 		karAttributes = new ArrayList<>();
 		
@@ -61,140 +63,140 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		String fieldName = "Loop nr";
 		int sizeInBytes = 1;
 		Range<Integer> range = Range.between(0, 127);
-		BiMap<Integer, String> encoding = HashBiMap.create();
+		BiMap<Integer, String> encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.VEH_TYPE;
 		fieldName = "Veh. type";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = createVehicleTypeEncoding();
+		encoding = Encodings.createEncoding(KarVehicleType.class);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.LINE_NR;
 		fieldName = "Line nr";
 		sizeInBytes = 2;
 		range = Range.between(0, 9999);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.SERVICE_NR;
 		fieldName = "Service nr";
 		sizeInBytes = 2;
 		range = Range.between(0, 9999);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.COMPANY_NR;
 		fieldName = "Company nr";
 		sizeInBytes = 1;
 		range = Range.between(0, 255);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.VEH_ID;
 		fieldName = "Veh. id";
 		sizeInBytes = 2;
 		range = Range.between(0, 32767);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.DIRECTION;
 		fieldName = "Direction";
 		sizeInBytes = 1;
 		range = Range.between(0, 255);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.VEH_STATUS;
 		fieldName = "Veh. status";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = createVehicleStatusEncoding();
+		encoding = Encodings.createEncoding(VehicleStatus.class);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.PRIO_CLASS;
 		fieldName = "Prio. class";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = createPriorityClassEncoding();
+		encoding = Encodings.createEncoding(PriorityClass.class);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.PUNCT_CLASS;
 		fieldName = "Punct. class";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = createPunctualityClassEncoding();
+		encoding = Encodings.createEncoding(KarPunctualityClass.class);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.PUNCTUALITY;
 		fieldName = "Punctuality";
 		sizeInBytes = 2;
 		range = Range.between(-3600, 3600);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.VEH_LENGTH;
 		fieldName = "Veh. length";
 		sizeInBytes = 1;
 		range = Range.between(0, 255);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.VEH_SPEED;
 		fieldName = "Veh. speed";
 		sizeInBytes = 1;
 		range = Range.between(0, 255);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.DISTANCE_TO_STOP;
 		fieldName = "Dist. to stop";
 		sizeInBytes = 2;
 		range = Range.between(-99, 9999);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.TIME_TO_STOP;
 		fieldName = "Time to stop";
 		sizeInBytes = 1;
 		range = Range.between(0, 255);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.JOURNEY_NR;
 		fieldName = "Journey nr";
 		sizeInBytes = 2;
 		range = Range.between(0, 9999);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.JOURNEY_TYPE;
 		fieldName = "Journey type";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = createJourneyTypeEncoding();
+		encoding = Encodings.createEncoding(JourneyType.class);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.ROUTE;
 		fieldName = "Route";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.COMMAND;
 		fieldName = "Command";
 		sizeInBytes = 1;
 		range = Range.between(0, 99);
-		encoding = createCommandsEncoding();
+		encoding = Encodings.createEncoding(Command.class);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.ACTIVATION;
 		fieldName = "Activation";
 		sizeInBytes = 2;
 		range = Range.between(0, 32767);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.LOCATION;
@@ -212,7 +214,7 @@ public class KarMessage implements ProtocolMessage, Serializable {
 
 		number = KAR.DATE;
 		List<KarField> dateFields = new ArrayList<>();
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		dateFields.add(new KarField("Year", 2, Range.between(0, 9999), encoding));
 		dateFields.add(new KarField("Month", 1, Range.between(1, 12), encoding));
 		dateFields.add(new KarField("Day", 1, Range.between(1, 31), encoding));
@@ -225,63 +227,14 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		fieldName = "Reserve 1";
 		sizeInBytes = 2;
 		range = Range.between(0, 32767);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 		
 		number = KAR.RESERVE2;
 		fieldName = "Reserve 2";
 		sizeInBytes = 2;
 		range = Range.between(0, 32767);
-		encoding = HashBiMap.create();
+		encoding = Encodings.createEncoding(null);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
 	}
-	
-	private BiMap<Integer, String> createVehicleTypeEncoding() {
-		BiMap<Integer, String> encoding = HashBiMap.create();
-		for (VehicleType val : VehicleType.values()) {
-			encoding.put(val.getNr(), val.getName());
-		}
-		return encoding;
-	}
-	
-	private BiMap<Integer, String> createVehicleStatusEncoding() {
-		BiMap<Integer, String> encoding = HashBiMap.create();
-		for (VehicleStatus val : VehicleStatus.values()) {
-			encoding.put(val.getNr(), val.getName());
-		}
-		return encoding;
-	}
-	
-	private BiMap<Integer, String> createPriorityClassEncoding() {
-		BiMap<Integer, String> encoding = HashBiMap.create();
-		for (PriorityClass val : PriorityClass.values()) {
-			encoding.put(val.getNr(), val.getName());
-		}
-		return encoding;
-	}
-	
-	private BiMap<Integer, String> createPunctualityClassEncoding() {
-		BiMap<Integer, String> encoding = HashBiMap.create();
-		for (PunctualityClass val : PunctualityClass.values()) {
-			encoding.put(val.getNr(), val.getName());
-		}
-		return encoding;
-	}
-	
-	private BiMap<Integer, String> createJourneyTypeEncoding() {
-		BiMap<Integer, String> encoding = HashBiMap.create();
-		for (JourneyType val : JourneyType.values()) {
-			encoding.put(val.getNr(), val.getName());
-		}
-		return encoding;
-	}
-	
-	private BiMap<Integer, String> createCommandsEncoding() {
-		BiMap<Integer, String> encoding = HashBiMap.create();
-		for (Commands val : Commands.values()) {
-			encoding.put(val.getNr(), val.getName());
-		}
-		return encoding;
-	}
-
 }

@@ -8,10 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import model.Attribute;
 import model.AttributeID;
 
 @RequiredArgsConstructor
-public class KarAttribute implements Serializable {
+public class KarAttribute implements Attribute, Serializable {
 	private static final long serialVersionUID = 2643942916709961309L;
 
 	@AllArgsConstructor

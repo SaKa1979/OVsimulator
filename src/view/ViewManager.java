@@ -37,8 +37,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import controller.Event;
 import images.ImageFactory;
+import lombok.Getter;
 import model.Communicator.ComTransmission;
 import model.Protocol;
+import view.ProtocolPanel.Proto;
 
 /**
  * @author Sander
@@ -96,12 +98,9 @@ public class ViewManager extends JFrame{
   public void setProtocolPanel(ProtocolPanel protocolPanel) {
     this.protocolPanel = protocolPanel;
   }
-
-  public VehicleSimulation getVehicleSimulation() {
-    return vehicleSimulation;
-  }
-  public void setVehicleSimulation(VehicleSimulation vehicleSimulation) {
-    this.vehicleSimulation = vehicleSimulation;
+  
+  public void updateVehicleSimulation(Proto proto) {
+	  vehicleSimulation.setCurrentProtocolCard(proto);
   }
 
   public ViewManager getINSTANCE(){
@@ -369,7 +368,6 @@ public class ViewManager extends JFrame{
 
     // vehicle simulation
     vehicleSimulation = new VehicleSimulation();
-    vehicleSimulation.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Simulation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
     GridBagConstraints gbc_vehicleSimulation = new GridBagConstraints();
     gbc_vehicleSimulation.anchor = GridBagConstraints.LINE_START;
     gbc_vehicleSimulation.insets = new Insets(5, 5, 0, 0);
@@ -685,7 +683,7 @@ public class ViewManager extends JFrame{
   // images
   private ImageFactory imagefactory;
   // views and menu
-  private VehicleSimulation vehicleSimulation; //persisent
+  @Getter private VehicleSimulation vehicleSimulation;
   private JPanel FeedbackPanel;
   private JTextPane feedbackTxtpn;
   private JPanel bottomInfoPanel;
@@ -717,6 +715,5 @@ public class ViewManager extends JFrame{
   private JMenuItem mntmOpen;
   private JMenuItem mntmSave;
   private JMenuItem mntmSaveAs;
-  private static final int OFFSET = 20;
 
 } // end of Ovmain 

@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 
 import controller.Event;
-import model.kar.KarMessage;
 
 public abstract class Protocol {
 
@@ -29,7 +28,7 @@ public abstract class Protocol {
    * @param vb: The calling VehicleButton
    * @return The message in Bytes
    */
-  public abstract ArrayList<Byte> createSerialMessage(KarMessage message);
+  public abstract ArrayList<Byte> createSerialMessage(ProtocolMessage message);
   
   /**
    * @brief recreates the message from given Bytes

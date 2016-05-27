@@ -19,6 +19,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.ArrayUtils;
 
 import model.Protocol;
+import model.ProtocolMessage;
 import model.kar.KarAttribute.KAR;
 import view.ViewManager;
 
@@ -41,7 +42,7 @@ public class KarProtocol extends Protocol {
 	}
 
 	@Override
-	public ArrayList<Byte> createSerialMessage(KarMessage message) {
+	public ArrayList<Byte> createSerialMessage(ProtocolMessage message) {
 		ArrayList<Byte> dataFrame = new ArrayList<Byte>();
 
 		dataFrame.add(SOH);
@@ -54,7 +55,7 @@ public class KarProtocol extends Protocol {
 //		sequenceNumber++;
 		dataFrame.add(sequenceNumber);
 		
-		List<Byte> data = createMessageData(message);
+		List<Byte> data = createMessageData((KarMessage) message);
 		dataFrame.add((byte) data.size());
 
 		// crc1
@@ -154,11 +155,6 @@ public class KarProtocol extends Protocol {
 		bytes.add((byte) (number & 0xFF));
 		bytes.add((byte) ((number >> 8) & 0xFF));
 		return bytes;
-	}
-	
-	short bytes2shortLSB(List<Byte> bytes) {
-		short number = (short) (bytes.get(1) << 8 + bytes.get(0));
-		return number;
 	}
 
 	/**

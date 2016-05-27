@@ -11,10 +11,13 @@ import javax.swing.SwingUtilities;
 
 import images.ImageFactory;
 import lombok.Getter;
-import lombok.Setter;
-import model.CVNAttribute.VehicleType;
-import model.kar.KarMessage;
+import model.Encodings.Encoding;
+import model.Encodings.KarVehicleType;
+import model.Encodings.VecomVehicleType;
+import model.ProtocolMessage;
 import model.kar.KarAttribute.KAR;
+import model.vecom.VecomAttribute.VECOM;
+import view.ProtocolPanel.Proto;
 
 /**
  * @brief A button representing a vehicle detection. A mouse listener must be
@@ -26,67 +29,63 @@ import model.kar.KarAttribute.KAR;
 public class VehicleButton extends JButton {
 
 	private static final long serialVersionUID = 4L;
+	private Proto proto;
 
 	/**
 	 * constructor
 	 */
-	public VehicleButton() {
+	public VehicleButton(Proto proto) {
 		super();
-		vehicleSettingPanel = new VehicleSettingPanel(this);
+		this.proto = proto;
+		vehicleSettingPanel = new VehicleSettingPanel(proto);
 		setToolTipText("LMB is action.\r\nRMB is settings");
 		initialize();
 	}
 
-	public VehicleButton(String a_name) {
-		super(a_name);
-		name = a_name;
-		vehicleSettingPanel = new VehicleSettingPanel(this);
-		initialize();
-	}
-
 	// PUBLIC METHODS
-
-	public void updateKarMessage(KarMessage karMessage) {
-		//TODO why do 2 object keep track of the same karMessage
-		this.karMessage = karMessage;
-		vehicleSettingPanel.updateSettingsPanel(karMessage);
-		setEnabled(true);
-		setButtonText();
-		setVehicleTypeImage(karMessage.getValue(KAR.VEH_TYPE));
+	public void updateProtocolMessage(ProtocolMessage protocolMessage, boolean enable) {
+		vehicleSettingPanel.updateSettingsPanel(protocolMessage);
+		setEnabled(enable);
+		setButtonText(protocolMessage);
+		// TODO MAKE GENERIC
+		if (proto == Proto.KAR) {
+			setVehicleTypeImage(protocolMessage.getValue(KAR.VEH_TYPE));
+		} else if (proto == Proto.VECOM) {
+			setVehicleTypeImage(protocolMessage.getValue(VECOM.VEH_TYPE));
+		}
+	}
+	
+	public ProtocolMessage getProtocolMessage() {
+		return vehicleSettingPanel.getProtocolMessage();
 	}
 
 	// PRIVATE METHODS
-
-	private void setButtonText() {
-		setText("L" + karMessage.getValue(KAR.LOOP_NR) + " FC" + karMessage.getValue(KAR.DIRECTION));
+	private void setButtonText(ProtocolMessage protocolMessage) {
+		// TODO MAKE GENERIC
+		if (proto == Proto.KAR) {
+			setText("L" + protocolMessage.getValue(KAR.LOOP_NR) + " FC" + protocolMessage.getValue(KAR.DIRECTION));
+		} else if (proto == Proto.VECOM) {
+			setText("L" + protocolMessage.getValue(VECOM.LOOP_NR) + " FC" + protocolMessage.getValue(VECOM.DIRECTION));
+		}
 		setFont(new Font("MonoSpace", Font.PLAIN, 8));
 	}
-
+	
+	
+	private <E extends Enum<E> & Encoding> E getTypeByNr(int nr, Class<E> type) {
+		for (E e : type.getEnumConstants()) {
+			if (nr == e.getNr()) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
 	private void setVehicleTypeImage(int vt) {
-		switch (vt) {
-		case 1:
-			setIcon(imagefactory.getImageIcon(VehicleType.BUS));
-			break;
-		case 2:
-			setIcon(imagefactory.getImageIcon(VehicleType.TRAM));
-			break;
-		case 3:
-			setIcon(imagefactory.getImageIcon(VehicleType.POLICE));
-			break;
-		case 4:
-			setIcon(imagefactory.getImageIcon(VehicleType.BRANDWEER));
-			break;
-		case 5:
-			setIcon(imagefactory.getImageIcon(VehicleType.AMBULANCE));
-			break;
-		case 7:
-			setIcon(imagefactory.getImageIcon(VehicleType.TAXI));
-			break;
-		case 0:
-		case 6:
-		default:
-			setIcon(imagefactory.getImageIcon(VehicleType.UNKNOWN.getName()));
-			break;
+		// TODO MAKE GENERIC
+		if (proto == Proto.KAR) {
+			setIcon(imagefactory.getKarImageIcon(getTypeByNr(vt, KarVehicleType.class)));
+		} else if (proto == Proto.VECOM) {
+			setIcon(imagefactory.getVecomImageIcon(getTypeByNr(vt, VecomVehicleType.class)));
 		}
 	}
 
@@ -101,12 +100,12 @@ public class VehicleButton extends JButton {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()) {
-					vehicleSettingPanel.setProto(ViewManager.getInstance().getProtocolPanel().getSelectedProto());
+//					vehicleSettingPanel.setProto(ViewManager.getInstance().getProtocolPanel().getSelectedProto());
 					int ok = JOptionPane.showConfirmDialog(null, vehicleSettingPanel, "Vehicle Setting",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 					switch (ok) {
 					case JOptionPane.OK_OPTION:
-						updateKarMessage(vehicleSettingPanel.getKarMessage());
+						updateProtocolMessage(vehicleSettingPanel.getProtocolMessage(), true);
 						break;
 					default:
 					}
@@ -116,13 +115,7 @@ public class VehicleButton extends JButton {
 	}
 
 	// PRIVATE ATTRIBUTE
-	@Getter
-	@Setter
-	private String name;
-	@Getter
-	private KarMessage karMessage;
-	@Getter
-	private VehicleSettingPanel vehicleSettingPanel;
+	@Getter	private VehicleSettingPanel vehicleSettingPanel;
 	private ImageFactory imagefactory = new ImageFactory();
 
 }// end class
