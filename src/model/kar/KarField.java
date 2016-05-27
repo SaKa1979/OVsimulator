@@ -8,7 +8,7 @@ import com.google.common.collect.BiMap;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import model.Encodings.Encoding;
 
 @RequiredArgsConstructor
 public class KarField implements Serializable{
@@ -18,5 +18,17 @@ public class KarField implements Serializable{
 	@Getter private final int sizeInBytes;
 	@Getter private final Range<Integer> range;
 	@Getter private final BiMap<Integer, String> encoding;
-	@Getter @Setter private int value;
+	@Getter private int value;
+	
+	public void setValue(int value) {
+		this.value = value;
+	}
+	
+	/**
+	 * Method to set one of the encoded variables
+	 * @param enumValue
+	 */
+	public <E extends Enum<E> & Encoding> void setValue(E enumValue) {
+		value = encoding.inverse().get(enumValue.getName());
+	}
 }

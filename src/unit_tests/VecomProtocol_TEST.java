@@ -1,26 +1,38 @@
 package unit_tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import model.Encodings.CategoryType;
+import model.Encodings.Direction;
+import model.Encodings.ManualControl;
+import model.Encodings.VecomPunctualityClass;
+import model.Encodings.VecomVehicleType;
+import model.vecom.VecomAttribute.VECOM;
+import model.vecom.VecomMessage;
 import model.vecom.VecomProtocol;
-import view.ProtocolPanel;
-import view.ProtocolPanel.Proto;
-import view.VehicleButton;
-import view.VehicleSettingPanel;
-import view.ViewManager;
 
 public class VecomProtocol_TEST {
 
   @Before
   public void setUp() throws Exception {
-    protocolPanel.setSelectedProto(Proto.VECOM);
-    VehicleSettingPanel vehicleSettingPanel = vehicleButton.getVehicleSettingPanel();
-    
     // set up a default vehicle button configuration
+    vm = new VecomMessage();
+    vm.setAttribute(VECOM.LOOP_NR, 1);
+    vm.setAttribute(VECOM.VEH_TYPE, VecomVehicleType.CITY_BUS);
+    vm.setAttribute(VECOM.LINE_NR, 6);
+    vm.setAttribute(VECOM.SERVICE_NR, 4);
+    vm.setAttribute(VECOM.FLEET_NR, 65536);
+    vm.setAttribute(VECOM.MANUAL_CONTROL, ManualControl.TURNRIGHT);
+    vm.setAttribute(VECOM.PUNCTUALITY, VecomPunctualityClass.NORMAL);
+    vm.setAttribute(VECOM.CATEGORY, CategoryType.LIJN_DIENST);
+    vm.setAttribute(VECOM.DIRECTION, Direction.UNKNOWN);
+    
     
 //    vehicleButton.setLoopNr(1);
 //    vehicleButton.setVehicleType(VehicleType.BUS_CITY);
@@ -47,8 +59,8 @@ public class VecomProtocol_TEST {
     result.add((byte)0x0D); //B1
     result.add((byte)0xA0); //B2 vehicleType
     result.add((byte)0x06); //B3 lineNumber
-    result.add((byte)0x00); //B4 lineNumber vehicleServiceNr
-    result.add((byte)0x01); //B5 vehicleServiceNr
+    result.add((byte)0x40); //B4 lineNumber vehicleServiceNr
+    result.add((byte)0x00); //B5 vehicleServiceNr
     result.add((byte)0x00); //B6 journeyType/cat punctuality class
     result.add((byte)0x00); //B7 staffnummer lo 
     result.add((byte)0x00); //B8 staffnummer mo
@@ -59,17 +71,13 @@ public class VecomProtocol_TEST {
     result.add((byte)0x02); //B13 manual
     result.add((byte)0x01); //B14 overloop direction loopnumber
     result.add((byte)0x03); //ETX
-    result.add((byte)0xA9); //CRC1
-    result.add((byte)0x08); //CRC2
+    result.add((byte)-23); //CRC1
+    result.add((byte)0x09); //CRC2
     
-//    assertEquals(result, vecomProtocol.createSerialMessage(vehicleButton) );
+    assertEquals(result, vecomProtocol.createSerialMessage(vm) );
   }
   
-  
-  
-  VecomProtocol vecomProtocol = new VecomProtocol();
-  ProtocolPanel protocolPanel = ViewManager.getInstance().getProtocolPanel();
-  VehicleButton vehicleButton = new VehicleButton(Proto.VECOM);
-  VehicleSettingPanel vehicleSettingPanel = vehicleButton.getVehicleSettingPanel();
+  private VecomProtocol vecomProtocol = new VecomProtocol();
+  private VecomMessage vm;
 
 }

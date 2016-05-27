@@ -11,10 +11,12 @@ import com.google.common.collect.BiMap;
 import lombok.Getter;
 import model.AttributeID;
 import model.Encodings;
+import model.Encodings.CategoryType;
 import model.Encodings.Direction;
-import model.Encodings.KarPunctualityClass;
+import model.Encodings.Encoding;
 import model.Encodings.ManualControl;
 import model.Encodings.OverLoop;
+import model.Encodings.VecomPunctualityClass;
 import model.Encodings.VecomVehicleType;
 import model.ProtocolMessage;
 import model.vecom.VecomAttribute.VECOM;
@@ -32,18 +34,26 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 	public int getValue(AttributeID id) {
 		return getAttribute((VECOM) id).getValue();
 	}
-	
-	public String getName(AttributeID id) {
-		return getAttribute((VECOM) id).getFieldName();
-	}
 
-	public VecomAttribute getAttribute(VECOM id) {
+	public VecomAttribute getAttribute(AttributeID id) {
 		for (VecomAttribute attribute : vecomAttributes) {
 			if (attribute.getId() == id) {
 				return attribute;
 			}
 		}
 		return null;
+	}
+	
+	public void setAttribute(AttributeID id, int value) {
+		getAttribute(id).setValue(value);
+	}
+	
+	/**
+	 * Method to set one of the encoded variables
+	 * @param enumValue
+	 */
+	public <E extends Enum<E> & Encoding> void setAttribute(AttributeID id, E enumValue) {
+		getAttribute(id).setValue(enumValue);
 	}
 
 	private void fillVecomAttributes() {
@@ -74,14 +84,14 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		fieldName = "Category";
 		sizeInBits = 2;
 		range = Range.between(0, 99);
-		encoding = Encodings.createEncoding(null);
+		encoding = Encodings.createEncoding(CategoryType.class);
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.PUNCTUALITY;
 		fieldName = "Punctualiteit";
 		sizeInBits = 2;
 		range = Range.between(0, 3);
-		encoding = Encodings.createEncoding(KarPunctualityClass.class);
+		encoding = Encodings.createEncoding(VecomPunctualityClass.class);
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 
 		number = VECOM.INTELI;

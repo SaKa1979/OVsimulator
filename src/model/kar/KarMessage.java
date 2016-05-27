@@ -13,6 +13,7 @@ import lombok.Getter;
 import model.AttributeID;
 import model.Encodings;
 import model.Encodings.Command;
+import model.Encodings.Encoding;
 import model.Encodings.JourneyType;
 import model.Encodings.KarPunctualityClass;
 import model.Encodings.KarVehicleType;
@@ -48,12 +49,16 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		return getAttribute(id).getKarFields().get(fieldIndex).getValue();
 	}
 	
-	public String getName(KAR key) {
-		return getName(key, 0);
+	public void setAttribute(KAR id, int value) {
+		getAttribute(id).getKarFields().get(0).setValue(value);
 	}
 	
-	public String getName(KAR id, int fieldIndex) {
-		return getAttribute(id).getKarFields().get(fieldIndex).getFieldName();
+	/**
+	 * Method to set one of the encoded variables
+	 * @param enumValue
+	 */
+	public <E extends Enum<E> & Encoding> void setAttribute(AttributeID id, E enumValue) {
+		getAttribute(id).getKarFields().get(0).setValue(enumValue);
 	}
 	
 	private void fillKARAttributes() {

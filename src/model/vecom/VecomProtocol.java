@@ -215,7 +215,7 @@ public class VecomProtocol extends Protocol {
 //
 //      dataFrame.add((byte)temp_byte);    
 //    }
-    int fleetNr = vecomMessage.getAttribute(VECOM.STAFF_NR).getValue();
+    int fleetNr = vecomMessage.getAttribute(VECOM.FLEET_NR).getValue();
 	bytes = new ArrayList<>();
 	bytes.add((byte) (fleetNr & 0xFF));
 	bytes.add((byte) ((fleetNr >> 8) & 0xFF));

@@ -9,9 +9,9 @@ import com.google.common.collect.BiMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import model.Attribute;
 import model.AttributeID;
+import model.Encodings.Encoding;
 
 @RequiredArgsConstructor
 public class VecomAttribute implements Attribute, Serializable {
@@ -41,5 +41,17 @@ public class VecomAttribute implements Attribute, Serializable {
 	@Getter private final int sizeInBits;
 	@Getter private final Range<Integer> range;
 	@Getter private final BiMap<Integer, String> encoding;
-	@Getter @Setter private int value;
+	@Getter private int value;
+	
+	public void setValue(int value) {
+		this.value = value;
+	}
+	
+	/**
+	 * Method to set one of the encoded variables
+	 * @param enumValue
+	 */
+	public <E extends Enum<E> & Encoding> void setValue(E enumValue) {
+		value = encoding.inverse().get(enumValue.getName());
+	}
 }
