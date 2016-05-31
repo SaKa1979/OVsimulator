@@ -12,48 +12,66 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.google.common.collect.BiMap;
-
 import lombok.Getter;
+import model.Encodings;
+import model.Encodings.Encoding;
 import model.vecom.VecomAttribute;
 
 public class VecomAttributeEntry extends JPanel {
 	private static final long serialVersionUID = -3441900928638288607L;
 	@Getter private VecomAttribute vecomAttribute;
 	private JPanel panel;
+	private JComboBox<String> inputField;
+	private NumericField numericInputField;
 
 	public VecomAttributeEntry(VecomAttribute vecomAttribute) {
 		this.vecomAttribute = vecomAttribute;
 		createEntry();
 	}
+	
+	public int getValue() {
+		return vecomAttribute.getValue();
+	}
+
+	public void updateEntry(VecomAttribute attribute) {
+		int value = attribute.getValue();
+		Class<? extends Encoding> encoding = vecomAttribute.getEncoding();
+		if (encoding != null) {
+			inputField.setSelectedItem(Encodings.getNameByNr(encoding, value));
+		} else {
+			numericInputField.setText("" + value);
+		}
+	}
 
 	private void createEntry() {
 		panel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 150, 150 };
+		gridBagLayout.columnWidths = new int[] { 150, 160 };
 		panel.setLayout(gridBagLayout);
 		
-		createLabel(vecomAttribute);
-		createInputComponent(vecomAttribute);
+		createLabel();
+		createInputComponent();
 		this.add(panel);
 	}
 
-	public void createInputComponent(VecomAttribute vecomAttribute) {
-		BiMap<Integer, String> encoding = vecomAttribute.getEncoding();
-		if (encoding.size() > 0) {
-			JComboBox<String> inputField = new JComboBox<>(encoding.values().toArray(new String[encoding.size()]));
-			inputField.setSelectedItem(encoding.get(vecomAttribute.getValue()));
+	private void createInputComponent() {
+		Class<? extends Encoding> encoding = vecomAttribute.getEncoding();
+		if (encoding != null) {
+			inputField = new JComboBox<>(Encodings.getStringArray(encoding));
+			inputField.setSelectedItem(Encodings.getNameByNr(encoding, vecomAttribute.getValue()));
 			addComboBoxListener(vecomAttribute, inputField);
 			createInputFieldGridBagConstraints(panel, inputField, 0, 1);
+			inputField.setSelectedIndex(0);
+			vecomAttribute.setValue((String) inputField.getSelectedItem());
 		} else {
-			NumericField inputField = createInputField(vecomAttribute);
-			inputField.setText("" + vecomAttribute.getValue());
-			addNumericFieldListener(vecomAttribute, inputField);
-			createInputFieldGridBagConstraints(panel, inputField, 0, 1);
+			numericInputField = createInputField(vecomAttribute);
+			numericInputField.setText("" + vecomAttribute.getValue());
+			addNumericFieldListener(vecomAttribute, numericInputField);
+			createInputFieldGridBagConstraints(panel, numericInputField, 0, 1);
 		}
 	}
 
-	public void createLabel(VecomAttribute vecomAttribute) {
+	private void createLabel() {
 		String fieldName = vecomAttribute.getFieldName() + " (" + vecomAttribute.getId().getValue() + ")";
 		JComponent label = new JLabel(fieldName);
 		createLabelGridBagConstraints(panel, label, 0, 0);
@@ -64,9 +82,8 @@ public class VecomAttributeEntry extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					BiMap<Integer, String> encoding = vecomAttribute.getEncoding();
 					String selected = (String) e.getItem();
-					vecomAttribute.setValue(encoding.inverse().get(selected));
+					vecomAttribute.setValue(selected);
 				}
 			}
 		});
@@ -104,7 +121,6 @@ public class VecomAttributeEntry extends JPanel {
 
 	private GridBagConstraints createDefaultGridBagConstraints(JComponent component, int row, int column) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		// gbc.insets = new Insets(0, 0, 5, 5);
 		gbc.gridx = column;
 		gbc.gridy = row;
 		return gbc;
@@ -130,7 +146,7 @@ public class VecomAttributeEntry extends JPanel {
 		NumericField tf = new NumericField(5, NumericField.NUMERIC);
 		tf.setAllowNegative(attribute.getRange().getMinimum() < 0);
 		tf.setNumber(0);
-		tf.setToolTipText(attribute.getRange().toString());
+		tf.setToolTipText("Range: " + attribute.getRange());
 		return tf;
 	}
 

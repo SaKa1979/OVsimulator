@@ -54,4 +54,8 @@ public class KarAttribute implements Attribute, Serializable {
 		this.karFields = new ArrayList<>();
 		this.karFields.add(karField);
 	}
+	
+	public int getValue() {
+		return karFields.get(0).getValue();
+	}
 }

@@ -39,6 +39,25 @@ public class VecomProtocol extends Protocol {
      * Byte 1 default 0x0D
      */
     dataFrame.add((byte)0x0D);
+    
+    // TODO loop over all attributes and assemble message based on the size in bits
+//    int bitPositionInByte = 0;
+//    byte data;
+//    // This loop will add all attributes consecutively based on the bits per attribute.
+//    for (VecomAttribute attribute : vecomMessage.getVecomAttributes()) {
+//    	int value = attribute.getValue();
+//    	int nrOfBits = attribute.getSizeInBits();
+//    	int nrOfBitsInByte = Math.max(8, nrOfBits);
+//    	
+//    	int startPos = bitPositionInByte;
+//    	int bitPosInAttribute = 0;
+//    	int andWith = (2 << nrOfBits) - 1; // This make 0x0F for 4 bits, etc
+//    	bitPositionInByte += nrOfBits;
+//    	data |= (byte) ((value & andWith) << startPos);
+//    	while (bitPositionInByte > 7) {
+//    		bitPositionInByte -= 8;
+//    	}
+//    }
 
     /** 
      * Byte 2 vehicleType 
@@ -117,8 +136,8 @@ public class VecomProtocol extends Protocol {
     int vehSrvNr = vecomMessage.getAttribute(VECOM.SERVICE_NR).getValue();
 	List<Byte> bytes = new ArrayList<>();
 	bytes.add((byte) (lineNr & 0xFF));
-	bytes.add((byte) (((lineNr >> 8) & 0x0F) | ((vehSrvNr & 0x0F) << 4)));
-	bytes.add((byte) ((vehSrvNr >> 4) & 0xFF));
+	bytes.add((byte) (((lineNr >> 8) & 0x3F) | ((vehSrvNr & 0xC0) << 6)));
+	bytes.add((byte) ((vehSrvNr >> 2) & 0xFF));
     dataFrame.addAll(bytes);
     
 //    /**
@@ -168,9 +187,7 @@ public class VecomProtocol extends Protocol {
 //    }
     int category = vecomMessage.getAttribute(VECOM.CATEGORY).getValue();
     int punctuality = vecomMessage.getAttribute(VECOM.PUNCTUALITY).getValue();
-//    int inteli = vecomMessage.getAttribute(VECOM.INTELI).getValue();
-//    int bcd = vecomMessage.getAttribute(VECOM.BCD).getValue();
-    byte toAdd = (byte) ((punctuality & 0x3) << 4 );
+    byte toAdd = (byte) ((punctuality & 0x03) << 4 );
     toAdd |= (byte) ((category & 0x3) << 6 ); 
     dataFrame.add(toAdd);
     
@@ -219,10 +236,9 @@ public class VecomProtocol extends Protocol {
 	bytes = new ArrayList<>();
 	bytes.add((byte) (fleetNr & 0xFF));
 	bytes.add((byte) ((fleetNr >> 8) & 0xFF));
-	bytes.add((byte) (((fleetNr >> 16) & 0x0F) | ((transmissionCounter & 0x0F) << 4)));
+	bytes.add((byte) (((fleetNr >> 16) & 0x03) | ((transmissionCounter & 0x3F) << 2)));
     dataFrame.addAll(bytes);
     
-//
 //    /**
 //     * Byte 13 unknown (b7b6b5) | koppelbit (b4) | manual (4 lsb)
 //     * -manual 0 - 7
@@ -256,7 +272,7 @@ public class VecomProtocol extends Protocol {
 //      }
 //    }
 	int manual = vecomMessage.getAttribute(VECOM.MANUAL_CONTROL).getValue();
-	dataFrame.add((byte) (manual & 0x0F));
+	dataFrame.add((byte) (manual & 0x07));
     
 //    /**
 //     * Byte 14 over loop (b7)| direction (b6b5) | not used (b4) | loop number (4 lsb)
@@ -295,8 +311,8 @@ public class VecomProtocol extends Protocol {
     int direction = vecomMessage.getAttribute(VECOM.DIRECTION).getValue();
     int overLoop = vecomMessage.getAttribute(VECOM.OVER_LOOP).getValue();
     toAdd = (byte) (loopNr & 0x0F); 
-    toAdd |= (byte) ((direction & 0x3) << 5 );
-    toAdd |= (byte) ((overLoop & 0x1) << 7 );
+    toAdd |= (byte) ((direction & 0x03) << 5 );
+    toAdd |= (byte) ((overLoop & 0x01) << 7 );
     dataFrame.add(toAdd);
     
 

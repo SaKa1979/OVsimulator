@@ -1,8 +1,5 @@
 package model;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +8,7 @@ public class Encodings {
 	
 	public interface Encoding {
 		public String getName();
-		public int getNr();
+		public int getValue();
 	}
 	
 	@AllArgsConstructor
@@ -26,28 +23,28 @@ public class Encodings {
 	    RTS_F ("Startklaar + voorwaarts", 7);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
 	@AllArgsConstructor
 	public enum OverLoop implements Encoding  {
-		DEPARTURE ("Vertrek",0),
-	    ARRIVAL ("Aankomst",0);
+		DEPARTURE ("Vertrek", 0),
+	    ARRIVAL ("Aankomst", 1);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
 	@AllArgsConstructor
 	public enum Command implements Encoding  {
 	    RESERVE ("Reserve",0), 
-	    IN ("Imelding",1),
-	    UIT ("Uitmelding",2),
-	    VOOR ("Vooraankondiging",3);
+	    IN ("Imelding", 1),
+	    UIT ("Uitmelding", 2),
+	    VOOR ("Vooraankondiging", 3);
 
 		@Getter private String name;
-		@Getter private int nr;
-	}// end enum Commands
+		@Getter private int value;
+	}
 
 	@AllArgsConstructor
 	public enum KarVehicleType implements Encoding {
@@ -62,7 +59,7 @@ public class Encodings {
 	    UNKNOWN("Unknown", 8);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
 	@AllArgsConstructor
@@ -80,7 +77,7 @@ public class Encodings {
 	    REGIONAL_BUS ("Regionale bus", 0xE0);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
 	@AllArgsConstructor
@@ -91,7 +88,7 @@ public class Encodings {
 	    GEEN_DIENST ("Geen dienst", 3); 
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 
 	@AllArgsConstructor
@@ -103,7 +100,7 @@ public class Encodings {
 	    STOP2 ("Stop niet bij halte", 4);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 
 	@AllArgsConstructor
@@ -115,11 +112,11 @@ public class Encodings {
 	    ALARM ("Alarm",4);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
 	@AllArgsConstructor
-	public enum KarPunctualityClass implements Encoding  {
+	public enum PunctualityClass implements Encoding  {
 	    GEENINFO ("Geen info",0), 
 	    TELAAT ("Te laat",1),
 	    OPTIJD ("Op tijd",2),
@@ -127,18 +124,16 @@ public class Encodings {
 	    BUITENDIENST ("Geen dienst",4);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
 	@AllArgsConstructor
-	public enum VecomPunctualityClass implements Encoding  {
+	public enum Inteli implements Encoding  {
 	    NORMAL ("Normaal", 0),
-	    SYSTEM ("Systeem", 1),
-	    RESERVE1 ("Reseve 1", 2),
-	    RESERVE2 ("Reseve 2", 3);
+	    SYSTEM ("Systeem", 1);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 
 	@AllArgsConstructor
@@ -150,7 +145,7 @@ public class Encodings {
 	    RESERVED ("Gereserveerd", 14);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 
 	@AllArgsConstructor
@@ -161,17 +156,52 @@ public class Encodings {
 	    BACKWARDS ("Achteruit", 3);
 
 		@Getter private String name;
-		@Getter private int nr;
+		@Getter private int value;
 	}
 	
-	public static <E extends Enum<E> & Encoding> BiMap<Integer, String> createEncoding(Class<E> encoding) {
-		BiMap<Integer, String> ec = HashBiMap.create();
-		if (encoding != null) {
-			for (E val : encoding.getEnumConstants()) {
-				ec.put(val.getNr(), val.getName());
+	public static Encoding getTypeByValue(Class<? extends Encoding> encoding, int value) {
+		for (Encoding e : encoding.getEnumConstants()) {
+			if (value == e.getValue()) {
+				return e;
 			}
 		}
-		return ec;
+		return null;
+	}
+	
+	public static Encoding getTypeByName(Class<? extends Encoding> encoding, String name) {
+		for (Encoding e : encoding.getEnumConstants()) {
+			if (name.equals(e.getName())) {
+				return e;
+			}
+		}
+		return null;
+	}
+	
+	public static String getNameByNr(Class<? extends Encoding> encoding, int value) {
+		for (Encoding e : encoding.getEnumConstants()) {
+			if (value == e.getValue()) {
+				return e.getName();
+			}
+		}
+		return "";
+	}
+	
+	public static int getValueByName(Class<? extends Encoding> encoding, String name) {
+		for (Encoding e : encoding.getEnumConstants()) {
+			if (name == e.getName()) {
+				return e.getValue();
+			}
+		}
+		return 0;
+	}
+	
+	public static String[] getStringArray(Class<? extends Encoding> encoding) {
+		Encoding[] encodings = encoding.getEnumConstants();
+		String[] array = new String[encodings.length];
+		for (int i = 0; i < encodings.length; i++) {
+			array[i] = encodings[i].getName();
+		}
+		return array;
 	}
 }
 

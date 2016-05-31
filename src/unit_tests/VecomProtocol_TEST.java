@@ -11,7 +11,7 @@ import org.junit.Test;
 import model.Encodings.CategoryType;
 import model.Encodings.Direction;
 import model.Encodings.ManualControl;
-import model.Encodings.VecomPunctualityClass;
+import model.Encodings.PunctualityClass;
 import model.Encodings.VecomVehicleType;
 import model.vecom.VecomAttribute.VECOM;
 import model.vecom.VecomMessage;
@@ -29,7 +29,7 @@ public class VecomProtocol_TEST {
     vm.setAttribute(VECOM.SERVICE_NR, 4);
     vm.setAttribute(VECOM.FLEET_NR, 65536);
     vm.setAttribute(VECOM.MANUAL_CONTROL, ManualControl.TURNRIGHT);
-    vm.setAttribute(VECOM.PUNCTUALITY, VecomPunctualityClass.NORMAL);
+    vm.setAttribute(VECOM.PUNCTUALITY, PunctualityClass.GEENINFO);
     vm.setAttribute(VECOM.CATEGORY, CategoryType.LIJN_DIENST);
     vm.setAttribute(VECOM.DIRECTION, Direction.UNKNOWN);
     
@@ -59,20 +59,20 @@ public class VecomProtocol_TEST {
     result.add((byte)0x0D); //B1
     result.add((byte)0xA0); //B2 vehicleType
     result.add((byte)0x06); //B3 lineNumber
-    result.add((byte)0x40); //B4 lineNumber vehicleServiceNr
-    result.add((byte)0x00); //B5 vehicleServiceNr
+    result.add((byte)0x00); //B4 lineNumber vehicleServiceNr
+    result.add((byte)0x01); //B5 vehicleServiceNr
     result.add((byte)0x00); //B6 journeyType/cat punctuality class
     result.add((byte)0x00); //B7 staffnummer lo 
     result.add((byte)0x00); //B8 staffnummer mo
     result.add((byte)0x00); //B9 staffnummer ho
     result.add((byte)0x00); //B10 vehicleID lo aka fleetnumber
     result.add((byte)0x00); //B11 vehicleID mo
-    result.add((byte)0x21); //B12 transmissioncounter vehicleID ho
+    result.add((byte)0x9);  //B12 transmissioncounter vehicleID ho
     result.add((byte)0x02); //B13 manual
     result.add((byte)0x01); //B14 overloop direction loopnumber
     result.add((byte)0x03); //ETX
-    result.add((byte)-23); //CRC1
-    result.add((byte)0x09); //CRC2
+    result.add((byte)-127);  //CRC1
+    result.add((byte)0x08); //CRC2
     
     assertEquals(result, vecomProtocol.createSerialMessage(vm) );
   }

@@ -56,26 +56,25 @@ public class KarProtocol extends Protocol {
 		dataFrame.add(sequenceNumber);
 		
 		List<Byte> data = createMessageData((KarMessage) message);
-		dataFrame.add((byte) data.size());
-
+		// length
+		int length = data.size();
+		dataFrame.add((byte) length);
+		
 		// crc1
 		short crc1 = calculateCRC(dataFrame);
 		dataFrame.addAll(short2bytesLSB(crc1));
-
+		
 		// data
 		dataFrame.addAll(data);
-
-		// crc2
-		short crc2 = calculateCRC(data);
-		dataFrame.addAll(short2bytesLSB(crc2));
+		
+		if (length > 0) {
+			// crc2
+			short crc2 = calculateCRC(data);
+			dataFrame.addAll(short2bytesLSB(crc2));
+		}
 		
 		// escape all SYN characters
-		for (int i = 0; i < dataFrame.size(); i++) {
-			if (dataFrame.get(i) == SYN) {
-				dataFrame.add(i, SYN);
-				i++;
-			}
-		}
+		escapeSynCharacters(dataFrame);
 		
 		// insert message start
 		dataFrame.add(0, SYN);
@@ -88,6 +87,15 @@ public class KarProtocol extends Protocol {
 		signalSubscriber("Sending KAR message: " + dataFrameMessage + "\n");
 
 		return dataFrame;
+	}
+
+	private void escapeSynCharacters(ArrayList<Byte> dataFrame) {
+		for (int i = 0; i < dataFrame.size(); i++) {
+			if (dataFrame.get(i) == SYN) {
+				dataFrame.add(i, SYN);
+				i++;
+			}
+		}
 	}
 
 	private List<Byte> createMessageData(KarMessage message) {

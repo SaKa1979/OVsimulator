@@ -105,7 +105,7 @@ public class ProtocolPanel extends JPanel {
 
 	public void setKarKey(byte[] key) {
 		this.karKey = key;
-		karKeyFile.setText("Key lenght: " + key.length);
+		karKeyFile.setText("Key length: " + key.length);
 	}
 
 	// PRIVATE METHODS
@@ -176,7 +176,7 @@ public class ProtocolPanel extends JPanel {
 		add(lblSystemIdentificationNumber, gbc_lblSystemIdentificationNumber);
 
 		karKeyFile = new JButton();
-		karKeyFile.setText("Open Secret Key file");
+		karKeyFile.setText("Open secret key file");
 		karKeyFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -192,7 +192,7 @@ public class ProtocolPanel extends JPanel {
 			}
 		});
 		karKeyFile.setEnabled(false);
-		karKeyFile.setToolTipText("Enter the secret karKey");
+		karKeyFile.setToolTipText("Enter the secret kar key");
 		karKeyFile.setBackground(Color.lightGray);
 		karKeyFile.setForeground(Color.darkGray);
 		GridBagConstraints gbc_keyTF = new GridBagConstraints();

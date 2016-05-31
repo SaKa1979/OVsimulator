@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 
 import images.ImageFactory;
 import lombok.Getter;
-import model.Encodings.Encoding;
+import model.Encodings;
 import model.Encodings.KarVehicleType;
 import model.Encodings.VecomVehicleType;
 import model.ProtocolMessage;
@@ -70,22 +70,12 @@ public class VehicleButton extends JButton {
 		setFont(new Font("MonoSpace", Font.PLAIN, 8));
 	}
 	
-	
-	private <E extends Enum<E> & Encoding> E getTypeByNr(int nr, Class<E> type) {
-		for (E e : type.getEnumConstants()) {
-			if (nr == e.getNr()) {
-				return e;
-			}
-		}
-		return null;
-	}
-	
 	private void setVehicleTypeImage(int vt) {
 		// TODO MAKE GENERIC
 		if (proto == Proto.KAR) {
-			setIcon(imagefactory.getKarImageIcon(getTypeByNr(vt, KarVehicleType.class)));
+			setIcon(imagefactory.getKarImageIcon((KarVehicleType) Encodings.getTypeByValue(KarVehicleType.class, vt)));
 		} else if (proto == Proto.VECOM) {
-			setIcon(imagefactory.getVecomImageIcon(getTypeByNr(vt, VecomVehicleType.class)));
+			setIcon(imagefactory.getVecomImageIcon((VecomVehicleType) Encodings.getTypeByValue(VecomVehicleType.class, vt)));
 		}
 	}
 
@@ -100,7 +90,6 @@ public class VehicleButton extends JButton {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e) || e.isControlDown()) {
-//					vehicleSettingPanel.setProto(ViewManager.getInstance().getProtocolPanel().getSelectedProto());
 					int ok = JOptionPane.showConfirmDialog(null, vehicleSettingPanel, "Vehicle Setting",
 							JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 					switch (ok) {

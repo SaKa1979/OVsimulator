@@ -6,17 +6,14 @@ import java.util.List;
 
 import org.apache.commons.lang3.Range;
 
-import com.google.common.collect.BiMap;
-
 import lombok.Getter;
 import model.AttributeID;
-import model.Encodings;
 import model.Encodings.CategoryType;
 import model.Encodings.Direction;
 import model.Encodings.Encoding;
 import model.Encodings.ManualControl;
 import model.Encodings.OverLoop;
-import model.Encodings.VecomPunctualityClass;
+import model.Encodings.PunctualityClass;
 import model.Encodings.VecomVehicleType;
 import model.ProtocolMessage;
 import model.vecom.VecomAttribute.VECOM;
@@ -48,11 +45,7 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		getAttribute(id).setValue(value);
 	}
 	
-	/**
-	 * Method to set one of the encoded variables
-	 * @param enumValue
-	 */
-	public <E extends Enum<E> & Encoding> void setAttribute(AttributeID id, E enumValue) {
+	public void setAttribute(AttributeID id, Encoding enumValue) {
 		getAttribute(id).setValue(enumValue);
 	}
 
@@ -62,92 +55,93 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		VECOM number = VECOM.VEH_TYPE;
 		String fieldName = "Veh. type";
 		int sizeInBits = 8;
-		Range<Integer> range = Range.between(0, 99);
-		BiMap<Integer, String> encoding = Encodings.createEncoding(VecomVehicleType.class);
+		Range<Integer> range = Range.between(0, 255);
+		Class<? extends Encoding> encoding = VecomVehicleType.class;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 
 		number = VECOM.LINE_NR;
 		fieldName = "Line nr";
-		sizeInBits = 12;
-		range = Range.between(0, 9999);
-		encoding = Encodings.createEncoding(null);
+		sizeInBits = 14;
+		range = Range.between(0, 16383);
+		encoding = null;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.SERVICE_NR;
 		fieldName = "Service nr";
-		sizeInBits = 12;
-		range = Range.between(0, 9999);
-		encoding = Encodings.createEncoding(null);
+		sizeInBits = 10 + 3;	// 3 extra 0 stuffing bits
+		range = Range.between(0, 1023);
+		encoding = null;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
-		
-		number = VECOM.CATEGORY;
-		fieldName = "Category";
-		sizeInBits = 2;
-		range = Range.between(0, 99);
-		encoding = Encodings.createEncoding(CategoryType.class);
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+
+		// These fields are not used in the CVN interface
+//		number = VECOM.INTELI;
+//		fieldName = "Inteli";
+//		sizeInBits = 1;
+//		range = Range.between(0, 1);
+//		encoding = Inteli.class;
+//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.PUNCTUALITY;
 		fieldName = "Punctualiteit";
 		sizeInBits = 2;
 		range = Range.between(0, 3);
-		encoding = Encodings.createEncoding(VecomPunctualityClass.class);
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
-
-		number = VECOM.INTELI;
-		fieldName = "Inteli";
-		sizeInBits = 1;
-		range = Range.between(0, 1);
-		encoding = Encodings.createEncoding(null);
+		encoding = PunctualityClass.class;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
-		number = VECOM.BCD;
-		fieldName = "Bcd";
-		sizeInBits = 3;
-		range = Range.between(0, 7);
-		encoding = Encodings.createEncoding(null);
+		number = VECOM.CATEGORY;
+		fieldName = "Category";
+		sizeInBits = 2;
+		range = Range.between(0, 3);
+		encoding = CategoryType.class;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
-		number = VECOM.STAFF_NR;
-		fieldName = "Staff nr";
-		sizeInBits = 24;
-		range = Range.between(0, 9999);
-		encoding = Encodings.createEncoding(null);
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+//		number = VECOM.BCD;
+//		fieldName = "Bcd";
+//		sizeInBits = 3;
+//		range = Range.between(0, 7);
+//		encoding = null;
+//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+//
+//		number = VECOM.STAFF_NR;
+//		fieldName = "Staff nr";
+//		sizeInBits = 24;
+//		range = Range.between(0, 16777215);
+//		encoding = null;
+//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.FLEET_NR;
 		fieldName = "Fleet nr";
-		sizeInBits = 16;
-		range = Range.between(0, 9999);
-		encoding = Encodings.createEncoding(null);
+		sizeInBits = 18;
+		range = Range.between(0, 262143);
+		encoding = null;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.MANUAL_CONTROL;
 		fieldName = "Manual control";
-		sizeInBits = 4;
-		range = Range.between(0, 9999);
-		encoding = Encodings.createEncoding(ManualControl.class);
+		sizeInBits = 3 + 5; // 5 extra 0 stuffing bits
+		range = Range.between(0, 7);
+		encoding = ManualControl.class;
+		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+		
+		number = VECOM.LOOP_NR;
+		fieldName = "Loop nr";
+		sizeInBits = 4 + 3; // 3 extra 0 stuffing bits
+		range = Range.between(0, 15);
+		encoding = null;
+		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+
+		number = VECOM.DIRECTION;
+		fieldName = "Direction";
+		sizeInBits = 2;
+		range = Range.between(0, 3);
+		encoding = Direction.class;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.OVER_LOOP;
 		fieldName = "Over loop";
 		sizeInBits = 1;
 		range = Range.between(0, 1);
-		encoding = Encodings.createEncoding(OverLoop.class);
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
-		
-		number = VECOM.DIRECTION;
-		fieldName = "Direction";
-		sizeInBits = 2;
-		range = Range.between(0, 3);
-		encoding = Encodings.createEncoding(Direction.class);
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
-		
-		number = VECOM.LOOP_NR;
-		fieldName = "Loop nr";
-		sizeInBits = 4;
-		range = Range.between(0, 15);
-		encoding = Encodings.createEncoding(null);
+		encoding = OverLoop.class;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 	}
 }

@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -16,14 +17,21 @@ import javax.swing.border.TitledBorder;
 import lombok.Getter;
 import model.ProtocolMessage;
 import model.kar.KarAttribute;
+import model.kar.KarAttribute.KAR;
 import model.kar.KarMessage;
 import model.vecom.VecomAttribute;
+import model.vecom.VecomAttribute.VECOM;
 import model.vecom.VecomMessage;
 import view.ProtocolPanel.Proto;
 
 public class VehicleSettingPanel extends JPanel {
 
   private static final long serialVersionUID = 3L;
+
+  @Getter private Proto proto;
+  private ProtocolMessage protocolMessage;
+  private List<KarAttributeEntry> karAttributeEntries;
+  private List<VecomAttributeEntry> vecomAttributeEntries;
 
 	/**
 	 * Constructor for VehicleSettingPanel.
@@ -37,66 +45,103 @@ public class VehicleSettingPanel extends JPanel {
 		setLayout(new BorderLayout(5, 5));
 		initialize();
 	}
-
-  // PUBLIC METHODS
-
+	
+	// PUBLIC METHODS
 	public void updateSettingsPanel(ProtocolMessage message) {
 		this.protocolMessage = message;
 		
-  		if (proto == Proto.KAR) {
-  			KarMessage karMessage = (KarMessage) message;
-  			
-  			int row = 0;
-  			// Define two columns
-  			JPanel columnEntries = new JPanel();
-  			JPanel columnEntries2 = new JPanel();
-  			columnEntries.setLayout(new BoxLayout(columnEntries, BoxLayout.PAGE_AXIS));
-  			columnEntries2.setLayout(new BoxLayout(columnEntries2, BoxLayout.PAGE_AXIS));
-
-  			for (KarAttribute attribute : karMessage.getKarAttributes()) {
-  				KarAttributeEntry attributeEntry = new KarAttributeEntry(attribute);
-
-  				if (row < 15) {
-  					columnEntries.add(attributeEntry);
-  				} else {
-  					columnEntries2.add(attributeEntry);
-  				}
-
-  				row += ((KarAttribute) attribute).getKarFields().size();
-  			}
-  			this.add(columnEntries, BorderLayout.WEST);
-  			this.add(columnEntries2, BorderLayout.EAST);
-  			
-  		} else if (proto == Proto.VECOM) {
-  			VecomMessage vecomMessage = (VecomMessage) message;
-  			
-  			// Define two columns
-  			JPanel columnEntries = new JPanel();
-  			columnEntries.setLayout(new BoxLayout(columnEntries, BoxLayout.PAGE_AXIS));
-
-  			for (VecomAttribute attribute : vecomMessage.getVecomAttributes()) {
-  				VecomAttributeEntry attributeEntry = new VecomAttributeEntry(attribute);
-				columnEntries.add(attributeEntry);
-  			}
-  			this.add(columnEntries, BorderLayout.CENTER);
-  		} else {
-  			// Let the user know a protocol should be selected.
-  			return;
-  		}
+		// TODO make generic
+		if (proto == Proto.KAR) {
+			KarMessage karMessage = (KarMessage) protocolMessage;
+			for (KarAttributeEntry attributeEntry : karAttributeEntries) {
+				KAR id = attributeEntry.getKarAttribute().getId();
+				attributeEntry.updateEntry(karMessage.getAttribute(id));
+			}
+		} else if (proto == Proto.VECOM) {
+			VecomMessage vecomMessage = (VecomMessage) protocolMessage;
+			for (VecomAttributeEntry attributeEntry : vecomAttributeEntries) {
+				VECOM id = attributeEntry.getVecomAttribute().getId();
+				attributeEntry.updateEntry(vecomMessage.getAttribute(id));
+			}
+		}
 	}
 	
-  // PRIVATE METHODS
-  	private void initialize(){
-  		removeAll();
+	public ProtocolMessage getProtocolMessage() {
+		// TODO make generic
   		if (proto == Proto.KAR) {
+  			KarMessage karMessage = (KarMessage) protocolMessage;
+  			for (KarAttributeEntry attributeEntry : karAttributeEntries) {
+				KAR id = attributeEntry.getKarAttribute().getId();
+				karMessage.setValue(id, attributeEntry.getValue());
+			}
+  		} else if (proto == Proto.VECOM) {
+  			VecomMessage vecomMessage = (VecomMessage) protocolMessage;
+			for (VecomAttributeEntry attributeEntry : vecomAttributeEntries) {
+				VECOM id = attributeEntry.getVecomAttribute().getId();
+				vecomMessage.setAttribute(id, attributeEntry.getValue());
+			}
+  		}
+  		return protocolMessage;
+	}
+	
+	// PRIVATE METHODS
+	private void createSettingsPanel() {
+  		if (proto == Proto.KAR) {
+  			KarMessage karMessage = (KarMessage) protocolMessage;
+  			createKarAttributeEntries(karMessage);
+  		} else if (proto == Proto.VECOM) {
+  			VecomMessage vecomMessage = (VecomMessage) protocolMessage;
+  			createVecomAttributeEntries(vecomMessage);
+  		}
+	}
+
+	private void createVecomAttributeEntries(VecomMessage vecomMessage) {
+		// Define two columns
+		JPanel columnEntries = new JPanel();
+		columnEntries.setLayout(new BoxLayout(columnEntries, BoxLayout.PAGE_AXIS));
+
+		for (VecomAttribute attribute : vecomMessage.getVecomAttributes()) {
+			VecomAttributeEntry attributeEntry = new VecomAttributeEntry(attribute);
+			columnEntries.add(attributeEntry);
+			vecomAttributeEntries.add(attributeEntry);
+		}
+		this.add(columnEntries, BorderLayout.CENTER);
+	}
+
+	private void createKarAttributeEntries(KarMessage karMessage) {
+		int row = 0;
+		// Define two columns
+		JPanel columnEntries = new JPanel();
+		JPanel columnEntries2 = new JPanel();
+		columnEntries.setLayout(new BoxLayout(columnEntries, BoxLayout.PAGE_AXIS));
+		columnEntries2.setLayout(new BoxLayout(columnEntries2, BoxLayout.PAGE_AXIS));
+
+		for (KarAttribute attribute : karMessage.getKarAttributes()) {
+			KarAttributeEntry attributeEntry = new KarAttributeEntry(attribute);
+			karAttributeEntries.add(attributeEntry);
+			
+			if (row < 15) {
+				columnEntries.add(attributeEntry);
+			} else {
+				columnEntries2.add(attributeEntry);
+			}
+
+			row += ((KarAttribute) attribute).getKarFields().size();
+		}
+		this.add(columnEntries, BorderLayout.WEST);
+		this.add(columnEntries2, BorderLayout.EAST);
+	}
+
+  	private void initialize(){
+  		// TODO make generic
+  		if (proto == Proto.KAR) {
+  			karAttributeEntries = new ArrayList<>();
   			protocolMessage = new KarMessage();
   		} else if (proto == Proto.VECOM) {
+  			vecomAttributeEntries = new ArrayList<>();
   			protocolMessage = new VecomMessage();
-  		} else {
-  			// Let the user know a protocol should be selected.
-  			return;
   		}
-  		updateSettingsPanel(protocolMessage);
+  		createSettingsPanel();
 
 //    // CVN: 1 loop number
 //    lblLoop = new JLabel("Loop nr (1)");
@@ -770,12 +815,6 @@ public class VehicleSettingPanel extends JPanel {
 
     private int mod;
   }// end class TimeVerifier
-
-  @Getter private Proto proto;
-//  private GregorianCalendar calendar;
-  @Getter private ProtocolMessage protocolMessage;
-  @Getter private List<KarAttributeEntry> karAttributeEntries;
-
 }// end of class
 
 

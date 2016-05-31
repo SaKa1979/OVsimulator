@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.google.common.collect.BiMap;
-
 import lombok.Getter;
+import model.Encodings;
+import model.Encodings.Encoding;
 import model.kar.KarAttribute;
 import model.kar.KarField;
 
@@ -26,10 +26,30 @@ public class KarAttributeEntry extends JPanel {
 	private static final long serialVersionUID = -3441900928638288607L;
 	@Getter private KarAttribute karAttribute;
 	private JPanel panel;
+	private JComboBox<String> inputField;
+	private NumericField numericInputField;
+	private JCheckBox checkbox;
 
 	public KarAttributeEntry(KarAttribute karAttribute) {
 		this.karAttribute = karAttribute;
 		createEntry();
+	}
+	
+	public void updateEntry(KarAttribute karAttribute) {
+		checkbox.setSelected(karAttribute.isEnabled());
+		enablePanel(karAttribute.isEnabled());
+		//TODO make this work for field indices
+		Class<? extends Encoding> encoding = karAttribute.getKarFields().get(0).getEncoding(); 
+		if (encoding != null) {
+			inputField.setSelectedItem(Encodings.getNameByNr(encoding, karAttribute.getValue()));
+		} else {
+			numericInputField.setText("" + karAttribute.getKarFields().get(0).getValue());
+		}
+	}
+	
+	public int getValue() {
+		//TODO make this work for field indices
+		return karAttribute.getKarFields().get(0).getValue();
 	}
 
 	private void createEntry() {
@@ -43,38 +63,36 @@ public class KarAttributeEntry extends JPanel {
 		List<KarField> karFields = karAttribute.getKarFields();
 		for (int i = 0; i < karFields.size(); i++) {
 			KarField karField = karFields.get(i);
-			
 			createLabel(i, karField);
-
 			createInputComponent(i, karField);
 		}
 		this.add(panel);
 		enablePanel(karAttribute.isEnabled());
 	}
 
-	public void createInputComponent(int i, KarField karField) {
-		BiMap<Integer, String> encoding = karField.getEncoding();
-		if (encoding.size() > 0) {
-			JComboBox<String> inputField = new JComboBox<>(encoding.values().toArray(new String[encoding.size()]));
-			inputField.setSelectedItem(encoding.get(karField.getValue()));
+	private void createInputComponent(int i, KarField karField) {
+		Class<? extends Encoding> encoding = karAttribute.getKarFields().get(0).getEncoding(); 
+		if (encoding != null) {
+			inputField = new JComboBox<>(Encodings.getStringArray(encoding));
+			inputField.setSelectedItem(Encodings.getNameByNr(encoding, karField.getValue()));
 			addComboBoxListener(karField, inputField);
 			createInputFieldGridBagConstraints(panel, inputField, i, 1);
 		} else {
-			NumericField inputField = createInputField(karField);
-			inputField.setText("" + karField.getValue());
-			addNumericFieldListener(karField, inputField);
-			createInputFieldGridBagConstraints(panel, inputField, i, 1);
+			numericInputField = createInputField(karField);
+			numericInputField.setText("" + karField.getValue());
+			addNumericFieldListener(karField, numericInputField);
+			createInputFieldGridBagConstraints(panel, numericInputField, i, 1);
 		}
 	}
 
-	public void createLabel(int i, KarField karField) {
+	private void createLabel(int i, KarField karField) {
 		String fieldName = karField.getFieldName() + " (" + karAttribute.getId().getValue() + ")";
 		JComponent label = new JLabel(fieldName);
 		createLabelGridBagConstraints(panel, label, i, 0);
 	}
 
 	public void createCheckBox() {
-		JCheckBox checkbox = new JCheckBox();
+		checkbox = new JCheckBox();
 		checkbox.setToolTipText("Disable CVN: " + karAttribute.getId() + "?");
 		checkbox.setSelected(karAttribute.isEnabled());
 		checkbox.addItemListener(new ItemListener() {
@@ -93,9 +111,8 @@ public class KarAttributeEntry extends JPanel {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED) {
-					BiMap<Integer, String> encoding = karField.getEncoding();
 					String selected = (String) e.getItem();
-					karField.setValue(encoding.inverse().get(selected));
+					karField.setValue(selected);
 				}
 			}
 		});
@@ -125,13 +142,13 @@ public class KarAttributeEntry extends JPanel {
 						karField.setValue(inputValue);
 					}
 				} catch (NumberFormatException e) {
-					
+//					e.printStackTrace();
 				}
 			}
 		});
 	}
 
-	private void enablePanel(boolean enabled) {
+	public void enablePanel(boolean enabled) {
 		Component[] comps = panel.getComponents();
 		for (Component comp : comps) {
 			if (comp instanceof JComponent) {
@@ -143,7 +160,6 @@ public class KarAttributeEntry extends JPanel {
 
 	private GridBagConstraints createDefaultGridBagConstraints(JComponent component, int row, int column) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		// gbc.insets = new Insets(0, 0, 5, 5);
 		gbc.gridx = column;
 		gbc.gridy = row;
 		return gbc;
@@ -169,7 +185,7 @@ public class KarAttributeEntry extends JPanel {
 		NumericField tf = new NumericField(5, NumericField.NUMERIC);
 		tf.setAllowNegative(attribute.getRange().getMinimum() < 0);
 		tf.setNumber(0);
-		tf.setToolTipText(attribute.getRange().toString());
+		tf.setToolTipText("Range: " + attribute.getRange());
 		return tf;
 	}
 
