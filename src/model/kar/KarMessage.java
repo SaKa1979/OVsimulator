@@ -1,13 +1,13 @@
 package model.kar;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
-import model.AttributeID;
+import model.Encodings;
 import model.Encodings.Command;
 import model.Encodings.Encoding;
 import model.Encodings.JourneyType;
@@ -15,26 +15,23 @@ import model.Encodings.KarVehicleType;
 import model.Encodings.PriorityClass;
 import model.Encodings.PunctualityClass;
 import model.Encodings.VehicleStatus;
-import model.ProtocolMessage;
+import model.interfaces.AttributeID;
+import model.interfaces.ProtocolMessage;
 import model.kar.KarAttribute.KAR;
 
-public class KarMessage implements ProtocolMessage, Serializable {
-	private static final long serialVersionUID = -2330790358385718884L;
+public class KarMessage implements ProtocolMessage {
+	private static final int NAME_OFFSET = 25;
+	private static final int VALUE_OFFSET = 15;
+	
+	private static final long serialVersionUID = -3869574970121950028L;
 	
 	@Getter private List<KarAttribute> karAttributes;
 	
 	public KarMessage() {
 		fillKARAttributes();
 	}
-
-	public int getValue(AttributeID id) {
-		return getValue((KAR) id, 0);
-	}
 	
-	public int getValue(KAR id, int fieldIndex) {
-		return getAttribute(id).getKarFields().get(fieldIndex).getValue();
-	}
-
+	@Override
 	public KarAttribute getAttribute(AttributeID id) {
 		for (KarAttribute attribute : karAttributes) {
 			if (attribute.getId() == id) {
@@ -44,8 +41,45 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		return null;
 	}
 	
-	public void setValue(AttributeID id, int value) {
-		getAttribute(id).getKarFields().get(0).setValue(value);
+	@Override
+	public KarVehicleType getVehicleType() {
+		return (KarVehicleType) Encodings.getTypeByValue(KarVehicleType.class, getValue(KAR.VEH_TYPE, 0));
+	}
+	
+	@Override
+	public String toShortString() {
+		return getAttribute(KAR.LOOP_NR) + " " + getAttribute(KAR.DIRECTION);
+	}
+	
+	public String toString() {
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("Sending KAR message.\n");
+		int pos = 0;
+		for (KarAttribute karAttribute : karAttributes) {
+			if (karAttribute.isEnabled()) {
+				List<KarField> fields = karAttribute.getKarFields();
+				for (int j = 0; j < fields.size(); j++) {
+					KarField field = fields.get(j);
+					sBuilder.append(StringUtils.rightPad(field.getFieldName() + " ("+ karAttribute.getId().getValue() + ")", NAME_OFFSET));
+					Class<? extends Encoding> encoding = field.getEncoding();
+					if (field.getEncoding() != null) {
+						sBuilder.append(StringUtils.rightPad(Encodings.getNameByNr(encoding, field.getValue()), VALUE_OFFSET));
+					} else {
+						sBuilder.append(StringUtils.rightPad(Integer.toString(field.getValue()), VALUE_OFFSET));
+					}
+					sBuilder.append(pos++ % 2 == 0 ? "| " : "\n");
+				}
+			}
+		}
+		return sBuilder.toString();
+	}
+	
+	public int getValue(KAR id, int fieldIndex) {
+		return getAttribute(id).getKarFields().get(fieldIndex).getValue();
+	}
+	
+	public void setValue(AttributeID id, int fieldIndex, int value) {
+		getAttribute(id).getKarFields().get(fieldIndex).setValue(value);
 	}
 	
 	/**
@@ -222,25 +256,25 @@ public class KarMessage implements ProtocolMessage, Serializable {
 		number = KAR.LOCATION;
 		List<KarField> locationFields = new ArrayList<>();
 		encoding = null;
-		locationFields.add(new KarField("Latitude deg", 1, Range.between(0, 89), encoding));
-		locationFields.add(new KarField("Latitude min", 1, Range.between(0, 59), encoding));
-		locationFields.add(new KarField("Latitude sec", 1, Range.between(0, 59), encoding));
-		locationFields.add(new KarField("Latitude 1/100 sec", 1, Range.between(0, 99), encoding));
-		locationFields.add(new KarField("Longitude deg", 1, Range.between(0, 179), encoding));
-		locationFields.add(new KarField("Longitude min", 1, Range.between(0, 59), encoding));
-		locationFields.add(new KarField("Longitude sec", 1, Range.between(0, 59), encoding));
-		locationFields.add(new KarField("Longitude 1/100 sec", 1, Range.between(0, 99), encoding));
+		locationFields.add(new KarField(0, "Latitude deg", 1, Range.between(0, 89), encoding));
+		locationFields.add(new KarField(1, "Latitude min", 1, Range.between(0, 59), encoding));
+		locationFields.add(new KarField(2, "Latitude sec", 1, Range.between(0, 59), encoding));
+		locationFields.add(new KarField(3, "Latitude 1/100 sec", 1, Range.between(0, 99), encoding));
+		locationFields.add(new KarField(4, "Longitude deg", 1, Range.between(0, 179), encoding));
+		locationFields.add(new KarField(5, "Longitude min", 1, Range.between(0, 59), encoding));
+		locationFields.add(new KarField(6, "Longitude sec", 1, Range.between(0, 59), encoding));
+		locationFields.add(new KarField(7, "Longitude 1/100 sec", 1, Range.between(0, 99), encoding));
 		karAttributes.add(new KarAttribute(number, locationFields));
 
 		number = KAR.DATE;
 		List<KarField> dateFields = new ArrayList<>();
 		encoding = null;
-		dateFields.add(new KarField("Year", 2, Range.between(0, 9999), encoding));
-		dateFields.add(new KarField("Month", 1, Range.between(1, 12), encoding));
-		dateFields.add(new KarField("Day", 1, Range.between(1, 31), encoding));
-		dateFields.add(new KarField("Hours", 1, Range.between(0, 23), encoding));
-		dateFields.add(new KarField("Min", 1, Range.between(0, 59), encoding));
-		dateFields.add(new KarField("Seconds", 1, Range.between(0, 59), encoding));
+		dateFields.add(new KarField(0, "Year", 2, Range.between(0, 9999), encoding));
+		dateFields.add(new KarField(1, "Month", 1, Range.between(1, 12), encoding));
+		dateFields.add(new KarField(2, "Day", 1, Range.between(1, 31), encoding));
+		dateFields.add(new KarField(3, "Hours", 1, Range.between(0, 23), encoding));
+		dateFields.add(new KarField(4, "Min", 1, Range.between(0, 59), encoding));
+		dateFields.add(new KarField(5, "Seconds", 1, Range.between(0, 59), encoding));
 		karAttributes.add(new KarAttribute(number, dateFields));
 
 		number = KAR.RESERVE1;

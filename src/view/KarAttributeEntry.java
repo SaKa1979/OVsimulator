@@ -19,14 +19,15 @@ import javax.swing.event.DocumentListener;
 import lombok.Getter;
 import model.Encodings;
 import model.Encodings.Encoding;
+import model.interfaces.Attribute;
 import model.kar.KarAttribute;
 import model.kar.KarField;
 
-public class KarAttributeEntry extends JPanel {
+public class KarAttributeEntry extends JPanel implements AttributeEntry {
 	private static final long serialVersionUID = -3441900928638288607L;
 	@Getter private KarAttribute karAttribute;
 	private JPanel panel;
-	private JComboBox<String> inputField;
+	private JComboBox<String> comboBoxInputField;
 	private NumericField numericInputField;
 	private JCheckBox checkbox;
 
@@ -35,21 +36,28 @@ public class KarAttributeEntry extends JPanel {
 		createEntry();
 	}
 	
-	public void updateEntry(KarAttribute karAttribute) {
+	@Override
+	public Attribute getAttribute() {
+		return karAttribute;
+	}
+	
+	@Override
+	public void updateEntry(Attribute attribute) {
+		KarAttribute karAttribute = (KarAttribute) attribute;
 		checkbox.setSelected(karAttribute.isEnabled());
 		enablePanel(karAttribute.isEnabled());
-		//TODO make this work for field indices
-		Class<? extends Encoding> encoding = karAttribute.getKarFields().get(0).getEncoding(); 
-		if (encoding != null) {
-			inputField.setSelectedItem(Encodings.getNameByNr(encoding, karAttribute.getValue()));
-		} else {
-			numericInputField.setText("" + karAttribute.getKarFields().get(0).getValue());
+		for (KarField karField : karAttribute.getKarFields()) {
+			setEntryValue(karField);
 		}
 	}
 	
-	public int getValue() {
-		//TODO make this work for field indices
-		return karAttribute.getKarFields().get(0).getValue();
+	private void setEntryValue(KarField field) {
+		Class<? extends Encoding> encoding = field.getEncoding(); 
+		if (encoding != null) {
+			comboBoxInputField.setSelectedItem(Encodings.getNameByNr(encoding, field.getValue()));
+		} else {
+			numericInputField.setText("" + field.getValue());
+		}
 	}
 
 	private void createEntry() {
@@ -63,32 +71,34 @@ public class KarAttributeEntry extends JPanel {
 		List<KarField> karFields = karAttribute.getKarFields();
 		for (int i = 0; i < karFields.size(); i++) {
 			KarField karField = karFields.get(i);
-			createLabel(i, karField);
-			createInputComponent(i, karField);
+			createLabel(karField);
+			createInputComponent(karField);
 		}
 		this.add(panel);
-		enablePanel(karAttribute.isEnabled());
+		enablePanel(false);
 	}
 
-	private void createInputComponent(int i, KarField karField) {
-		Class<? extends Encoding> encoding = karAttribute.getKarFields().get(0).getEncoding(); 
+	private void createInputComponent(KarField karField) {
+		Class<? extends Encoding> encoding = karField.getEncoding();
 		if (encoding != null) {
-			inputField = new JComboBox<>(Encodings.getStringArray(encoding));
-			inputField.setSelectedItem(Encodings.getNameByNr(encoding, karField.getValue()));
-			addComboBoxListener(karField, inputField);
-			createInputFieldGridBagConstraints(panel, inputField, i, 1);
+			comboBoxInputField = new JComboBox<>(Encodings.getStringArray(encoding));
+			addComboBoxListener(karField, comboBoxInputField);
+			comboBoxInputField.setSelectedIndex(0);
+			karField.setValue((String) comboBoxInputField.getSelectedItem());
+			createInputFieldGridBagConstraints(panel, comboBoxInputField, karField.getFieldIndex(), 1);
 		} else {
 			numericInputField = createInputField(karField);
 			numericInputField.setText("" + karField.getValue());
 			addNumericFieldListener(karField, numericInputField);
-			createInputFieldGridBagConstraints(panel, numericInputField, i, 1);
+			createInputFieldGridBagConstraints(panel, numericInputField, karField.getFieldIndex(), 1);
 		}
+		setEntryValue(karField);
 	}
 
-	private void createLabel(int i, KarField karField) {
+	private void createLabel(KarField karField) {
 		String fieldName = karField.getFieldName() + " (" + karAttribute.getId().getValue() + ")";
 		JComponent label = new JLabel(fieldName);
-		createLabelGridBagConstraints(panel, label, i, 0);
+		createLabelGridBagConstraints(panel, label, karField.getFieldIndex(), 0);
 	}
 
 	public void createCheckBox() {

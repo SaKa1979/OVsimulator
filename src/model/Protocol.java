@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 
 import controller.Event;
+import model.interfaces.ProtocolMessage;
 
 public abstract class Protocol {
 

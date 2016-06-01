@@ -5,21 +5,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.Range;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
-import model.AttributeID;
+import model.Encodings;
 import model.Encodings.CategoryType;
 import model.Encodings.Direction;
 import model.Encodings.Encoding;
+import model.Encodings.Inteli;
 import model.Encodings.ManualControl;
 import model.Encodings.OverLoop;
 import model.Encodings.PunctualityClass;
 import model.Encodings.VecomVehicleType;
-import model.ProtocolMessage;
+import model.interfaces.AttributeID;
+import model.interfaces.ProtocolMessage;
 import model.vecom.VecomAttribute.VECOM;
 
 public class VecomMessage implements ProtocolMessage, Serializable {
 	private static final long serialVersionUID = 1422953515197092382L;
+
+	private static final int NAME_OFFSET = 25;
+	private static final int VALUE_OFFSET = 15;
 
 	@Getter	private List<VecomAttribute> vecomAttributes;
 
@@ -28,10 +34,6 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 	}
 
 	@Override
-	public int getValue(AttributeID id) {
-		return getAttribute((VECOM) id).getValue();
-	}
-
 	public VecomAttribute getAttribute(AttributeID id) {
 		for (VecomAttribute attribute : vecomAttributes) {
 			if (attribute.getId() == id) {
@@ -41,6 +43,33 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		return null;
 	}
 	
+	@Override
+	public VecomVehicleType getVehicleType() {
+		return (VecomVehicleType) Encodings.getTypeByValue(VecomVehicleType.class, getAttribute(VECOM.VEH_TYPE).getValue());
+	}
+	
+	@Override
+	public String toShortString() {
+		return getAttribute(VECOM.LOOP_NR) + " " + getAttribute(VECOM.DIRECTION);
+	}
+	
+	public String toString() {
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("Sending VECOM message.\n");
+		int pos = 0;
+		for (VecomAttribute vecomAttribute : vecomAttributes) {
+			sBuilder.append(StringUtils.rightPad(vecomAttribute.getFieldName() + " ("+ vecomAttribute.getId().getValue() + ")", NAME_OFFSET));
+			Class<? extends Encoding> encoding = vecomAttribute.getEncoding();
+			if (vecomAttribute.getEncoding() != null) {
+				sBuilder.append(StringUtils.rightPad(Encodings.getNameByNr(encoding, vecomAttribute.getValue()), VALUE_OFFSET));
+			} else {
+				sBuilder.append(StringUtils.rightPad(Integer.toString(vecomAttribute.getValue()), VALUE_OFFSET));
+			}
+			sBuilder.append(pos++ % 2 == 0 ? "| " : "\n");
+		}
+		return sBuilder.toString();
+	}
+	
 	public void setAttribute(AttributeID id, int value) {
 		getAttribute(id).setValue(value);
 	}
@@ -48,7 +77,7 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 	public void setAttribute(AttributeID id, Encoding enumValue) {
 		getAttribute(id).setValue(enumValue);
 	}
-
+	
 	private void fillVecomAttributes() {
 		vecomAttributes = new ArrayList<>();
 
@@ -74,12 +103,12 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 
 		// These fields are not used in the CVN interface
-//		number = VECOM.INTELI;
-//		fieldName = "Inteli";
-//		sizeInBits = 1;
-//		range = Range.between(0, 1);
-//		encoding = Inteli.class;
-//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+		number = VECOM.INTELI;
+		fieldName = "Inteli";
+		sizeInBits = 1;
+		range = Range.between(0, 1);
+		encoding = Inteli.class;
+		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.PUNCTUALITY;
 		fieldName = "Punctualiteit";
@@ -101,13 +130,13 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 //		range = Range.between(0, 7);
 //		encoding = null;
 //		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
-//
-//		number = VECOM.STAFF_NR;
-//		fieldName = "Staff nr";
-//		sizeInBits = 24;
-//		range = Range.between(0, 16777215);
-//		encoding = null;
-//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+
+		number = VECOM.STAFF_NR;
+		fieldName = "Staff nr";
+		sizeInBits = 24;
+		range = Range.between(0, 16777215);
+		encoding = null;
+		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
 		number = VECOM.FLEET_NR;
 		fieldName = "Fleet nr";

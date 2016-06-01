@@ -15,9 +15,10 @@ import javax.swing.event.DocumentListener;
 import lombok.Getter;
 import model.Encodings;
 import model.Encodings.Encoding;
+import model.interfaces.Attribute;
 import model.vecom.VecomAttribute;
 
-public class VecomAttributeEntry extends JPanel {
+public class VecomAttributeEntry extends JPanel implements AttributeEntry {
 	private static final long serialVersionUID = -3441900928638288607L;
 	@Getter private VecomAttribute vecomAttribute;
 	private JPanel panel;
@@ -29,12 +30,15 @@ public class VecomAttributeEntry extends JPanel {
 		createEntry();
 	}
 	
-	public int getValue() {
-		return vecomAttribute.getValue();
+	@Override
+	public Attribute getAttribute() {
+		return vecomAttribute;
 	}
 
-	public void updateEntry(VecomAttribute attribute) {
-		int value = attribute.getValue();
+	@Override
+	public void updateEntry(Attribute attribute) {
+		vecomAttribute = (VecomAttribute) attribute;
+		int value = vecomAttribute.getValue();
 		Class<? extends Encoding> encoding = vecomAttribute.getEncoding();
 		if (encoding != null) {
 			inputField.setSelectedItem(Encodings.getNameByNr(encoding, value));
@@ -42,7 +46,7 @@ public class VecomAttributeEntry extends JPanel {
 			numericInputField.setText("" + value);
 		}
 	}
-
+	
 	private void createEntry() {
 		panel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -149,5 +153,4 @@ public class VecomAttributeEntry extends JPanel {
 		tf.setToolTipText("Range: " + attribute.getRange());
 		return tf;
 	}
-
 }

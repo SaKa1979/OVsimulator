@@ -15,13 +15,14 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.SimController;
+import model.interfaces.ProtocolMessage;
 import view.PortSettingPanel;
 import view.ProtocolCard;
 import view.ProtocolPanel;
+import view.ProtocolPanel.Proto;
 import view.VehicleButton;
 import view.VehicleSimulation;
 import view.ViewManager;
-import view.ProtocolPanel.Proto;
 
 
 public class Persister {
@@ -170,7 +171,7 @@ public class Persister {
     	for (int j = 0; j < protoCard.getVbList().size(); j++) {
 	    	ProtocolMessage message = (ProtocolMessage) a_list.get(i++);	// Read the protocol message
 	    	boolean enabled = (boolean) a_list.get(i++);		// Read if the button is enabled
-	    	protoCard.getVbList().get(j).updateProtocolMessage(message, enabled);
+	    	protoCard.getVbList().get(j).updateVehicleButton(message, enabled);
     	}
     }
   } 

@@ -14,12 +14,11 @@ import java.util.List;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import model.Protocol;
-import model.ProtocolMessage;
+import model.interfaces.ProtocolMessage;
 import model.kar.KarAttribute.KAR;
 import view.ViewManager;
 
@@ -27,8 +26,8 @@ public class KarProtocol extends Protocol {
 
 	private static final byte SYN = (byte) 0x16;
 	private static final byte SOH = (byte) 0x01;
-	private static final byte ACK = (byte) 0x03;
-	private static final byte NACK = (byte) 0x04;
+//	private static final byte ACK = (byte) 0x03;
+//	private static final byte NACK = (byte) 0x04;
 
 	private short sidDestination;
 	private short sidSource;
@@ -49,7 +48,6 @@ public class KarProtocol extends Protocol {
 
 		sidDestination = (short) Integer.parseUnsignedInt(viewManager.getProtocolPanel().getKarSid());
 		dataFrame.addAll(short2bytesLSB(sidDestination));
-		// TODO make source editable
 		dataFrame.addAll(short2bytesLSB(sidSource));
 
 //		sequenceNumber++;
@@ -81,10 +79,10 @@ public class KarProtocol extends Protocol {
 		
 		sendMessage = dataFrame;
 		
-		String dataFrameMessage = DatatypeConverter.printHexBinary(ArrayUtils.toPrimitive(dataFrame.toArray(new Byte[dataFrame.size()])));
-		System.out.println("Dataframe: " + dataFrameMessage);
+//		String dataFrameMessage = DatatypeConverter.printHexBinary(ArrayUtils.toPrimitive(dataFrame.toArray(new Byte[dataFrame.size()])));
+//		System.out.println("Dataframe: " + dataFrameMessage);
 		
-		signalSubscriber("Sending KAR message: " + dataFrameMessage + "\n");
+		signalSubscriber("");
 
 		return dataFrame;
 	}

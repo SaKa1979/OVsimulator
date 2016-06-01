@@ -6,6 +6,7 @@ import javax.swing.ImageIcon;
 
 import model.Encodings.KarVehicleType;
 import model.Encodings.VecomVehicleType;
+import model.Encodings.VehicleType;
 
 /**
  * @author Sander
@@ -41,8 +42,17 @@ public class ImageFactory {
     URL link = this.getClass().getResource(filename); 
     return new ImageIcon(link, description);
   }
+  
+	public ImageIcon getVehicleImageIcon(VehicleType vt) {
+		if (vt instanceof KarVehicleType) {
+			return getKarVehicleImageIcon((KarVehicleType) vt);
+		} else if (vt instanceof VecomVehicleType) {
+			return getVecomVehicleImageIcon((VecomVehicleType) vt);
+		}
+		return brokenImage;
+	}
 
-	public ImageIcon getKarImageIcon(KarVehicleType vt) {
+	public ImageIcon getKarVehicleImageIcon(KarVehicleType vt) {
 		switch (vt) {
 		case BUS:
 			return busImage;
@@ -63,7 +73,7 @@ public class ImageFactory {
 		}
 	}
 	
-	public ImageIcon getVecomImageIcon(VecomVehicleType vt) {
+	public ImageIcon getVecomVehicleImageIcon(VecomVehicleType vt) {
 		switch (vt) {
 		case POLICE:
 			return politieImage;

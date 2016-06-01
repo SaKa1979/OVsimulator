@@ -86,7 +86,7 @@ public void signal(Object a_obj, Object a_arg){
       if (protocol != null){
         if (communicator.isbConnected()){
           protocol.createSerialMessage(vb.getProtocolMessage());
-          viewManager.writeVehicleButtonSetting(vb, protocol);
+          viewManager.writeVehicleButtonSetting(vb.getProtocolMessage());
         }else{
           viewManager.writeToFeedback(0, "No connection available at the moment.", Color.RED, 10);
         }

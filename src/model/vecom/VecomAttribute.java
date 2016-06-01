@@ -4,19 +4,18 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.Range;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import model.Attribute;
-import model.AttributeID;
 import model.Encodings;
 import model.Encodings.Encoding;
+import model.interfaces.Attribute;
+import model.interfaces.AttributeID;
 
 @RequiredArgsConstructor
 public class VecomAttribute implements Attribute, Serializable {
 	private static final long serialVersionUID = 3316417190893869878L;
 	
-	@AllArgsConstructor
+	@RequiredArgsConstructor
 	public enum VECOM implements AttributeID {
 		VEH_TYPE (0), 
 		LINE_NR (1),
@@ -29,10 +28,16 @@ public class VecomAttribute implements Attribute, Serializable {
 		FLEET_NR (8),
 		MANUAL_CONTROL (9),
 		OVER_LOOP (10),
-		DIRECTION (11),
-		LOOP_NR (12); 
+		DIRECTION (11, "FC"),
+		LOOP_NR (12, "L");
 		
-	    @Getter private int value;
+		VECOM(int value) {
+			this.value = value;
+			this.shortName = "";
+		}
+		
+	    @Getter private final int value;
+	    @Getter private final String shortName;
 	}
 	
 	@Getter private final VECOM id;
@@ -52,5 +57,9 @@ public class VecomAttribute implements Attribute, Serializable {
 	
 	public void setValue(String name) {
 		this.value = Encodings.getValueByName(encoding, name);
+	}
+	
+	public String toString() {
+		return id.getShortName() + value;
 	}
 }
