@@ -50,7 +50,7 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 	
 	@Override
 	public String toShortString() {
-		return getAttribute(VECOM.LOOP_NR) + " " + getAttribute(VECOM.DIRECTION);
+		return getAttribute(VECOM.LOOP_NR).toShortString() + " " + getAttribute(VECOM.DIRECTION).toShortString();
 	}
 	
 	public String toString() {

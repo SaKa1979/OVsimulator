@@ -60,7 +60,11 @@ public class KarAttribute implements Attribute, Serializable {
 		this.karFields.add(karField);
 	}
 	
-	public String toString() {
+	public String toShortString() {
 		return id.getShortName() + karFields.get(0).getValue();
+	}
+	
+	public String toString() {
+		return karFields.get(0).getFieldName() + ": " + karFields.get(0).getValue();
 	}
 }

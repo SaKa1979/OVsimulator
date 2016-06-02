@@ -48,7 +48,7 @@ public class KarMessage implements ProtocolMessage {
 	
 	@Override
 	public String toShortString() {
-		return getAttribute(KAR.LOOP_NR) + " " + getAttribute(KAR.DIRECTION);
+		return getAttribute(KAR.LOOP_NR).toShortString() + " " + getAttribute(KAR.DIRECTION).toShortString();
 	}
 	
 	public String toString() {

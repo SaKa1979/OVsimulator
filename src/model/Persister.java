@@ -16,6 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import controller.SimController;
 import model.interfaces.ProtocolMessage;
+import view.DontAskAgainPanel;
 import view.PortSettingPanel;
 import view.ProtocolCard;
 import view.ProtocolPanel;
@@ -57,67 +58,57 @@ public class Persister {
     }
   }
 
-  public void saveFile(){
-    try {
-      writeObjects(file);
-    }
-    catch (Exception e) {
-      JOptionPane.showMessageDialog(null,
-          e,
-          "File write Error", 
-          JOptionPane.ERROR_MESSAGE); 
-      e.printStackTrace();
-    }
-  }
+	public void saveFile() {
+		if (file == null) {
+			saveAsFile();
+			return;
+		}
+		save();
+	}
 
-  public void saveAsFile(){
-    JFileChooser fileChooser = new JFileChooser();
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-        "ovs", "ovs");
-    fileChooser.setFileFilter(filter);
-    int choice = fileChooser.showDialog(null, "Save as" );
-    if ( choice == JFileChooser.APPROVE_OPTION ){
-      String path = fileChooser.getSelectedFile().getPath();
-      
-      if (!path.endsWith(".ovs"))
-        path.concat(".ovs");
-        
-      file = new File(path);
-      try {
-        writeObjects(file);
-      }
-      catch (Exception e) {
-        JOptionPane.showMessageDialog(null,
-            e,
-            "File write Error", 
-            JOptionPane.ERROR_MESSAGE); 
-        e.printStackTrace();
-      }
-    }
-  }
+	public void saveAsFile() {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("ovs", "ovs");
+		fileChooser.setFileFilter(filter);
+		int choice = fileChooser.showDialog(null, "Save");
+		if (choice == JFileChooser.APPROVE_OPTION) {
+			String path = fileChooser.getSelectedFile().getPath();
+			file = new File(path);
+			if (!path.endsWith(".ovs")) {
+				path.concat(".ovs");
+				file.renameTo(new File(path));
+			}
+			save();
+		}
+	}
+  
+	private void save() {
+		try {
+			writeObjects();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e, "File write Error", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+	}
 
-  public void closeNoSave() {
-    int choice = JOptionPane.showConfirmDialog(null,
-        "Do you want to save the current settings?",
-        "Closing",
-        JOptionPane.YES_NO_CANCEL_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
-    switch (choice){
-      case JOptionPane.YES_OPTION:
-        saveAsFile();
-        break;
-      case JOptionPane.NO_OPTION:
-        System.exit(0);
-      case JOptionPane.CANCEL_OPTION:
-        break;
-    }
-  }
+	public void closeNoSave() {
+		int choice = DontAskAgainPanel.showConfirmDialog(null, "Do you want to save the current settings before you exit?", "Closing");
+		switch (choice) {
+		case JOptionPane.YES_OPTION:
+			saveAsFile();
+			break;
+		case JOptionPane.NO_OPTION:
+			System.exit(0);
+		case JOptionPane.CANCEL_OPTION:
+			break;
+		}
+	}
 
   // PRIVATE METHODS
-  public void writeObjects(File a_file) {
+  public void writeObjects() {
     DebuggingObjectOutputStream  oos = null;
     try {
-      oos = new DebuggingObjectOutputStream ( new FileOutputStream(a_file)); 
+      oos = new DebuggingObjectOutputStream ( new FileOutputStream(file)); 
       oos.writeObject(getPersistentObjects(protocolPanel, vehicleSimulation));
     }
     catch (IOException e) {

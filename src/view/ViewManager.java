@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -52,7 +54,6 @@ public class ViewManager extends JFrame {
 
 	private static ViewManager INSTANCE;
 	private static final long serialVersionUID = 1L;
-	private static final int OFFSET = 20;
 
 	/**
 	 * Constructor
@@ -306,17 +307,7 @@ public class ViewManager extends JFrame {
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent e) {
-				int choice = JOptionPane.showConfirmDialog(null, "Are you sure want to exit?", "Quit",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				switch (choice) {
-				case JOptionPane.YES_OPTION:
-					closeWindow();
-					break;
-				case JOptionPane.NO_OPTION:
-					break;
-				case JOptionPane.CANCEL_OPTION:
-					break;
-				}
+				closeWindow();
 			}
 		});
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -539,6 +530,7 @@ public class ViewManager extends JFrame {
 				subscriber.signal(ViewManager.getInstance(), "openEvent");
 			}
 		});
+		mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		mnFile.add(mntmOpen);
 
 		mntmSave = new JMenuItem("Save");
@@ -548,6 +540,7 @@ public class ViewManager extends JFrame {
 				subscriber.signal(ViewManager.getInstance(), "saveEvent");
 			}
 		});
+		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		mnFile.add(mntmSave);
 
 		mntmSaveAs = new JMenuItem("Save as");
@@ -557,6 +550,7 @@ public class ViewManager extends JFrame {
 				subscriber.signal(ViewManager.getInstance(), "saveAsEvent");
 			}
 		});
+		mntmSaveAs.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK + ActionEvent.SHIFT_MASK));
 		mnFile.add(mntmSaveAs);
 
 		mnSetting = new JMenu("Setting");
@@ -599,6 +593,15 @@ public class ViewManager extends JFrame {
 			}
 		});
 		mnSetting.add(mnProtocol);
+		
+		JMenuItem mnResetPreferences = new JMenuItem("Reset preferences");
+		mnResetPreferences.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DontAskAgainPanel.resetPrefs();
+			}
+		});
+		mnSetting.add(mnResetPreferences);
 	}
 
 	private void closeWindow() {

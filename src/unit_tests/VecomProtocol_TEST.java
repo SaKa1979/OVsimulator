@@ -29,7 +29,7 @@ public class VecomProtocol_TEST {
     vm.setAttribute(VECOM.SERVICE_NR, 4);
     vm.setAttribute(VECOM.FLEET_NR, 65536);
     vm.setAttribute(VECOM.MANUAL_CONTROL, ManualControl.TURNRIGHT);
-    vm.setAttribute(VECOM.PUNCTUALITY, PunctualityClass.OPTIJD);
+    vm.setAttribute(VECOM.PUNCTUALITY, PunctualityClass.GEENINFO);
     vm.setAttribute(VECOM.CATEGORY, CategoryType.LIJN_DIENST);
     vm.setAttribute(VECOM.DIRECTION, Direction.UNKNOWN);
   }
@@ -50,7 +50,7 @@ public class VecomProtocol_TEST {
     result.add((byte)0x06); //B3 lineNumber
     result.add((byte)0x00); //B4 lineNumber vehicleServiceNr
     result.add((byte)0x01); //B5 vehicleServiceNr
-    result.add((byte)0x20); //B6 journeyType/cat punctuality class
+    result.add((byte)0x00); //B6 journeyType/cat punctuality class
     result.add((byte)0x00); //B7 staffnummer lo 
     result.add((byte)0x00); //B8 staffnummer mo
     result.add((byte)0x00); //B9 staffnummer ho

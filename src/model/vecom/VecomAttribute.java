@@ -59,7 +59,11 @@ public class VecomAttribute implements Attribute, Serializable {
 		this.value = Encodings.getValueByName(encoding, name);
 	}
 	
-	public String toString() {
+	public String toShortString() {
 		return id.getShortName() + value;
+	}
+	
+	public String toString() {
+		return fieldName + ": " + value;
 	}
 }
