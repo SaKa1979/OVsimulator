@@ -99,10 +99,8 @@ public class KarProtocol extends Protocol {
 	private List<Byte> createMessageData(KarMessage message) {
 		List<Byte> dataFrame = new ArrayList<Byte>();
 		List<Byte> attributeDataFrame = new ArrayList<Byte>();
-
 		byte messageType = 1;
-		dataFrame.add(messageType);
-
+		
 		int usedAttributes = 0;
 		List<KarAttribute> attributes = message.getKarAttributes();
 		for (int i = 0; i < attributes.size(); i++) {
@@ -110,6 +108,11 @@ public class KarProtocol extends Protocol {
 				usedAttributes |= 1 << i;
 			}
 		}
+		if (usedAttributes == 0) {
+			return dataFrame;
+		}
+		
+		dataFrame.add(messageType);
 		dataFrame.add((byte) (usedAttributes & 0xFF));
 		dataFrame.add((byte) ((usedAttributes >> 8) & 0xFF));
 		dataFrame.add((byte) ((usedAttributes >> 16) & 0xFF));

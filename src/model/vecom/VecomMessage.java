@@ -10,15 +10,15 @@ import org.apache.commons.lang3.StringUtils;
 import lombok.Getter;
 import model.Encodings;
 import model.Encodings.CategoryType;
-import model.Encodings.Direction;
 import model.Encodings.Encoding;
 import model.Encodings.Inteli;
+import model.Encodings.JourneyType;
 import model.Encodings.ManualControl;
-import model.Encodings.OverLoop;
 import model.Encodings.PunctualityClass;
 import model.Encodings.VecomVehicleType;
 import model.interfaces.AttributeID;
 import model.interfaces.ProtocolMessage;
+import model.kar.KarAttribute.KAR;
 import model.vecom.VecomAttribute.VECOM;
 
 public class VecomMessage implements ProtocolMessage, Serializable {
@@ -50,7 +50,7 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 	
 	@Override
 	public String toShortString() {
-		return getAttribute(VECOM.LOOP_NR).toShortString() + " " + getAttribute(VECOM.DIRECTION).toShortString();
+		return getAttribute(VECOM.LOOP_NR).toShortString();
 	}
 	
 	public String toString() {
@@ -87,6 +87,7 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		Range<Integer> range = Range.between(0, 255);
 		Class<? extends Encoding> encoding = VecomVehicleType.class;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+		getAttribute(VECOM.VEH_TYPE).setValue(VecomVehicleType.POLICE);
 
 		number = VECOM.LINE_NR;
 		fieldName = "Line nr";
@@ -159,18 +160,18 @@ public class VecomMessage implements ProtocolMessage, Serializable {
 		encoding = null;
 		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 
-		number = VECOM.DIRECTION;
-		fieldName = "Direction";
-		sizeInBits = 2;
-		range = Range.between(0, 3);
-		encoding = Direction.class;
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+//		number = VECOM.DIRECTION;
+//		fieldName = "Direction";
+//		sizeInBits = 2;
+//		range = Range.between(0, 3);
+//		encoding = Direction.class;
+//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 		
-		number = VECOM.OVER_LOOP;
-		fieldName = "Over loop";
-		sizeInBits = 1;
-		range = Range.between(0, 1);
-		encoding = OverLoop.class;
-		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
+//		number = VECOM.OVER_LOOP;
+//		fieldName = "Over loop";
+//		sizeInBits = 1;
+//		range = Range.between(0, 1);
+//		encoding = OverLoop.class;
+//		vecomAttributes.add(new VecomAttribute(number, fieldName, sizeInBits, range, encoding));
 	}
 }

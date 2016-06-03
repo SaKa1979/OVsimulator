@@ -4,6 +4,8 @@ import java.awt.CardLayout;
 
 import javax.swing.JPanel;
 
+import model.kar.KarMessage;
+import model.vecom.VecomMessage;
 import view.ProtocolPanel.Proto;
 
 public class VehicleSimulation extends JPanel {
@@ -23,6 +25,7 @@ public class VehicleSimulation extends JPanel {
 		add(vecomCard, Proto.VECOM.getName());
 	}
 	
+	// PUBLIC METHODS
 	public ProtocolCard getProtocolCard(Proto proto) {
 		if (proto == Proto.KAR) {
 			return karCard;
@@ -31,8 +34,16 @@ public class VehicleSimulation extends JPanel {
 		}
 		return null;
 	}
+	
+	public void resetToDefault() {
+		for (VehicleButton vb : karCard.getVbList()) {
+			vb.updateVehicleButton(new KarMessage(), false);
+		}
+		for (VehicleButton vb : vecomCard.getVbList()) {
+			vb.updateVehicleButton(new VecomMessage(), false);
+		}
+	}
 
-	// PUBLIC METHOD
 	public void setCurrentProtocolCard(Proto proto) {
 		CardLayout cl = (CardLayout) getLayout();
 		cl.show(this, proto.getName());

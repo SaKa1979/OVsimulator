@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import model.Encodings.CategoryType;
-import model.Encodings.Direction;
 import model.Encodings.ManualControl;
 import model.Encodings.PunctualityClass;
 import model.Encodings.VecomVehicleType;
@@ -31,7 +30,6 @@ public class VecomProtocol_TEST {
     vm.setAttribute(VECOM.MANUAL_CONTROL, ManualControl.TURNRIGHT);
     vm.setAttribute(VECOM.PUNCTUALITY, PunctualityClass.GEENINFO);
     vm.setAttribute(VECOM.CATEGORY, CategoryType.LIJN_DIENST);
-    vm.setAttribute(VECOM.DIRECTION, Direction.UNKNOWN);
   }
 
   @After

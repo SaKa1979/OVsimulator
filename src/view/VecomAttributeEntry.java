@@ -63,14 +63,11 @@ public class VecomAttributeEntry extends JPanel implements AttributeEntry {
 		if (encoding != null) {
 			inputField = new JComboBox<>(Encodings.getStringArray(encoding));
 			inputField.setSelectedItem(Encodings.getNameByNr(encoding, vecomAttribute.getValue()));
-			addComboBoxListener(vecomAttribute, inputField);
+			addComboBoxListener(inputField);
 			createInputFieldGridBagConstraints(panel, inputField, 0, 1);
-			inputField.setSelectedIndex(0);
-			vecomAttribute.setValue((String) inputField.getSelectedItem());
 		} else {
 			numericInputField = createInputField(vecomAttribute);
-			numericInputField.setText("" + vecomAttribute.getValue());
-			addNumericFieldListener(vecomAttribute, numericInputField);
+			addNumericFieldListener(numericInputField);
 			createInputFieldGridBagConstraints(panel, numericInputField, 0, 1);
 		}
 	}
@@ -81,7 +78,7 @@ public class VecomAttributeEntry extends JPanel implements AttributeEntry {
 		createLabelGridBagConstraints(panel, label, 0, 0);
 	}
 
-	private void addComboBoxListener(VecomAttribute vecomAttribute, JComboBox<String> inputField) {
+	private void addComboBoxListener(JComboBox<String> inputField) {
 		inputField.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -93,7 +90,7 @@ public class VecomAttributeEntry extends JPanel implements AttributeEntry {
 		});
 	}
 
-	private void addNumericFieldListener(VecomAttribute vecomAttribute, NumericField inputField) {
+	private void addNumericFieldListener(NumericField inputField) {
 		inputField.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void changedUpdate(DocumentEvent e) {

@@ -228,6 +228,7 @@ public class KarMessage implements ProtocolMessage {
 		encoding = JourneyType.class;
 		karField = new KarField(fieldName, sizeInBytes, range, encoding);
 		karAttributes.add(new KarAttribute(number, new KarField(fieldName, sizeInBytes, range, encoding)));
+		getAttribute(KAR.JOURNEY_TYPE).getKarFields().get(0).setValue(JourneyType.DIENST);
 		
 		number = KAR.ROUTE;
 		fieldName = "Route";

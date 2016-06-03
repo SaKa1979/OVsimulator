@@ -151,7 +151,6 @@ public class ViewManager extends JFrame {
 	public void writeToFeedback(int offset, String a_text, Color color, int size) {
 		StyledDocument sDoc = feedbackTxtpn.getStyledDocument();
 		Style feedbackTxtpnStyle = sDoc.addStyle("feedbackTxtpnStyle", null);
-		;
 		StyleConstants.setForeground(feedbackTxtpnStyle, color);
 		StyleConstants.setFontFamily(feedbackTxtpnStyle, "Monospaced");
 		StyleConstants.setFontSize(feedbackTxtpnStyle, size);
@@ -171,7 +170,6 @@ public class ViewManager extends JFrame {
 	public void writeToBottomInfoVersion(String aText, Color color) {
 		StyledDocument sDoc = bottomInfoVersionTxtpn.getStyledDocument();
 		Style bottomInfoVersionTxtpnStyle = sDoc.addStyle("bottomInfoVersionTxtpnStyle", null);
-		;
 		StyleConstants.setForeground(bottomInfoVersionTxtpnStyle, color);
 		StyleConstants.setFontFamily(bottomInfoVersionTxtpnStyle, "Monospaced");
 		StyleConstants.setFontSize(bottomInfoVersionTxtpnStyle, 12);
@@ -192,7 +190,6 @@ public class ViewManager extends JFrame {
 	public void writeToBottomInfoComSettings(String aText, Color color) {
 		StyledDocument sDoc = bottomInfoComSettingTxtpn.getStyledDocument();
 		Style bottomInfoComSettingsTxtpnStyle = sDoc.addStyle("bottomInfoComSettingsTxtpnStyle", null);
-		;
 		StyleConstants.setForeground(bottomInfoComSettingsTxtpnStyle, color);
 		StyleConstants.setFontFamily(bottomInfoComSettingsTxtpnStyle, "Monospaced");
 		StyleConstants.setFontSize(bottomInfoComSettingsTxtpnStyle, 12);
@@ -213,7 +210,6 @@ public class ViewManager extends JFrame {
 	public void writeTobottomInfoComStatus(String aText, Color color) {
 		StyledDocument sDoc = bottomInfoComStatusTxtpn.getStyledDocument();
 		Style bottomInfoComStatusTxtpnStyle = sDoc.addStyle("bottomInfoComStatusTxtpnStyle", null);
-		;
 		StyleConstants.setForeground(bottomInfoComStatusTxtpnStyle, color);
 		StyleConstants.setFontFamily(bottomInfoComStatusTxtpnStyle, "Monospaced");
 		StyleConstants.setFontSize(bottomInfoComStatusTxtpnStyle, 12);
@@ -234,7 +230,6 @@ public class ViewManager extends JFrame {
 	public void writeToBottomProto(String aText, Color color) {
 		StyledDocument sDoc = bottomInfoProtoTxtpn.getStyledDocument();
 		Style bottomInfoProtoTxtpnStyle = sDoc.addStyle("bottomInfoProtoTxtpnStyle", null);
-		;
 		StyleConstants.setForeground(bottomInfoProtoTxtpnStyle, color);
 		StyleConstants.setFontFamily(bottomInfoProtoTxtpnStyle, "Monospaced");
 		StyleConstants.setFontSize(bottomInfoProtoTxtpnStyle, 12);
@@ -255,7 +250,6 @@ public class ViewManager extends JFrame {
 	public void writeToBottomProtoXtraInfo(String aText, Color color) {
 		StyledDocument sDoc = bottomInfoProtoXtraInfoTxtpn.getStyledDocument();
 		Style bottomInfoProtoXtraInfoTxtpnStyle = sDoc.addStyle("bottomInfoProtoXtraInfoTxtpnStyle", null);
-		;
 		StyleConstants.setForeground(bottomInfoProtoXtraInfoTxtpnStyle, color);
 		StyleConstants.setFontFamily(bottomInfoProtoXtraInfoTxtpnStyle, "Monospaced");
 		StyleConstants.setFontSize(bottomInfoProtoXtraInfoTxtpnStyle, 12);
@@ -298,7 +292,6 @@ public class ViewManager extends JFrame {
 
 	// PRIVATE METHODS
 	private void initialize() {
-
 		this.setResizable(true);
 		this.setTitle("OV simulator");
 		this.setIconImage(imagefactory.getImageIcon("swarcoLogo").getImage());
@@ -594,11 +587,20 @@ public class ViewManager extends JFrame {
 		});
 		mnSetting.add(mnProtocol);
 		
-		JMenuItem mnResetPreferences = new JMenuItem("Reset preferences");
+		JMenuItem mnResetPreferences = new JMenuItem("Reset to default");
 		mnResetPreferences.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DontAskAgainPanel.resetPrefs();
+				int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to reset all settings?", "Reset settings", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+				switch (choice) {
+				case JOptionPane.YES_OPTION:
+					vehicleSimulation.resetToDefault();
+					protocolPanel.resetToDefault();
+					DontAskAgainPanel.resetPrefs();
+					break;
+				case JOptionPane.NO_OPTION:
+					break;
+				}
 			}
 		});
 		mnSetting.add(mnResetPreferences);

@@ -36,9 +36,14 @@ public class VehicleButton extends JButton {
 	public void updateVehicleButton(ProtocolMessage protocolMessage, boolean enable) {
 		vehicleSettingPanel.updateSettingsPanel(protocolMessage);
 		setEnabled(enable);
-		setText(protocolMessage.toShortString());
-		setIcon(imagefactory.getVehicleImageIcon(protocolMessage.getVehicleType()));
-		setFont(new Font("MonoSpace", Font.PLAIN, 8));
+		if (enable) {
+			setText(protocolMessage.toShortString());
+			setIcon(imagefactory.getVehicleImageIcon(protocolMessage.getVehicleType()));
+			setFont(new Font("MonoSpace", Font.PLAIN, 8));
+		} else {
+			setText("");
+			setIcon(imagefactory.getImageIcon(""));
+		}
 	}
 	
 	public ProtocolMessage getProtocolMessage() {

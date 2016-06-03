@@ -83,12 +83,9 @@ public class KarAttributeEntry extends JPanel implements AttributeEntry {
 		if (encoding != null) {
 			comboBoxInputField = new JComboBox<>(Encodings.getStringArray(encoding));
 			addComboBoxListener(karField, comboBoxInputField);
-			comboBoxInputField.setSelectedIndex(0);
-			karField.setValue((String) comboBoxInputField.getSelectedItem());
 			createInputFieldGridBagConstraints(panel, comboBoxInputField, karField.getFieldIndex(), 1);
 		} else {
 			numericInputField = createInputField(karField);
-			numericInputField.setText("" + karField.getValue());
 			addNumericFieldListener(karField, numericInputField);
 			createInputFieldGridBagConstraints(panel, numericInputField, karField.getFieldIndex(), 1);
 		}

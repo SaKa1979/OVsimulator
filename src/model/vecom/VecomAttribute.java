@@ -20,15 +20,15 @@ public class VecomAttribute implements Attribute, Serializable {
 		VEH_TYPE (0), 
 		LINE_NR (1),
 		SERVICE_NR (2),
-		CATEGORY (3),
+		INTELI (3),
 		PUNCTUALITY (4),
-		INTELI (5),
-		BCD (6),
+		CATEGORY (5),
+//		BCD (6),
 		STAFF_NR (7),
 		FLEET_NR (8),
 		MANUAL_CONTROL (9),
-		OVER_LOOP (10),
-		DIRECTION (11, "FC"),
+//		OVER_LOOP (10),
+//		DIRECTION (11, "FC"),
 		LOOP_NR (12, "L");
 		
 		VECOM(int value) {

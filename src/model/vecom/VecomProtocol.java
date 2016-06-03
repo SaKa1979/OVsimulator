@@ -161,11 +161,12 @@ public class VecomProtocol extends Protocol {
      * loopNr 1 - 8 : 
      */
 	int loopNr = vecomMessage.getAttribute(VECOM.LOOP_NR).getValue();
-    int direction = vecomMessage.getAttribute(VECOM.DIRECTION).getValue();
-    int overLoop = vecomMessage.getAttribute(VECOM.OVER_LOOP).getValue();
+//    int direction = vecomMessage.getAttribute(VECOM.DIRECTION).getValue();
+//    int overLoop = vecomMessage.getAttribute(VECOM.OVER_LOOP).getValue();
     toAdd = (byte) (loopNr & 0x0F); 
-    toAdd |= (byte) ((direction & 0x07) << 4 );
-    toAdd |= (byte) ((overLoop & 0x01) << 7 );
+//    toAdd |= (byte) ((direction & 0x07) << 4 );
+    overloop ^= 1; 
+    toAdd |= (byte) ((overloop & 0x01) << 7 );
     dataFrame.add(toAdd);
 
     ArrayList<Byte> header = addHeader();

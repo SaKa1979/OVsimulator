@@ -59,6 +59,12 @@ public class ProtocolPanel extends JPanel {
 	public void handleOK() {
 		loadAllFieldValues();
 	}
+	
+	public void resetToDefault() {
+		setKarSid("0000");
+		setKarKey(new byte[0]);
+		setVcuAddress("1");
+	}
 
 	public Proto getSelectedProto() {
 		return selectedProto;
