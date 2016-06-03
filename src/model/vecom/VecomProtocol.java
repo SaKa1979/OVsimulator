@@ -164,7 +164,7 @@ public class VecomProtocol extends Protocol {
     int direction = vecomMessage.getAttribute(VECOM.DIRECTION).getValue();
     int overLoop = vecomMessage.getAttribute(VECOM.OVER_LOOP).getValue();
     toAdd = (byte) (loopNr & 0x0F); 
-    toAdd |= (byte) ((direction & 0x03) << 5 );
+    toAdd |= (byte) ((direction & 0x07) << 4 );
     toAdd |= (byte) ((overLoop & 0x01) << 7 );
     dataFrame.add(toAdd);
 
