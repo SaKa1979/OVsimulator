@@ -14,7 +14,7 @@ public class DontAskAgainPanel extends JPanel {
 	
 	private static final long serialVersionUID = -6631154041398396560L;
 	
-	private static Preferences prefs = Preferences.userNodeForPackage(controller.Main.class);
+	private static Preferences prefs = Preferences.userNodeForPackage(controler.Main.class);
 	private static JCheckBox dontAskMeAgain;
     private static final String DO_NOT_ASK_AGAIN_PREF = "DO_NOT_ASK_AGAIN";
 	

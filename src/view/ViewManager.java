@@ -37,7 +37,8 @@ import javax.swing.text.StyledDocument;
 
 import org.apache.commons.lang3.StringUtils;
 
-import controller.Event;
+import controler.Event;
+import controler.Revision;
 import images.ImageFactory;
 import lombok.Getter;
 import model.Communicator.ComTransmission;
@@ -604,6 +605,7 @@ public class ViewManager extends JFrame {
 			}
 		});
 		mnSetting.add(mnResetPreferences);
+		writeToBottomInfoVersion(Revision.toSString(), Color.BLACK);
 	}
 
 	private void closeWindow() {

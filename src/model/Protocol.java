@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-import controller.Event;
+import controler.Event;
 import model.interfaces.ProtocolMessage;
 
 public abstract class Protocol {

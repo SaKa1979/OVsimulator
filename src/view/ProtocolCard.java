@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 
-import controller.Event;
+import controler.Event;
 import lombok.Getter;
 import view.ProtocolPanel.Proto;
 

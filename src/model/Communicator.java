@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.TooManyListenersException;
 
-import controller.Event;
+import controler.Event;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;

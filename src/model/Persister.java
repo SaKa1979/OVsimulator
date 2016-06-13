@@ -14,7 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import controller.SimController;
+import controler.SimController;
 import model.interfaces.ProtocolMessage;
 import view.DontAskAgainPanel;
 import view.PortSettingPanel;
