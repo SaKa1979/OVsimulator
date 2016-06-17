@@ -39,42 +39,6 @@ public class VecomProtocol extends Protocol {
      * Byte 1 default 0x0D
      */
     dataFrame.add((byte)0x0D);
-    
-    // TODO loop over all attributes and assemble message based on the size in bits
-//    int bitPositionInByte = 0;
-//    byte data = 0;
-//    boolean dataAdded = false;
-//    // This loop will add all attributes consecutively based on the bits per attribute.
-//    for (VecomAttribute attribute : vecomMessage.getVecomAttributes()) {
-//    	int value = attribute.getValue();
-//    	int nrOfBits = attribute.getSizeInBits();
-//    	dataAdded = false;
-//    	
-//    	int endPos = nrOfBits + bitPositionInByte;
-//    	while (endPos > 8) {
-//    		// Add remaining bits
-//    		int remainingNrOfBits = 8 - bitPositionInByte;
-//    		int andWith = ((2 << remainingNrOfBits - 1) - 1) << bitPositionInByte;
-//    		
-//    		data |= (byte) ((value << bitPositionInByte) & andWith);
-//    		dataFrame.add(data);
-//    		dataAdded = true;
-//    		
-//    		// Add other bits to data
-//    		data = 0;
-//    		bitPositionInByte = 0;
-//    		nrOfBits -= remainingNrOfBits;
-//    		
-//    		endPos = nrOfBits + bitPositionInByte;
-//    	}
-//    	if (!dataAdded & endPos <= 8) {
-//    		int andWith = ((2 << nrOfBits - 1) - 1) << bitPositionInByte;
-//    		data |= (byte) ((value << bitPositionInByte) & andWith);
-//    		bitPositionInByte += nrOfBits;
-//    	} else {
-//    		bitPositionInByte = endPos;
-//    	}
-//    }
 
     /** 
      * Byte 2 vehicleType 
