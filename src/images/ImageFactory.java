@@ -1,8 +1,10 @@
 package images;
 
-import java.net.URL;
-
+import java.awt.Image;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import model.Encodings.KarVehicleType;
 import model.Encodings.VecomVehicleType;
@@ -24,7 +26,7 @@ public class ImageFactory {
   // Initialize standard ImageIcons
   private void initialize(){
     unknownImage = createImageIcon("/images/unknown.jpg", "An icon that represents a non configured vehicle");
-    swarcoLogoImage = createImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
+    swarcoLogoImage = createImageIcon("/images/swarcologo.jpg", "Main SWARCO logo");
     ambulanceImage = createImageIcon("/images/ambulance.jpg","ambulance");
     brandweerImage =  createImageIcon("/images/brandweer.jpg","branweer");
     busImage = createImageIcon("/images/bus.jpg","bus");
@@ -39,8 +41,14 @@ public class ImageFactory {
   }
 
   public ImageIcon createImageIcon(String filename, String description) {
-    URL link = this.getClass().getResource(filename); 
-    return new ImageIcon(link, description);
+    Image image = null;;
+    try {
+      image = ImageIO.read(getClass().getResourceAsStream(filename));
+    }
+    catch (IOException e) {
+      JOptionPane.showMessageDialog(null, "The program has failed to load images from the source package.", "Error Message", JOptionPane.ERROR_MESSAGE);
+    }
+    return new ImageIcon(image, description);
   }
   
 	public ImageIcon getVehicleImageIcon(VehicleType vt) {
