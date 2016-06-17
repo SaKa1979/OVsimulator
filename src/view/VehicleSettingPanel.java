@@ -45,8 +45,8 @@ public class VehicleSettingPanel extends JPanel {
 	}
 	
 	public ProtocolMessage getProtocolMessage() {
-		// TODO make generic
 		for (AttributeEntry attributeEntry : attributeEntries) {
+			// TODO make generic
 			if (proto == Proto.KAR) {
 				KarMessage karMessage = (KarMessage) protocolMessage;
 				KarAttribute karAttribute = (KarAttribute) attributeEntry.getAttribute(); 

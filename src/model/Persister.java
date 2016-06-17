@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,15 +107,14 @@ public class Persister {
 
   // PRIVATE METHODS
   public void writeObjects() {
-    DebuggingObjectOutputStream  oos = null;
+	  ObjectOutputStream  oos = null;
     try {
-      oos = new DebuggingObjectOutputStream ( new FileOutputStream(file)); 
+      oos = new ObjectOutputStream(new FileOutputStream(file)); 
       oos.writeObject(getPersistentObjects(protocolPanel, vehicleSimulation));
     }
     catch (IOException e) {
       throw new RuntimeException(
-          "Serialization error. Path to bad object: " 
-              + oos.getStack(), e);
+          "Serialization error. Path to bad object", e);
     }
     finally {
       if (oos != null) {

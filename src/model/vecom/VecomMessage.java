@@ -12,13 +12,11 @@ import model.Encodings;
 import model.Encodings.CategoryType;
 import model.Encodings.Encoding;
 import model.Encodings.Inteli;
-import model.Encodings.JourneyType;
 import model.Encodings.ManualControl;
 import model.Encodings.PunctualityClass;
 import model.Encodings.VecomVehicleType;
 import model.interfaces.AttributeID;
 import model.interfaces.ProtocolMessage;
-import model.kar.KarAttribute.KAR;
 import model.vecom.VecomAttribute.VECOM;
 
 public class VecomMessage implements ProtocolMessage, Serializable {

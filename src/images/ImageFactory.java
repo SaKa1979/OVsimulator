@@ -23,7 +23,7 @@ public class ImageFactory {
   
   // Initialize standard ImageIcons
   private void initialize(){
-    unknownImage = createImageIcon("/images/unknown.jpg", "An icon that represents a non configured vehicle");
+    unknownImage = createImageIcon("/images/Unknown.jpg", "An icon that represents a non configured vehicle");
     swarcoLogoImage = createImageIcon("/images/SWARCOLOGO.jpeg", "Main SWARCO logo");
     ambulanceImage = createImageIcon("/images/ambulance.jpg","ambulance");
     brandweerImage =  createImageIcon("/images/brandweer.jpg","branweer");
